@@ -1,0 +1,8 @@
+composer.lock
+web/assets/
+app/runtime/
+app/config/env.php
+app/config/environments/setups
+app/extensions/*
+vendor/
+.DS_Store
