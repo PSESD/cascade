@@ -1,7 +1,8 @@
 <?php
 namespace app\setup\tasks;
 use infinite\setup\Exception;
-use infinite\helpers\Inflector;
+use yii\helpers\Inflector;
+use infinite\helpers\ArrayHelper;
 
 class Task_000001_environment extends \infinite\setup\Task {
 	public function getTitle() {
@@ -59,13 +60,13 @@ class Task_000001_environment extends \infinite\setup\Task {
 		}
 
 		if (!is_dir($input['_']['envPath'])) {
-			throw new RSetupException("Unable to create new environment directory {$input['_']['envPath']}");
+			throw new Exception("Unable to create new environment directory {$input['_']['envPath']}");
 		}
 
 		// primary environment file
 		$templateFile = $this->setup->environmentTemplateFilePath;
 		if (!is_file($templateFile)) {
-			throw new RSetupException("Invalid environment template file {$templateFile}");
+			throw new Exception("Invalid environment template file {$templateFile}");
 		}
 		$template = self::parseText(file_get_contents($templateFile), $input);
 		file_put_contents($this->setup->environmentFilePath, $template);
@@ -80,7 +81,7 @@ class Task_000001_environment extends \infinite\setup\Task {
 		foreach ($files as $file) {
 			$templateFilePath = $templatePath . DIRECTORY_SEPARATOR . $file;
 			if (!is_file($templateFilePath)) {
-				throw new RSetupException("Invalid environment template file {$templateFilePath}");
+				throw new Exception("Invalid environment template file {$templateFilePath}");
 			}
 			$envFilePath = $input['_']['envPath'] . DIRECTORY_SEPARATOR . $file;
 			$template = self::parseText(file_get_contents($templateFilePath), $input);
@@ -147,7 +148,7 @@ class Task_000001_environment extends \infinite\setup\Task {
 		$fields['general']['fields']['application_name'] = array('type' => 'text', 'label' => 'Application Name', 'required' => true, 'value' => function() { return $this->setup->name; });
 
 		$fields['database'] = array('label' => 'Database', 'fields' => array());
-		$fields['database']['fields']['host'] = array('type' => 'text', 'label' => 'Host', 'required' => true, 'value' => function() { return defined('INFINITE_APP_DATABASE_HOST') ? INFINITE_APP_DATABASE_HOST : 'localhost'; });
+		$fields['database']['fields']['host'] = array('type' => 'text', 'label' => 'Host', 'required' => true, 'value' => function() { return defined('INFINITE_APP_DATABASE_HOST') ? INFINITE_APP_DATABASE_HOST : '127.0.0.1'; });
 		$fields['database']['fields']['port'] = array('type' => 'text', 'label' => 'Port', 'required' => true, 'value' => function() { return defined('INFINITE_APP_DATABASE_PORT') ? INFINITE_APP_DATABASE_PORT : '3306'; });
 		$fields['database']['fields']['username'] = array('type' => 'text', 'label' => 'Username', 'required' => true, 'value' => function() { return defined('INFINITE_APP_DATABASE_USERNAME') ? INFINITE_APP_DATABASE_USERNAME : ''; });
 		$fields['database']['fields']['password'] = array('type' => 'text', 'label' => 'Password', 'required' => true, 'value' => function() { return defined('INFINITE_APP_DATABASE_PASSWORD') ? '' : ''; });

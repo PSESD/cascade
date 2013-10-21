@@ -12,9 +12,6 @@
 		"yiisoft/yii2-composer": "dev-master",
 		"InfiniteCascade/yii2-infinite-core": "*"
 	},
-	"config": {
-        "component-dir": "public"
-    },
 	"repositories": [
 	   {
 	     "type": "vcs",

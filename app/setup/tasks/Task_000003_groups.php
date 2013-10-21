@@ -1,30 +1,31 @@
 <?php
 namespace app\setup\tasks;
+use \infinite\db\models\Group;
 
 class Task_000003_groups extends \infinite\setup\Task {
 	public function getTitle() {
 		return 'Groups';
 	}
 	public function getBaseGroups() {
-		return array('Top' => array('Staff' => array('Contractors', 'Administrators' => array('Super Administrators')), 'Clients', 'Guests'));
+		return ['Top' => ['Staff' => ['Contractors', 'Administrators' => ['Super Administrators']], 'Clients', 'Guests']];
 	}
 
 	public function test() {
-		return Group::model()->field('system', 'top')->count() > 0;
+		return Group::find(['system' => 'top'])->count() > 0;
 	}
 	public function run() {
 		$groups = $this->baseGroups;
-		array_walk($groups, array($this, 'groupWalker'));
+		array_walk($groups, [$this, 'groupWalker']);
 
 		return empty($this->errors);
 	}
 
 	public function groupWalker(&$item, $key, $mparent = null) {
 		if (is_array($item)) {
-			$parent  = Group::model()->field('name', $key)->find();
+			$parent  = Group::find(['name' => $key])->one();
 			if (empty($parent)) {
 				$parent = new Group;
-				$parent->disableAcl();
+				//$parent->disableAcl();
 				$parent->name = $key;
 				$parent->system = preg_replace('/ /', '_', strtolower($parent->name));
 				$parent->level = $this->getGroupLevel($key);
@@ -44,12 +45,12 @@ class Task_000003_groups extends \infinite\setup\Task {
 					}
 				}
 			}
-			$item = array_walk($item, array($this, 'groupWalker'), $parent->id);
+			$item = array_walk($item, [$this, 'groupWalker'], $parent->id);
 		} else {
-			$sitem = Group::model()->field('name', $item)->find();
+			$sitem = Group::find(['name' => $item])->one();
 			if (empty($sitem)) {
 				$sitem = new Group;
-				$sitem->disableAcl();
+				//$sitem->disableAcl();
 				$sitem->name = $item;
 				$sitem->system = preg_replace('/ /', '_', strtolower($sitem->name));
 				$sitem->level = $this->getGroupLevel($item);

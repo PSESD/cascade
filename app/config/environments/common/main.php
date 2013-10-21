@@ -26,6 +26,9 @@ return array(
 			'enableCsrfValidation' => true,
 			'enableCookieValidation' => true,
 		),
+		'view' => [
+			'class' => '\infinite\base\view',
+		],
 		'user' => array(
 			'class' => '\infinite\web\user',
 			'enableAutoLogin' => false,

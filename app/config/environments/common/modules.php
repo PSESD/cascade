@@ -7,20 +7,5 @@
  */
 
 
-return array(
-	'SectionGeneral',
-	'ObjectGroup',
-	'ObjectUser',
-	'ObjectAccount' => array('objectTitle' => 'Organization'),
-	'ObjectIndividual',
-	'ObjectEmailAddress',
-	'ObjectPhoneNumber',
-	'ObjectPostalAddress',
-	'ObjectWebAddress',
-	'ObjectProject',
-	'ObjectTime',
-	'ObjectFile',
-	'ObjectNote',
-	'SectionTaskList'
-);
+return [];
 ?>
