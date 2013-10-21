@@ -1,0 +1,21 @@
+{
+	"folders":
+	[
+		{
+			"follow_symlinks": true,
+			"path": "/Users/jacob/Projects/yii2-infinite-template"
+		},
+		{
+			"follow_symlinks": true,
+			"path": "vendor/infiniteCascade/yii2-infinite-core"
+		},
+		{
+			"follow_symlinks": true,
+			"path": "/Users/jacob/Projects/infinite-core"
+		},
+		{
+			"follow_symlinks": true,
+			"path": "vendor/yiisoft/yii2"
+		}
+	]
+}

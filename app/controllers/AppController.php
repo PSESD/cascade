@@ -49,6 +49,10 @@ class AppController extends Controller
 
 	public function actionIndex()
 	{
+		$g = new \infinite\db\models\Group;
+		$g->name = 'hi';
+		$g->save();
+exit;
 		$g = \infinite\db\models\Group::find()->all();
 		var_dump($g);exit;
 		return $this->render('index');

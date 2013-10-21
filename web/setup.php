@@ -15,6 +15,7 @@ register_shutdown_function(function() {
 
 ini_set('display_errors', true);
 ini_set('error_reporting', E_ALL);
+define('YII_DEBUG', true);
 
 defined('INFINITE_APP_INSTALL_PATH') OR define('INFINITE_APP_INSTALL_PATH', dirname(dirname(__FILE__)));
 defined('INFINITE_APP_APP_PATH') OR define('INFINITE_APP_APP_PATH', INFINITE_APP_INSTALL_PATH . DIRECTORY_SEPARATOR . 'app');
