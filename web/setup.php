@@ -24,7 +24,7 @@ defined('INFINITE_APP_SETUP_PATH') OR define('INFINITE_APP_SETUP_PATH', INFINITE
 
 require_once(__DIR__ . '/../vendor/autoload.php');
 require_once(__DIR__ . '/../vendor/yiisoft/yii2/yii/Yii.php');
-require_once(__DIR__ . '/../vendor/InfiniteCascade/yii2-infinite-core/library/Infinite.php');
+require_once(__DIR__ . '/../vendor/InfiniteCascade/yii2-infinite-core/library/infinite/Infinite.php');
 
 Yii::importNamespaces(require(__DIR__ . '/../vendor/composer/autoload_namespaces.php'));
 Yii::setAlias('app', INFINITE_APP_APP_PATH);

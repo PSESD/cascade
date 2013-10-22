@@ -10,7 +10,7 @@
 return array(
 	'basePath' => dirname(__FILE__).DIRECTORY_SEPARATOR.'..'.DIRECTORY_SEPARATOR.'..'.DIRECTORY_SEPARATOR.'..',
 	// preloading 'log' component
-	'preload' => array('log'),
+	'preload' => array('log', 'debug'),
 	// autoloading model and component classes
 	'language' => 'en',
 
@@ -52,16 +52,6 @@ return array(
 				// a standard rule mapping '/' to 'site/index' action
 				'' => 'app/index',
 
-				// a standard rule mapping '/login' to 'site/login', and so on
-				'<action:(login|logout|forgot|search|quick)>' => 'app/<action>',
-
-				'<action:(view)>/<id:\S+>/<section:\S+>' => 'app/<action>',
-				'<action:(delete|update|view|watch|unwatch|setPrimary)>/<id:\S+>' => 'app/<action>',
-				'<action:(create|link|browse)>/<module:\w+>' => 'app/<action>',
-
-				'<action:(browse|suggest|delete)>' => 'app/<action>',
-
-				'<controller:\w+>/<action:\w+>/<id:\S+>' => '<controller>/<action>',
 				// a standard rule to handle 'post/update' and so on
 				'<controller:\w+>/<action:\w+>' => '<controller>/<action>',
 			],

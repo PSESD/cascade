@@ -1,6 +1,7 @@
 <?php
 namespace app\setup\tasks;
-use \infinite\db\models\Group;
+use \app\models\Group;
+use \app\models\Relation;
 
 class Task_000003_groups extends \infinite\setup\Task {
 	public function getTitle() {
@@ -11,8 +12,9 @@ class Task_000003_groups extends \infinite\setup\Task {
 	}
 
 	public function test() {
-		return Group::find(['system' => 'top'])->count() > 0;
+		return Group::find()->where(['system' => 'top'])->count() > 0;
 	}
+
 	public function run() {
 		$groups = $this->baseGroups;
 		array_walk($groups, [$this, 'groupWalker']);
@@ -22,7 +24,7 @@ class Task_000003_groups extends \infinite\setup\Task {
 
 	public function groupWalker(&$item, $key, $mparent = null) {
 		if (is_array($item)) {
-			$parent  = Group::find(['name' => $key])->one();
+			$parent  = Group::find()->where(['name' => $key])->one();
 			if (empty($parent)) {
 				$parent = new Group;
 				//$parent->disableAcl();
@@ -47,7 +49,7 @@ class Task_000003_groups extends \infinite\setup\Task {
 			}
 			$item = array_walk($item, [$this, 'groupWalker'], $parent->id);
 		} else {
-			$sitem = Group::find(['name' => $item])->one();
+			$sitem = Group::find()->where(['name' => $item])->one();
 			if (empty($sitem)) {
 				$sitem = new Group;
 				//$sitem->disableAcl();

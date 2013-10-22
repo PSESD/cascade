@@ -162,9 +162,10 @@ DROP TABLE IF EXISTS `registry`;
 
 CREATE TABLE `registry` (
   `id` char(36) CHARACTER SET ascii COLLATE ascii_bin NOT NULL,
-  `object_model` varchar(100) DEFAULT NULL,
+  `object_model` varchar(255) DEFAULT NULL,
   `created` datetime DEFAULT NULL,
-  PRIMARY KEY (`id`)
+  PRIMARY KEY (`id`),
+  KEY `registryIndex` (`id`,`object_model`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 
