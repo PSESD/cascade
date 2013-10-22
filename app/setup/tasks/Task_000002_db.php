@@ -1,6 +1,8 @@
 <?php
 namespace app\setup\tasks;
 
+use \infinite\base\exceptions\Exception;
+
 class Task_000002_db extends \infinite\setup\Task {
 	protected $_migrator;
 	public function getTitle() {
