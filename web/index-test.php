@@ -22,7 +22,7 @@ if(INFINITE_APP_VERSION > INFINITE_APP_INSTANCE_VERSION) {
 
 require_once(INFINITE_APP_VENDOR_PATH . DIRECTORY_SEPARATOR . 'autoload.php');
 require_once(INFINITE_APP_VENDOR_PATH . DIRECTORY_SEPARATOR . 'yiisoft/yii2/yii/Yii.php');
-require_once(INFINITE_APP_VENDOR_PATH . DIRECTORY_SEPARATOR . 'InfiniteCascade/yii2-infinite-core/library/infinite/Infinite.php');
+//require_once(INFINITE_APP_VENDOR_PATH . DIRECTORY_SEPARATOR . 'InfiniteCascade/yii2-infinite-core/library/infinite/Infinite.php');
 
 $configPath =  INFINITE_APP_ENVIRONMENT_PATH . DIRECTORY_SEPARATOR .  'web-test.php';
 $config = require_once($configPath);
