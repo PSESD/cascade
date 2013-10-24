@@ -32,12 +32,12 @@ app\config\AppAsset::register($this);
 			'options' => ['class' => 'navbar-nav pull-right'],
 			'encodeLabels' => false,
 			'items' => [
-				['label' => 'Home', 'url' => ['/site/index']],
+				['label' => 'Home', 'url' => ['/app/index']],
 				Yii::$app->user->isGuest ?
-					['label' => 'Sign In', 'url' => ['/site/login'],
+					['label' => 'Sign In', 'url' => ['/app/login'],
 						'linkOptions' => ['data-method' => 'post']] :
 					['label' => '<span class="glyphicon glyphicon-off"></span> (' . Yii::$app->user->identity->username .')' ,
-						'url' => ['/site/logout'],
+						'url' => ['/app/logout'],
 						'linkOptions' => ['data-method' => 'post']],
 			],
 		]);

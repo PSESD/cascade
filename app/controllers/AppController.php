@@ -8,6 +8,8 @@ use yii\web\VerbFilter;
 
 use infinite\web\Controller;
 
+use app\models\LoginForm;
+
 class AppController extends Controller
 {
 	public function behaviors()
