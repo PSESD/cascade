@@ -1,0 +1,21 @@
+{
+	"folders":
+	[
+		{
+			"follow_symlinks": true,
+			"path": "/Users/jacob/Projects/cascade"
+		},
+		{
+			"follow_symlinks": true,
+			"path": "/Users/jacob/Projects/cascade/vendor/infiniteCascade/yii2-infinite-core"
+		},
+		{
+			"follow_symlinks": true,
+			"path": "/Users/jacob/Projects/infinite-core"
+		},
+		{
+			"follow_symlinks": true,
+			"path": "/Users/jacob/Projects/cascade/vendor/yiisoft/yii2"
+		}
+	]
+}
