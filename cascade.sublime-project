@@ -3,11 +3,11 @@
 	[
 		{
 			"follow_symlinks": true,
-			"path": "/Users/jacob/Projects/cascade"
+			"path": "."
 		},
 		{
 			"follow_symlinks": true,
-			"path": "/Users/jacob/Projects/cascade/vendor/infiniteCascade/yii2-infinite-core"
+			"path": "vendor/infiniteCascade/yii2-infinite-core"
 		},
 		{
 			"follow_symlinks": true,
@@ -15,7 +15,11 @@
 		},
 		{
 			"follow_symlinks": true,
-			"path": "/Users/jacob/Projects/cascade/vendor/yiisoft/yii2"
+			"path": "vendor/yiisoft/yii2"
+		},
+		{
+			"follow_symlinks": true,
+			"path": "/Users/jacob/Projects/cascade1"
 		}
 	]
 }

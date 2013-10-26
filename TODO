@@ -1,0 +1,10 @@
+[x] Check for old CComponent::init() functionality and move it some place else
+	-- it is. See yii\base\Object::init and __constructor
+	
+- Move things that don't need event to \infinite\base\Object
+
+- Note change to Html::tag($name, $content, $options) USED TO BE Html::tag($name, $options, $content);
+
+- cascade\web\widgets\base\ListView no longer matches the class it extends
+
+- Widget::renderPartial is no longer implemented
