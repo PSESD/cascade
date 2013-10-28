@@ -58,7 +58,7 @@ class Task_000004_acl extends \infinite\setup\Task {
 
 			if (is_array($controlled)) {
 				$model = $controlled['model'];
-				$controlled = $model::model()->fields($controlled['fields'])->find();
+				$controlled = $model::find()->where($controlled['fields'])->one();
 				if (!$controlled) {
 					return false;
 				}
@@ -66,7 +66,7 @@ class Task_000004_acl extends \infinite\setup\Task {
 
 			if (is_array($accessing)) {
 				$model = $accessing['model'];
-				$accessing = $model::model()->fields($accessing['fields'])->find();
+				$accessing = $model::find()->where($accessing['fields'])->one();
 				if (!$accessing) {
 					return false;
 				}
@@ -86,7 +86,7 @@ class Task_000004_acl extends \infinite\setup\Task {
 
 			if (is_array($controlled)) {
 				$model = $controlled['model'];
-				$controlled = $model::model()->fields($controlled['fields'])->find();
+				$controlled = $model::find()->where($controlled['fields'])->one();
 				if (!$controlled) {
 					return false;
 				}
