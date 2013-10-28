@@ -6,8 +6,9 @@
  * @package cascade
  */
 
+namespace cascade\components\web\widgets\grid\columns;
 
-class RButtonColumn extends RGridColumn {
+class Action extends \yii\grid\ActionColumn {
 }
 
 

@@ -6,10 +6,19 @@
  * @package cascade
  */
 
+namespace cascade\components\web\widgets\core;
 
-abstract class RDashboardBrowseWidget extends RBaseWidget {
+use Yii;
+
+use \cascade\models\Registry;
+
+use \infinite\web\Response;
+use \infinite\db\behaviors\Relatable;
+use \infinite\db\behaviors\Access;
+
+abstract class DashboardBrowse extends \cascade\components\web\widgets\base\Widget {
 	public $objectId;
-	public $view = 'cascade.views.app.widgets.relationship.index';
+	public $view = '\cascade\views\app\widgets\relationship\index';
 	public $viewStyleDefault = 'grid';
 
 	abstract public function getGridTemplate();
@@ -26,10 +35,10 @@ abstract class RDashboardBrowseWidget extends RBaseWidget {
 		$otherColumnId = $this->instanceSettings['whoAmI'] . '_object_id';
 		$c[$otherColumnId] = array('visible' => false);
 
-		$taxonomy = Yii::app()->taxonomyEngine->get($this->instanceSettings['relationship']->taxonomy);
+		$taxonomy = Yii::$app->taxonomyEngine->get($this->instanceSettings['relationship']->taxonomy);
 		if (!empty($taxonomy)) {
 			$c['taxonomy_ids'] = array(
-				'class' => 'RGridColumn',
+				'class' => '\cascade\web\widgets\grid\columns\Grid',
 				'name' => 'taxonomy_ids',
 				'htmlOptions' => array('class' => 'data-cell-center'),
 				'type' => 'html',
@@ -117,7 +126,7 @@ abstract class RDashboardBrowseWidget extends RBaseWidget {
 		if (!empty($this->instanceSettings['relationship']->allowPrimary)) {
 			$m[] =array(
 					'icon' => 'ic-icon-star',
-					'url' => RHtml::normalizeUrl(array('setPrimary', 'id' => '{id}', 'object' => $this->objectType)),
+					'url' => Yii::$app->urlManager->createUrl(array('setPrimary', 'id' => '{id}', 'object' => $this->objectType)),
 					'label' => 'Make Primary '.$this->instanceSettings['relationship']->{$this->objectType}->title->getSingular(true),
 					'visible' => array('primary' => 0),
 					'aclAction' => 'update',
@@ -125,13 +134,13 @@ abstract class RDashboardBrowseWidget extends RBaseWidget {
 		}
 		$m[] =array(
 				'icon' => 'ic-icon-pen',
-				'url' => RHtml::normalizeUrl(array('update', 'id' => '{'.$this->fieldPrefix.'id}')),
+				'url' => Yii::$app->urlManager->createUrl(array('update', 'id' => '{'.$this->fieldPrefix.'id}')),
 				'label' => 'Update '. $this->Owner->title->getSingular(true),
 				'aclAction' => 'update',
 			);
 		$m[] = array(
 			'icon' => 'ic-icon-trash_stroke',
-			'url' => RHtml::normalizeUrl(array('delete', 'relation_id' => '{id}', 'object' => $this->objectType)),
+			'url' => Yii::$app->urlManager->createUrl(array('delete', 'relation_id' => '{id}', 'object' => $this->objectType)),
 			'label' => 'Delete '. $this->Owner->title->getSingular(true),
 			'aclAction' => 'delete',
 		);
@@ -144,7 +153,7 @@ abstract class RDashboardBrowseWidget extends RBaseWidget {
 		if (empty($this->params['object'])) {
 			$this->params['object'] = Registry::getObject($this->objectId);
 		}
-		$response = new RResponse($this->view, array(), $this);
+		$response = new Response($this->view, array(), $this);
 		$this->widgetTag = 'li';
 		$this->grid = true;
 		if (is_null($this->gridTitle) or $this->gridTitle === false) { $this->gridTitle = Yii::t('ic', $this->Owner->title->getPlural(true)); }
@@ -152,7 +161,7 @@ abstract class RDashboardBrowseWidget extends RBaseWidget {
 		if (is_null($this->gridTitleMenu)) {
 			$this->gridTitleMenu = array();
 		}
-		if (Yii::app()->gk->canGeneral('create', $this->Owner->primaryModel)) {
+		if (Yii::$app->gk->canGeneral('create', $this->Owner->primaryModel)) {
 			$this->gridTitleMenu[] = array('url' => array('/app/create', 'module' => $this->Owner->shortName, $this->instanceSettings['whoAmI'].'_object_id' => $this->objectId), 'icon' => 'ic-icon-plus', 'ajax' => true, 'title' => Yii::t('ic', 'Create and link '. $this->Owner->title->getSingular(false)));
 		}
 		if (!isset($this->instanceSettings['relationship'])) {
@@ -172,9 +181,9 @@ abstract class RDashboardBrowseWidget extends RBaseWidget {
 	}
 
 	public function getItems() {
-		Yii::app()->request->object = $this->params['object'];
+		Yii::$app->request->object = $this->params['object'];
 
-		$model = RRelatableBehavior::RELATION_MODEL;
+		$model = Relatable::RELATION_MODEL;
 		$items = new $model('search');
 		if ($this->instanceSettings['whoAmI'] === 'parent') {
 			$items->parent_object_id = $this->params['object']->id;
@@ -185,9 +194,9 @@ abstract class RDashboardBrowseWidget extends RBaseWidget {
 	}
 
 	public function renderPartial($view, $extra = array()) {
-		RAclBehavior::allowInherit();
+		Access::allowInherit();
 		parent:: renderPartial($view, $extra);
-		RAclBehavior::denyInherit();
+		Access::denyInherit();
 	}
 
 }

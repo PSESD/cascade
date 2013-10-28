@@ -7,9 +7,11 @@
  */
 
 
-class RDataColumn extends CDataColumn {
+namespace cascade\components\web\widgets\grid\columns;
 
+class Data extends \yii\grid\DataColumn {
 }
+
 
 
 ?>

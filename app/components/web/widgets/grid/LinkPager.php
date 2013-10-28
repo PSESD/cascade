@@ -6,8 +6,12 @@
  * @package cascade
  */
 
+namespace cascade\components\web\widgets\grid;
 
-class RLinkPager extends CLinkPager {
+use \infinite\helpers\Html;
+
+
+class LinkPager extends \yii\widgets\LinkPager {
 	protected $_state;
 
 	/**
@@ -29,28 +33,33 @@ class RLinkPager extends CLinkPager {
 		$this->_state = $state;
 	}
 
-
 	/**
-	 * Creates a page button.
-	 * You may override this method to customize the page buttons.
-	 *
-	 * @param string  $label    the text label for the button
-	 * @param integer $page     the page number
-	 * @param string  $class    the CSS class for the page button.
-	 * @param boolean $hidden   whether this page button is visible
-	 * @param boolean $selected whether this page button is selected
-	 * @return string the generated button
+	 * Renders a page button.
+	 * You may override this method to customize the generation of page buttons.
+	 * @param string $label the text label for the button
+	 * @param integer $page the page number
+	 * @param string $class the CSS class for the page button.
+	 * @param boolean $disabled whether this page button is disabled
+	 * @param boolean $active whether this page button is active
+	 * @return string the rendering result
 	 */
-	protected function createPageButton($label, $page, $class, $hidden, $selected) {
-		if ($hidden || $selected) {
-			$class.=' '.($hidden ? $this->hiddenPageCssClass : $this->selectedPageCssClass);
+	protected function renderPageButton($label, $page, $class, $disabled, $active)
+	{
+		if ($active) {
+			$class .= ' ' . $this->activePageCssClass;
 		}
-		$state = array();
+		if ($disabled) {
+			$class .= ' ' . $this->disabledPageCssClass;
+		}
+		$state = $this->getState();
 		$state['page'] = $page + 1;
 		$jsonState = json_encode($state);
-		return '<li class="'.$class.'">'.CHtml::link($label, $this->createPageUrl($page), array('data-state' => $jsonState, 'class' => 'stateful')).'</li>';
-	}
 
+		$class .= ' stateful';
+		$class = trim($class);
+		$options = ['data-state' => $jsonState, 'class' => $class === '' ? null : $class];
+		return Html::tag('li', Html::a($label, $this->pagination->createUrl($page), ['data-page' => $page]), $options);
+	}
 
 }
 

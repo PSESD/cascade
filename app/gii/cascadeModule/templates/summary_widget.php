@@ -8,14 +8,11 @@
 echo "<?php\n";
 ?>
 
-namespace <?=$generator->getControllerNamespace(); ?>;
+namespace <?=$generator->getWidgetNamespace(); ?>;
 
-use yii\web\Controller;
-
-class DefaultController extends Controller
+class Summary extends \cascade\components\objects\Module
 {
-	public function actionIndex()
-	{
-		return $this->render('index');
-	}
+<?php
+
+?>
 }

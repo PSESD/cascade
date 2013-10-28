@@ -6,12 +6,18 @@
  * @package cascade
  */
 
+namespace cascade\components\web\widgets;
 
-class RWidgetEngine extends CWidget {
+use Item;
+
+use \infinite\base\exceptions\Exception;
+
+class Engine extends \infinite\base\Engine {
+	public $producedWidgets = array();
+	public $lastBuildId;
+
 	protected $_registry = array();
 	protected $_registryLocations = array();
-	var $producedWidgets = array();
-	var $lastBuildId;
 	// $params is for options that will be built into the widget so it can refresh itself
 	// $base are things the widget should be able to get from the params, but you don't want to have it refetch it if you have it
 
@@ -103,12 +109,12 @@ class RWidgetEngine extends CWidget {
 		}
 		foreach ($widgets as $widget) {
 			if (!isset($widget['name']) or !isset($widget['name'])) {
-				throw new RException("Attempted widget registration for ". get_class($owner) ." without proper setup.");
+				throw new Exception("Attempted widget registration for ". get_class($owner) ." without proper setup.");
 			}
 			if (isset( $this->_registry[$widget['name']])) {
-				throw new RException("{$widget['name']} has already been registered by ". get_class($this->_registry[$widget['name']]->Owner));
+				throw new Exception("{$widget['name']} has already been registered by ". get_class($this->_registry[$widget['name']]->Owner));
 			}
-			$this->_registry[$widget['name']] = new RWidgetItem($owner, $widget);
+			$this->_registry[$widget['name']] = new Item($owner, $widget);
 			foreach ($this->_registry[$widget['name']]->locations as $location) {
 				if (empty($this->_registryLocations[$location])) { $this->_registryLocations[$location] = array(); }
 				$this->_registryLocations[$location][$widget['name']] = $this->_registry[$widget['name']];

@@ -7,8 +7,15 @@
  */
 
 
-abstract class RBaseRelationshipWidget extends RDashboardBrowseWidget {
-	public $view = 'cascade.views.app.widgets.relationship.index';
+namespace cascade\components\web\widgets\core;
+
+use Yii;
+
+use \infinite\helpers\Html;
+use \infinite\db\behaviors\Relatable;
+
+abstract class Relationship extends DasboardBrowse {
+	public $view = '\cascade\views\app\widgets\relationship\index';
 	public $descriptorField = 'link';
 	
 
@@ -34,7 +41,7 @@ abstract class RBaseRelationshipWidget extends RDashboardBrowseWidget {
 		if (!empty($this->instanceSettings['relationship']->allowPrimary)) {
 			$m[] =array(
 					'icon' => 'ic-icon-star',
-					'url' => RHtml::normalizeUrl(array('setPrimary', 'id' => '{id}', 'object' => $this->objectType)),
+					'url' => Yii::$app->urlManager->createUrl(array('setPrimary', 'id' => '{id}', 'object' => $this->objectType)),
 					'label' => 'Make Primary '.$this->instanceSettings['relationship']->{$this->objectType}->title->getSingular(true),
 					'visible' => array('primary' => 0),
 					'aclAction' => 'update',
@@ -42,13 +49,13 @@ abstract class RBaseRelationshipWidget extends RDashboardBrowseWidget {
 		}
 		$m[] =array(
 				'icon' => 'ic-icon-link',
-				'url' => RHtml::normalizeUrl(array('link', 'module' => $this->Owner->shortName, 'id' => '{id}', $this->instanceSettings['whoAmI'] .'_object_id' => '{'.$this->instanceSettings['whoAmI'].'_object_id}')),
+				'url' => Yii::$app->urlManager->createUrl(array('link', 'module' => $this->Owner->shortName, 'id' => '{id}', $this->instanceSettings['whoAmI'] .'_object_id' => '{'.$this->instanceSettings['whoAmI'].'_object_id}')),
 				'label' => 'Update relationship',
 				'aclAction' => 'update',
 			);
 		$m[] = array(
 			'icon' => 'ic-icon-trash_stroke',
-			'url' => RHtml::normalizeUrl(array('delete', 'relation_id' => '{id}', 'object' => $this->objectType)),
+			'url' => Yii::$app->urlManager->createUrl(array('delete', 'relation_id' => '{id}', 'object' => $this->objectType)),
 			'label' => 'Delete '. $this->Owner->title->getSingular(true),
 			'aclAction' => 'delete',
 		);
@@ -76,7 +83,7 @@ abstract class RBaseRelationshipWidget extends RDashboardBrowseWidget {
 	public function getItems() {
 		Yii::app()->request->object = $this->params['object'];
 
-		$model = RRelatableBehavior::RELATION_MODEL;
+		$model = Relatable::RELATION_MODEL;
 		$items = new $model('search');
 		if ($this->instanceSettings['whoAmI'] === 'parent') {
 			$items->parent_object_id = $this->params['object']->id;
@@ -109,7 +116,7 @@ abstract class RBaseRelationshipWidget extends RDashboardBrowseWidget {
 			}
 			//if ($key === $this->instanceSettings['relationship']->child->dummyModel->descriptorField) { $key = 'link'; }
 			$grid[$this->fieldPrefix . $key] = array_merge(array(
-				'class' => 'RGridColumn',
+				'class' => '\cascade\web\widgets\grid\columns\Grid',
 				'name' => $this->fieldPrefix . $key,
 				//'htmlOptions' => array('class' => 'data-cell-center'),
 				'type' => 'html',
@@ -122,7 +129,7 @@ abstract class RBaseRelationshipWidget extends RDashboardBrowseWidget {
 			$taxonomy = Yii::app()->taxonomyEngine->get($this->instanceSettings['relationship']->taxonomy);
 			if (!empty($taxonomy)) {
 				$grid['taxonomy_ids'] = array(
-					'class' => 'RGridColumn',
+					'class' => '\cascade\web\widgets\grid\columns\Grid',
 					'name' => 'taxonomy_ids',
 					'htmlOptions' => array('class' => 'data-cell-center'),
 					'type' => 'html',
@@ -134,7 +141,7 @@ abstract class RBaseRelationshipWidget extends RDashboardBrowseWidget {
 		}
 		if (in_array('start', $this->instanceSettings['relationship']->fields)) {
 			$grid['dateRange'] = array(
-				'class' => 'RGridColumn',
+				'class' => '\cascade\web\widgets\grid\columns\Grid',
 				'name' => 'dateRange',
 				'htmlOptions' => array('class' => 'data-cell-center'),
 				'type' => 'html',
@@ -144,7 +151,7 @@ abstract class RBaseRelationshipWidget extends RDashboardBrowseWidget {
 			);
 		}
 		$grid['primary'] = array(
-			'class' => 'RGridColumn',
+			'class' => '\cascade\web\widgets\grid\columns\Grid',
 			'visible' => false,
 			'value' => function ($data, $row) {
 				return $data->primary;
