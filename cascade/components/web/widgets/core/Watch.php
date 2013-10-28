@@ -6,8 +6,10 @@
  * @package cascade
  */
 
+namespace cascade\components\web\widgets\core;
 
-class RDashboardWatchWidget extends RBaseWidget {
+
+class Watch extends \cascade\components\web\widgets\base\Widget {
 	public $type_id;
 
 	/**

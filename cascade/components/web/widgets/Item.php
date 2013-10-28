@@ -7,7 +7,10 @@
  */
 
 
-class RWidgetItem extends CComponent {
+namespace cascade\components\web\widgets;
+
+
+class Item extends \infinite\base\Object {
 	public $Owner;
 	public $name;
 	public $class;

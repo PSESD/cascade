@@ -1,7 +1,14 @@
 <?php
-Yii::import('zii.widgets.CBaseListView');
-Yii::import('zii.widgets.*');
-class RGridView extends CWidget {
+
+namespace cascade\components\web\widgets\grid;
+
+use Yii;
+
+use \cascade\web\widgets\grid\columns\Data as DataColumn;
+
+use \infinite\base\exceptions\Exception;
+
+class View extends \yii\base\Widget {
 	public $widget;
 	public $state;
 	public $dataProvider;
@@ -29,7 +36,7 @@ class RGridView extends CWidget {
 
 	public function init() {
 		if($this->dataProvider===null) {
-			throw new CException(Yii::t('zii','The "dataProvider" property cannot be empty.'));
+			throw new Exception(Yii::t('zii','The "dataProvider" property cannot be empty.'));
 		}
 
 		$this->htmlOptions['id']=$this->getId();
@@ -102,14 +109,11 @@ class RGridView extends CWidget {
 					$p['values'][$key] = $c->getDataValue($row, $r, false);
 				}
 				$p['acl'] = array();
-				if ($r->asa('RAclBehavior')) {
-					
-				}
-				if ($this->Owner->instanceSettings['whoAmI'] === 'parent' AND isset($r->childObject) AND $r->childObject->asa('RAclBehavior')) {
+				if ($this->Owner->instanceSettings['whoAmI'] === 'parent' AND isset($r->childObject) AND $r->childObject->hasBehavior('Access')) {
 					$p['acl'] = $r->childObject->aclSummary();
-				} elseif($this->Owner->instanceSettings['whoAmI'] === 'child' AND isset($r->parentObject) AND $r->parentObject->asa('RAclBehavior')) {
+				} elseif($this->Owner->instanceSettings['whoAmI'] === 'child' AND isset($r->parentObject) AND $r->parentObject->hasBehavior('Access')) {
 					$p['acl'] = $r->parentObject->aclSummary();
-				} elseif ($r->asa('RAclBehavior')) {
+				} elseif ($r->hasBehavior('Access')) {
 					$p['acl'] = $r->aclSummary();
 				}
 				$this->_currentData['item-'. $itemNumber] = $p;
@@ -129,7 +133,7 @@ class RGridView extends CWidget {
 				$settings = array('name' => $columnName);
 			}
 			if (!isset($settings['class'])) {
-				$settings['class'] = 'RGridColumn';
+				$settings['class'] = '\cascade\web\widgets\grid\columns\Data';
 			}
 			if (!isset($settings['value'])) {
 				$settings['type'] = 'raw';
@@ -158,7 +162,7 @@ class RGridView extends CWidget {
 			if (!isset($settings['type'])) {
 				$settings['type'] = 'raw';
 			}
-			$column = Yii::createComponent($settings, $this);
+			$column = Yii::createObject($settings, $this);
 			$key = $column->name;
 
 			if (!$column->visible) {
@@ -170,9 +174,9 @@ class RGridView extends CWidget {
 
 	protected function createGridColumn($text) {
 		if (!preg_match('/^([\w\.]+)(:(\w*))?(:(.*))?$/', $text, $matches)) {
-			throw new CException(Yii::t('zii', 'The column must be specified in the format of "Name:Type:Label", where "Type" and "Label" are optional.'));
+			throw new Exception(Yii::t('zii', 'The column must be specified in the format of "Name:Type:Label", where "Type" and "Label" are optional.'));
 		}
-		$column=new RGridColumn($this);
+		$column=new DataColumn($this);
 		$column->name=$matches[1];
 		if (isset($matches[3]) && $matches[3]!=='')
 			$column->type=$matches[3];

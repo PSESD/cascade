@@ -6,8 +6,9 @@
  * @package cascade
  */
 
+namespace cascade\components\web;
 
-class RCascadeHttpRequest extends RHttpRequest {
+class Request extends \infinite\web\Request {
 	protected $_object;
 	protected $_parent;
 

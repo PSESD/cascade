@@ -6,8 +6,19 @@
  * @package cascade
  */
 
+namespace cascade\components\web\widgets\core;
 
-class RDashboardSummaryWidget extends RBaseWidget {
+use Yii;
+
+use \cascade\models\Registry;
+use \cascade\models\ObjectFamiliarity;
+
+use \infinite\web\Response;
+use \infinite\helpers\Html;
+use \infinite\db\behaviors\Relatable;
+use \infinite\db\behaviors\Access;
+
+class DashboardSummary extends \cascade\components\web\widgets\base\Widget {
 	public $objectId;
 
 	protected $_gridCellSize = 'single half-height';
@@ -16,7 +27,7 @@ class RDashboardSummaryWidget extends RBaseWidget {
 	 *
 	 */
 	public function run() {
-		$response = new RResponse('index', array(), $this);
+		$response = new Response('index', array(), $this);
 		$this->widgetTag = 'li';
 		$this->grid = true;
 		$this->gridTitle = Yii::t('ic', $this->Owner->title->getPlural(true));

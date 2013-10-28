@@ -34,6 +34,9 @@ class Generator extends \yii\gii\Generator
 
 	public $tableName;
 	public $modelClass;
+	public $children = '';
+	public $parents = '';
+	public $independent = true;
 
 	public function getModuleName() {
 		return $this->modelName;
@@ -187,7 +190,7 @@ EOD;
 	 */
 	public function requiredTemplates()
 	{
-		return ['module.php', 'controller.php', 'view.php', 'model.php'];
+		return ['module.php', 'summary_widget.php', 'browse_widget.php', 'summary_view.php', 'model.php'];
 	}
 
 
@@ -212,12 +215,16 @@ EOD;
 			$this->render("module.php")
 		);
 		$files[] = new CodeFile(
-			$modulePath . '/controllers/DefaultController.php',
-			$this->render("controller.php")
+			$modulePath . '/widgets/Browse.php',
+			$this->render("browse_widget.php")
 		);
 		$files[] = new CodeFile(
-			$modulePath . '/views/default/index.php',
-			$this->render("view.php")
+			$modulePath . '/widgets/Summary.php',
+			$this->render("summary_widget.php")
+		);
+		$files[] = new CodeFile(
+			$modulePath . '/views/widgets/summary/index.php',
+			$this->render("summary_view.php")
 		);
 
 		$relations = $this->generateRelations();
@@ -263,11 +270,20 @@ EOD;
 	}
 
 	/**
-	 * @return string the controller namespace of the module.
+	 * @return string the widget namespace of the module.
 	 */
-	public function getControllerNamespace()
+	public function getWidgetNamespace()
 	{
-		return substr($this->moduleClass, 0, strrpos($this->moduleClass, '\\')) . '\controllers';
+		return substr($this->moduleClass, 0, strrpos($this->moduleClass, '\\')) . '\widgets';
+	}
+
+
+	/**
+	 * @return string the model namespace of the module.
+	 */
+	public function getModelNamespace()
+	{
+		return substr($this->moduleClass, 0, strrpos($this->moduleClass, '\\')) . '\widgets';
 	}
 
 
