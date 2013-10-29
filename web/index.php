@@ -5,7 +5,6 @@ defined('INFINITE_APP_APP_PATH') OR define('INFINITE_APP_APP_PATH', INFINITE_APP
 defined('INFINITE_APP_SETUP_PATH') OR define('INFINITE_APP_SETUP_PATH', INFINITE_APP_APP_PATH . DIRECTORY_SEPARATOR . 'setup');
 defined('INFINITE_APP_VENDOR_PATH') OR define('INFINITE_APP_VENDOR_PATH', dirname(dirname(__FILE__)) . DIRECTORY_SEPARATOR . 'vendor');
 
-$app = dirname(dirname(__FILE__)).DIRECTORY_SEPARATOR.'app';
 $env = INFINITE_APP_APP_PATH . DIRECTORY_SEPARATOR.'config'.DIRECTORY_SEPARATOR.'env.php';
 
 if (!file_exists($env)) {
@@ -27,4 +26,5 @@ require_once(INFINITE_APP_VENDOR_PATH . DIRECTORY_SEPARATOR . 'yiisoft/yii2/yii/
 $configPath =  INFINITE_APP_ENVIRONMENT_PATH . DIRECTORY_SEPARATOR .  'web.php';
 $config = require_once($configPath);
 $application = new yii\web\Application($config);
+Yii::setAlias('@cascade', INFINITE_APP_APP_PATH);
 $application->run();

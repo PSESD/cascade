@@ -5,19 +5,23 @@ use yii\helpers\Inflector;
 use infinite\helpers\ArrayHelper;
 
 class Task_000001_environment extends \infinite\setup\Task {
-	public function getTitle() {
+	public function getTitle()
+	{
 		return 'Environment';
 	}
 	
-	public function test() {
-		return $this->setup->isEnvironmented AND $this->setup->version <= $this->setup->instanceVersion;
+	public function test()
+	{
+		return $this->setup->isEnvironmented && $this->setup->version <= $this->setup->instanceVersion;
 	}
 
-	public function generateSalt($max = 120) {
+	public function generateSalt($max = 120)
+	{
 		$characterList = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%&*?";
 		$i = 0;
 		$salt = "";
-		while ($i < $max) {
+		while ($i < $max)
+		{
 			$salt .= $characterList{mt_rand(0, (strlen($characterList) - 1))};
 			$i++;
 		}
@@ -48,6 +52,7 @@ class Task_000001_environment extends \infinite\setup\Task {
 		$input['_']['version'] = $this->setup->version;
 		$input['_']['application_id'] = self::generateId($input['general']['application_name']);
 		$input['_']['envPath'] = $this->setup->environmentSetupsPath . DIRECTORY_SEPARATOR . $input['general']['template'];
+		$input['_']['envPathFriendly'] = '__DIR__ . DIRECTORY_SEPARATOR . \'environments\' . DIRECTORY_SEPARATOR . \'setups\' . DIRECTORY_SEPARATOR . \''.$input['general']['template'] .'\'';
 		if ($this->setup->app()) {
 			$input['_']['salt'] = $this->setup->app()->params['salt'];
 		}

@@ -8,6 +8,8 @@
 
 
 return array(
+	'id' => 'cascade',
+	'name' => 'Cascade',
 	'basePath' => dirname(__FILE__).DIRECTORY_SEPARATOR.'..'.DIRECTORY_SEPARATOR.'..'.DIRECTORY_SEPARATOR.'..',
 	// preloading 'log' component
 	'preload' => array('log', 'debug'),
@@ -33,7 +35,7 @@ return array(
 		'user' => array(
 			'class' => '\infinite\web\user',
 			'enableAutoLogin' => false,
-			'identityClass' => '\app\models\User',
+			'identityClass' => '\cascade\models\User',
 			'loginUrl' => array('/app/login'),
 		),
 		'roleEngine' => include(INFINITE_APP_ENVIRONMENT_PATH . DIRECTORY_SEPARATOR . 'roles.php'),
@@ -45,7 +47,7 @@ return array(
 			'timeout' => '4000' // be sure to change yiic.php too
 		),
 		
-		'gk' => array('class' => 'RGatekeeper'),
+		'gk' => array('class' => '\infinite\security\Gatekeeper'),
 		'urlManager' => array(
 			'enablePrettyUrl' => true,
 			'showScriptName' => false,
@@ -58,6 +60,7 @@ return array(
 			],
 		),
 		'log' => [
+			'class' => 'yii\log\Logger',
 			'traceLevel' => YII_DEBUG ? 3 : 0,
 			'targets' => [
 				[

@@ -1,6 +1,7 @@
 <?php
 namespace app\setup\tasks;
 
+
 class Task_000004_acl extends \infinite\setup\Task {
 	public function getTitle() {
 		return 'ACL';
@@ -10,35 +11,35 @@ class Task_000004_acl extends \infinite\setup\Task {
 			array(
 				'action' => null,
 				'controlled' => null,
-				'accessing' => array('model' => 'Group', 'fields' => array('system' => 'top')),
+				'accessing' => array('model' => 'app\models\Group', 'fields' => array('system' => 'top')),
 				'object_model' => null,
 				'task' => 'deny',
 			),
 			array(
 				'action' => null,
 				'controlled' => null,
-				'accessing' => array('model' => 'Group', 'fields' => array('system' => 'staff')),
+				'accessing' => array('model' => 'app\models\Group', 'fields' => array('system' => 'staff')),
 				'object_model' => null,
 				'task' => 'deny',
 			),
 			array(
 				'action' => null,
 				'controlled' => null,
-				'accessing' => array('model' => 'Group', 'fields' => array('system' => 'clients')),
+				'accessing' => array('model' => 'app\models\Group', 'fields' => array('system' => 'clients')),
 				'object_model' => null,
 				'task' => 'deny',
 			),
 			array(
 				'action' => null,
 				'controlled' => null,
-				'accessing' => array('model' => 'Group', 'fields' => array('system' => 'guests')),
+				'accessing' => array('model' => 'app\models\Group', 'fields' => array('system' => 'guests')),
 				'object_model' => null,
 				'task' => 'deny',
 			),
 			array(
 				'action' => null,
 				'controlled' => null,
-				'accessing' => array('model' => 'Group', 'fields' => array('system' => 'administrators')),
+				'accessing' => array('model' => 'app\models\Group', 'fields' => array('system' => 'administrators')),
 				'object_model' => null,
 				'task' => 'allow',
 			),

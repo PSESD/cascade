@@ -10,22 +10,28 @@
 
 defined('YII_DEBUG') or define('YII_DEBUG', true);
 
+defined('INFINITE_APP_INSTALL_PATH') OR define('INFINITE_APP_INSTALL_PATH', dirname(__FILE__));
+defined('INFINITE_APP_APP_PATH') OR define('INFINITE_APP_APP_PATH', INFINITE_APP_INSTALL_PATH . DIRECTORY_SEPARATOR . 'cascade');
+defined('INFINITE_APP_SETUP_PATH') OR define('INFINITE_APP_SETUP_PATH', INFINITE_APP_APP_PATH . DIRECTORY_SEPARATOR . 'setup');
+defined('INFINITE_APP_VENDOR_PATH') OR define('INFINITE_APP_VENDOR_PATH', INFINITE_APP_INSTALL_PATH . DIRECTORY_SEPARATOR . 'vendor');
+
 // fcgi doesn't have STDIN defined by default
 defined('STDIN') or define('STDIN', fopen('php://stdin', 'r'));
 
-require(__DIR__ . '/vendor/autoload.php');
-require(__DIR__ . '/vendor/yiisoft/yii2/yii/Yii.php');
-Yii::importNamespaces(require(__DIR__ . '/vendor/composer/autoload_namespaces.php'));
-$env = dirname(__FILE__).DIRECTORY_SEPARATOR.'app'.DIRECTORY_SEPARATOR.'config'.DIRECTORY_SEPARATOR.'env.php';
+$env = INFINITE_APP_APP_PATH . DIRECTORY_SEPARATOR.'config'.DIRECTORY_SEPARATOR.'env.php';
 
-if (is_file($env)) {
-	require_once($env);
-	$configPath =  INFINITE_APP_ENVIRONMENT_PATH . DIRECTORY_SEPARATOR .  'console.php';
+if (!file_exists($env)) {
+	throw new \Exception("No environment has been set up!");
 }
-if (!isset($configPath) OR !is_file($configPath)) {
-	$configPath = __DIR__ . '/app/config/console_bare.php';
-}
-$config = include_once($configPath);
+require_once($env);
+
+require_once(INFINITE_APP_VENDOR_PATH . DIRECTORY_SEPARATOR . 'autoload.php');
+require_once(INFINITE_APP_VENDOR_PATH . DIRECTORY_SEPARATOR . 'yiisoft/yii2/yii/Yii.php');
+
+
+$configPath =  INFINITE_APP_ENVIRONMENT_PATH . DIRECTORY_SEPARATOR .  'console.php';
+$config = require_once($configPath);
 $application = new yii\console\Application($config);
+Yii::setAlias('@cascade', INFINITE_APP_APP_PATH);
 $exitCode = $application->run();
 exit($exitCode);

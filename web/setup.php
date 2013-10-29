@@ -34,6 +34,8 @@ $config = array(
 	'name' => 'Application Template'
 );
 
-app\setup\Setup::createSetupApplication($config)->run();
+$app = app\setup\Setup::createSetupApplication($config);
+Yii::setAlias('@cascade', INFINITE_APP_APP_PATH);
+$app->run();
 
 ?>
