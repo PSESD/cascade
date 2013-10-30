@@ -1,6 +1,10 @@
 <?php
 namespace app\setup;
+
 use Yii;
+
+use \infinite\setup\Exception;
+
 class Setup extends \infinite\setup\Setup {
 	
 	public static function createSetupApplication($config = array())
@@ -12,14 +16,5 @@ class Setup extends \infinite\setup\Setup {
 		return parent::createSetupApplication($config);
 	}
 
-
-    public function getApplicationPath()
-    {
-        $path = $this->basePath . DIRECTORY_SEPARATOR . 'cascade';
-        if (!is_dir($path)) {
-            throw new Exception("Application path does not exist: {$path}");
-        }
-        return $path;
-    }
 }
 ?>

@@ -17,7 +17,7 @@ class Task_000005_admin_user extends \infinite\setup\Task {
 		$user->scenario = 'creation';
 		$user->attributes = $this->input['admin'];
 		$user->status = User::STATUS_ACTIVE;
-		$superGroup = Group::find()->where(['system' => 'super_administrators'])->find();
+		$superGroup = Group::find()->where(['system' => 'super_administrators'])->one();
 		if (!$superGroup) {
 			throw new Exception("Unable to find super_administrators group!");
 		}
