@@ -2,9 +2,9 @@ composer.lock
 *.sublime-workspace
 /components/
 /web/assets/
-/cascade/runtime/
-/cascade/config/env.php
-/cascade/config/environments/setups
-/cascade/extensions/*
+/app/runtime/
+/app/config/env.php
+/app/config/environments/setups
+/app/extensions/*
 /vendor/
 .DS_Store
