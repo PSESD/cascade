@@ -1,25 +1,31 @@
 <?php
 namespace app\setup\tasks;
 
+use \app\models\Group;
+use \app\models\User;
+use \app\models\Relation;
+
 class Task_000005_admin_user extends \infinite\setup\Task {
 	public function getTitle() {
 		return 'Admin User';
 	}
 	public function test() {
-		return User::model()->count() > 0;
+		return User::find()->count() > 0;
 	}
 	public function run() {
 		$user = new User;
+		$user->scenario = 'creation';
 		$user->attributes = $this->input['admin'];
-		$user->active = 1;
-		$user->passwordPlain = $user->password;
-		$user->password = User::hashPassword($user->passwordPlain);
-		$user->is_administrator = 2;
+		$user->status = User::STATUS_ACTIVE;
+		$superGroup = Group::find()->where(['system' => 'super_administrators'])->find();
+		if (!$superGroup) {
+			throw new Exception("Unable to find super_administrators group!");
+		}
 
 		if ($user->save()) {
 			$rel = new Relation;
-			$rel->parent_object_id = Group::model()->field('system', 'super_administrators')->find();
-			$rel->child_object_id = $user->id;
+			$rel->parent_object_id = $superGroup->primaryKey;
+			$rel->child_object_id = $user->primaryKey;
 			$rel->active = 1;
 			if ($rel->save()) {
 				return true;
@@ -30,6 +36,7 @@ class Task_000005_admin_user extends \infinite\setup\Task {
 		foreach ($user->errors as $field => $errors) {
 			$this->fieldErrors[$field] = implode('; ', $errors);
 		}
+		var_dump($this->fieldErrors);exit;
 		return false;
 	}
 	public function getFields() {

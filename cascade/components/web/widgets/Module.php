@@ -1,7 +1,7 @@
 <?php
-namespace cascade\components\web\widgets;
+namespace app\components\web\widgets;
 
-abstract class Module extends \cascade\components\objects\Module {
+abstract class Module extends \app\components\objects\Module {
 	public $primaryModel = false;
 
 	public function widgets() {

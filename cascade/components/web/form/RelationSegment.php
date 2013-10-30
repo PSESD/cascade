@@ -6,13 +6,13 @@
  * @package cascade
  */
 
-namespace cascade\components\web\form;
+namespace app\components\web\form;
 
 use Yii;
 
-use \cascade\components\objects\fields\Model as ModelField;
-use \cascade\models\Relation;
-use \cascade\models\Registry;
+use \app\components\objects\fields\Model as ModelField;
+use \app\models\Relation;
+use \app\models\Registry;
 
 use \infinite\helpers\Html;
 use \infinite\db\behaviors\Relatable;

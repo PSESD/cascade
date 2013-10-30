@@ -35,7 +35,7 @@ return array(
 		'user' => array(
 			'class' => '\infinite\web\user',
 			'enableAutoLogin' => false,
-			'identityClass' => '\cascade\models\User',
+			'identityClass' => '\app\models\User',
 			'loginUrl' => array('/app/login'),
 		),
 		'roleEngine' => include(INFINITE_APP_ENVIRONMENT_PATH . DIRECTORY_SEPARATOR . 'roles.php'),

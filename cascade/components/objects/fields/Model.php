@@ -6,13 +6,13 @@
  * @package cascade
  */
 
-namespace cascade\components\objects\fields;
+namespace app\components\objects\fields;
 
 use HumanFieldDetector;
 use FormatText;
 use BaseFormat;
 
-use \cascade\components\web\form\Field as FormField;
+use \app\components\web\form\Field as FormField;
 
 class Model extends \infinite\base\Component {
 	public $field;

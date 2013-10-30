@@ -6,19 +6,19 @@
  * @package cascade
  */
 
-namespace cascade\components\web\widgets\core;
+namespace app\components\web\widgets\core;
 
 use Yii;
 
-use \cascade\models\Registry;
-use \cascade\models\ObjectFamiliarity;
+use \app\models\Registry;
+use \app\models\ObjectFamiliarity;
 
 use \infinite\web\Response;
 use \infinite\helpers\Html;
 use \infinite\db\behaviors\Relatable;
 use \infinite\db\behaviors\Access;
 
-class DashboardSummary extends \cascade\components\web\widgets\base\Widget {
+class DashboardSummary extends \app\components\web\widgets\base\Widget {
 	public $objectId;
 
 	protected $_gridCellSize = 'single half-height';

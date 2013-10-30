@@ -6,7 +6,7 @@
  * @package cascade
  */
 
-namespace cascade\components\web;
+namespace app\components\web;
 
 class Request extends \infinite\web\Request {
 	protected $_object;

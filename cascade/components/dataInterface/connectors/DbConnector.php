@@ -1,5 +1,5 @@
 <?php
-namespace cascade\components\dataInterface\connectors;
+namespace app\components\dataInterface\connectors;
 
 class DbConnector extends \yii\db\Connection {
 }

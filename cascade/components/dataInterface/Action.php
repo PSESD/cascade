@@ -1,10 +1,10 @@
 <?php
-namespace cascade\components\dataInterface;
+namespace app\components\dataInterface;
 
 use Item;
 use Status;
 
-use \cascade\models\DataInterfaceLog;
+use \app\models\DataInterfaceLog;
 
 class Action extends \infinite\base\Object {
 	protected $_interface;

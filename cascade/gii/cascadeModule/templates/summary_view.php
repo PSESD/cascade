@@ -26,6 +26,6 @@ $classSettings['rendererSettings'] = array(
 	)
 );
 
-$this->widget('\cascade\components\web\widgets\grid\View', $classSettings);
+$this->widget('\app\components\web\widgets\grid\View', $classSettings);
 
 <?php echo "?>"; ?>

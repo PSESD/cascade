@@ -6,7 +6,7 @@
  * @package cascade
  */
 
-namespace cascade\components\web\widgets\grid;
+namespace app\components\web\widgets\grid;
 
 use \infinite\helpers\Html;
 

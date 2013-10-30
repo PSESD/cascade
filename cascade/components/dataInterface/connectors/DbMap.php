@@ -1,12 +1,12 @@
 <?php
-namespace cascade\components\dataInterface\connectors;
+namespace app\components\dataInterface\connectors;
 
 use DbModel;
 
-use \cascade\models\Registry;
-use \cascade\models\Relation;
-use \cascade\models\KeyTranslation;
-use \cascade\components\dataInterface\Action;
+use \app\models\Registry;
+use \app\models\Relation;
+use \app\models\KeyTranslation;
+use \app\components\dataInterface\Action;
 
 use \infinite\helpers\ArrayHelper;
 

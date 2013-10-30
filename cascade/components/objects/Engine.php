@@ -6,14 +6,14 @@
  * @package cascade
  */
 
-namespace cascade\components\objects;
+namespace app\components\objects;
 
 use Yii;
 use Relationship;
 use Module;
 use Type;
 
-use \cascade\models\ObjectModel;
+use \app\models\ObjectModel;
 
 use \infinite\base\exceptions\Exception;
 use \infinite\base\helpers\ArrayHelper;

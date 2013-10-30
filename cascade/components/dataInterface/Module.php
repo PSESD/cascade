@@ -1,5 +1,5 @@
 <?php
-namespace cascade\components\dataInterface;
+namespace app\components\dataInterface;
 
 use \infinite\base\exceptions\Exception;
 use \infinite\base\language\Noun;

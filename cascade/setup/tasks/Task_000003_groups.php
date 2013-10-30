@@ -1,5 +1,6 @@
 <?php
 namespace app\setup\tasks;
+
 use \app\models\Group;
 use \app\models\Relation;
 

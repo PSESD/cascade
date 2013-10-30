@@ -10,7 +10,7 @@ echo "<?php\n";
 
 namespace <?=$generator->getWidgetNamespace(); ?>;
 
-class Summary extends \cascade\components\objects\Module
+class Summary extends \app\components\objects\Module
 {
 <?php
 

@@ -6,7 +6,7 @@
  * @package cascade
  */
 
-namespace cascade\components\web\widgets\grid\columns;
+namespace app\components\web\widgets\grid\columns;
 
 class Action extends \yii\grid\ActionColumn {
 }

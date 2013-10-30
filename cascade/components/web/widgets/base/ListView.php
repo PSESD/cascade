@@ -6,10 +6,10 @@
  * @package cascade
  */
 
-namespace cascade\components\web\widgets\base;
+namespace app\components\web\widgets\base;
 
 abstract class ListView extends \yii\widgets\ListView {
-	public $pager = '\cascade\components\web\widgets\grid\LinkPager';
+	public $pager = '\app\components\web\widgets\grid\LinkPager';
 	public $currentStyle;
 	public $currentFilter;
 	public $styles = false;

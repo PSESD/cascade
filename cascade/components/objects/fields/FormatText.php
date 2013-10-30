@@ -6,7 +6,7 @@
  * @package cascade
  */
 
-namespace cascade\components\objects\fields;
+namespace app\components\objects\fields;
 
 
 class FormatText extends BaseFormat {

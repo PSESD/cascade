@@ -1,6 +1,7 @@
 <?php
 namespace app\setup\tasks;
 
+use \infinite\setup\Exception;
 
 class Task_000004_acl extends \infinite\setup\Task {
 	public function getTitle() {
@@ -89,19 +90,22 @@ class Task_000004_acl extends \infinite\setup\Task {
 				$model = $controlled['model'];
 				$controlled = $model::find()->where($controlled['fields'])->one();
 				if (!$controlled) {
+					throw new Exception("Could not find controlled object: ". print_r($rule['controlled'], true));
 					return false;
 				}
 			}
 
 			if (is_array($accessing)) {
 				$model = $accessing['model'];
-				$accessing = $model::model()->fields($accessing['fields'])->find();
+				$accessing = $model::find()->where($accessing['fields'])->one();
 				if (!$accessing) {
+					throw new Exception("Could not find accessing object: ". print_r($rule['accessing'], true));
 					return false;
 				}
 			}
 
 			if(!$this->setup->app()->gk->{$rule['task']}($rule['action'], $controlled, $accessing)) {
+					throw new Exception("Could not set up rule: ". print_r(['rule' => $rule], true));
 				return false;
 			}
 		}

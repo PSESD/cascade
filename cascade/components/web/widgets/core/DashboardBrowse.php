@@ -6,19 +6,19 @@
  * @package cascade
  */
 
-namespace cascade\components\web\widgets\core;
+namespace app\components\web\widgets\core;
 
 use Yii;
 
-use \cascade\models\Registry;
+use \app\models\Registry;
 
 use \infinite\web\Response;
 use \infinite\db\behaviors\Relatable;
 use \infinite\db\behaviors\Access;
 
-abstract class DashboardBrowse extends \cascade\components\web\widgets\base\Widget {
+abstract class DashboardBrowse extends \app\components\web\widgets\base\Widget {
 	public $objectId;
-	public $view = '\cascade\views\app\widgets\relationship\index';
+	public $view = '\app\views\app\widgets\relationship\index';
 	public $viewStyleDefault = 'grid';
 
 	abstract public function getGridTemplate();
@@ -38,7 +38,7 @@ abstract class DashboardBrowse extends \cascade\components\web\widgets\base\Widg
 		$taxonomy = Yii::$app->taxonomyEngine->get($this->instanceSettings['relationship']->taxonomy);
 		if (!empty($taxonomy)) {
 			$c['taxonomy_ids'] = array(
-				'class' => '\cascade\web\widgets\grid\columns\Grid',
+				'class' => '\app\web\widgets\grid\columns\Grid',
 				'name' => 'taxonomy_ids',
 				'htmlOptions' => array('class' => 'data-cell-center'),
 				'type' => 'html',

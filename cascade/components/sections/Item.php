@@ -5,7 +5,7 @@
  * @author Jacob Morrison <jacob@infinitecascade.com>
  * @package cascade
  */
-namespace cascade\components\sections;
+namespace app\components\sections;
 
 class Item extends \infinite\base\Object {
 	protected $_item;

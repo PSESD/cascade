@@ -1,5 +1,5 @@
 <?php
-namespace cascade\components\dataInterface;
+namespace app\components\dataInterface;
 
 class Status extends \infinite\base\status\Status {
 	protected $_action;

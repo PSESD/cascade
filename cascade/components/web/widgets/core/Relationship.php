@@ -7,7 +7,7 @@
  */
 
 
-namespace cascade\components\web\widgets\core;
+namespace app\components\web\widgets\core;
 
 use Yii;
 
@@ -15,7 +15,7 @@ use \infinite\helpers\Html;
 use \infinite\db\behaviors\Relatable;
 
 abstract class Relationship extends DasboardBrowse {
-	public $view = '\cascade\views\app\widgets\relationship\index';
+	public $view = '\app\views\app\widgets\relationship\index';
 	public $descriptorField = 'link';
 	
 
@@ -116,7 +116,7 @@ abstract class Relationship extends DasboardBrowse {
 			}
 			//if ($key === $this->instanceSettings['relationship']->child->dummyModel->descriptorField) { $key = 'link'; }
 			$grid[$this->fieldPrefix . $key] = array_merge(array(
-				'class' => '\cascade\web\widgets\grid\columns\Grid',
+				'class' => '\app\web\widgets\grid\columns\Grid',
 				'name' => $this->fieldPrefix . $key,
 				//'htmlOptions' => array('class' => 'data-cell-center'),
 				'type' => 'html',
@@ -129,7 +129,7 @@ abstract class Relationship extends DasboardBrowse {
 			$taxonomy = Yii::app()->taxonomyEngine->get($this->instanceSettings['relationship']->taxonomy);
 			if (!empty($taxonomy)) {
 				$grid['taxonomy_ids'] = array(
-					'class' => '\cascade\web\widgets\grid\columns\Grid',
+					'class' => '\app\web\widgets\grid\columns\Grid',
 					'name' => 'taxonomy_ids',
 					'htmlOptions' => array('class' => 'data-cell-center'),
 					'type' => 'html',
@@ -141,7 +141,7 @@ abstract class Relationship extends DasboardBrowse {
 		}
 		if (in_array('start', $this->instanceSettings['relationship']->fields)) {
 			$grid['dateRange'] = array(
-				'class' => '\cascade\web\widgets\grid\columns\Grid',
+				'class' => '\app\web\widgets\grid\columns\Grid',
 				'name' => 'dateRange',
 				'htmlOptions' => array('class' => 'data-cell-center'),
 				'type' => 'html',
@@ -151,7 +151,7 @@ abstract class Relationship extends DasboardBrowse {
 			);
 		}
 		$grid['primary'] = array(
-			'class' => '\cascade\web\widgets\grid\columns\Grid',
+			'class' => '\app\web\widgets\grid\columns\Grid',
 			'visible' => false,
 			'value' => function ($data, $row) {
 				return $data->primary;

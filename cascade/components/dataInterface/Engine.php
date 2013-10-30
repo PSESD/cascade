@@ -6,12 +6,12 @@
  * @package cascade
  */
 
-namespace cascade\components\dataInterface;
+namespace app\components\dataInterface;
 
 use Item;
 use Module;
 
-use \cascade\models\DataInterface;
+use \app\models\DataInterface;
 
 use \infinite\helpers\ArrayHelper;
 use \infinite\base\exceptions\Exception;

@@ -7,7 +7,7 @@
  */
 
 
-namespace cascade\components\web\widgets;
+namespace app\components\web\widgets;
 
 
 class Item extends \infinite\base\Object {

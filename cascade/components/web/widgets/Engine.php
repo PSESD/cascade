@@ -6,7 +6,7 @@
  * @package cascade
  */
 
-namespace cascade\components\web\widgets;
+namespace app\components\web\widgets;
 
 use Item;
 

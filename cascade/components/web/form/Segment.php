@@ -6,12 +6,12 @@
  * @package cascade
  */
 
-namespace cascade\components\web\form;
+namespace app\components\web\form;
 
 use RelationSegment;
 use Row;
 
-use \cascade\components\objects\fields\Model as ModelField;
+use \app\components\objects\fields\Model as ModelField;
 
 use \infinite\helpers\Html;
 

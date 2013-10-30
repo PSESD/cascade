@@ -5,13 +5,13 @@
  * @author Jacob Morrison <jacob@infinitecascade.com>
  * @package cascade
  */
-namespace cascade\components\objects;
+namespace app\components\objects;
 
 use Yii;
 
-use \cascade\models\Group;
-use \cascade\models\Relation;
-use \cascade\web\form\Generator as FormGenerator;
+use \app\models\Group;
+use \app\models\Relation;
+use \app\web\form\Generator as FormGenerator;
 
 use \infinite\base\exceptions\Exception;
 use \infinite\base\exceptions\HttpException;

@@ -6,7 +6,7 @@
  * @package cascade
  */
 
-namespace cascade\components\dataInterface;
+namespace app\components\dataInterface;
 
 use Action;
 

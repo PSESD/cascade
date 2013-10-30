@@ -1,10 +1,10 @@
 <?php
 
-namespace cascade\components\web\widgets\grid;
+namespace app\components\web\widgets\grid;
 
 use Yii;
 
-use \cascade\web\widgets\grid\columns\Data as DataColumn;
+use \app\web\widgets\grid\columns\Data as DataColumn;
 
 use \infinite\base\exceptions\Exception;
 
@@ -133,7 +133,7 @@ class View extends \yii\base\Widget {
 				$settings = array('name' => $columnName);
 			}
 			if (!isset($settings['class'])) {
-				$settings['class'] = '\cascade\web\widgets\grid\columns\Data';
+				$settings['class'] = '\app\web\widgets\grid\columns\Data';
 			}
 			if (!isset($settings['value'])) {
 				$settings['type'] = 'raw';

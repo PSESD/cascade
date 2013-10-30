@@ -16,7 +16,7 @@ echo "<?php\n";
 namespace <?=$ns; ?>;
 
 
-class <?=$className; ?> extends \cascade\components\objects\Module
+class <?=$className; ?> extends \app\components\objects\Module
 {
 	public $widgetNamespace = '<?=$generator->getWidgetNamespace(); ?>';
 	public $modelNamespace = '<?=$generator->getModelNamespace(); ?>';

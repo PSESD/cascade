@@ -6,7 +6,7 @@
  * @package cascade
  */
 
-namespace cascade\components\sections;
+namespace app\components\sections;
 
 use Yii;
 use Section;

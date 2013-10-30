@@ -6,7 +6,7 @@
  * @package cascade
  */
 
-namespace cascade\components\sections;
+namespace app\components\sections;
 
 class Section extends \infinite\base\Object {
 	private $_name;

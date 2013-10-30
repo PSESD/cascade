@@ -1,5 +1,5 @@
 <?php
-namespace cascade\components\dataInterface\connectors;
+namespace app\components\dataInterface\connectors;
 
 use \infinite\base\exceptions\Exception;
 use DbMeta;

@@ -5,7 +5,7 @@
  * @author Jacob Morrison <jacob@infinitecascade.com>
  * @package cascade
  */
-namespace cascade\components\objects;
+namespace app\components\objects;
 
 use Yii;
 use Type;

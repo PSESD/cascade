@@ -13,6 +13,8 @@ return [
 	'basePath' => dirname(dirname(dirname(dirname(__FILE__)))),
 	'preload' => array('log'),
 	'language' => 'en',
+	'controllerPath' => '@app/commands',
+	'controllerNamespace' => 'app\commands',
 	'controllerMap' => array(
 		'migrate' => '\infinite\console\controllers\MigrateController'
 	),

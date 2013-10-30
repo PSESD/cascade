@@ -6,7 +6,7 @@
  * @package cascade
  */
 
-namespace cascade\components\objects;
+namespace app\components\objects;
 
 use Yii;
 

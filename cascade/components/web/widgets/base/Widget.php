@@ -6,7 +6,7 @@
  * @package cascade
  */
 
-namespace cascade\components\web\widgets\base;
+namespace app\components\web\widgets\base;
 
 use Yii;
 
@@ -142,7 +142,7 @@ class Widget extends \yii\base\Widget {
 
 	public function getViewStyleOptions() {
 		return array(
-			'list' => array('class' => '\cascade\components\web\widgets\grid\ListView', 'label' => 'List', 'icon' => 'ic-icon-list')
+			'list' => array('class' => '\app\components\web\widgets\grid\ListView', 'label' => 'List', 'icon' => 'ic-icon-list')
 		);
 	}
 

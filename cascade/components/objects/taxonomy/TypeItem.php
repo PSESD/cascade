@@ -6,7 +6,7 @@
  * @package cascade
  */
 
-namespace cascade\components\objects\taxonomy;
+namespace app\components\objects\taxonomy;
 
 use Yii;
 use Engine;

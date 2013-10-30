@@ -6,10 +6,10 @@
  * @package cascade
  */
 
-namespace cascade\components\web\widgets\core;
+namespace app\components\web\widgets\core;
 
 
-class Watch extends \cascade\components\web\widgets\base\Widget {
+class Watch extends \app\components\web\widgets\base\Widget {
 	public $type_id;
 
 	/**

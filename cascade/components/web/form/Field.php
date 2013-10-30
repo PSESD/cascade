@@ -6,7 +6,7 @@
  * @package cascade
  */
 
-namespace cascade\components\web\form;
+namespace app\components\web\form;
 
 use \infinite\helpers\Html;
 
