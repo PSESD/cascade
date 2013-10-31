@@ -22,10 +22,27 @@ use yii\helpers\Inflector;
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */
+
+/*
+	echo $form->field($generator, 'baseNamespace');
+	echo $form->field($generator, 'tableName');
+	echo $form->field($generator, 'modelClass');
+	//
+//	echo $form->field($generator, 'moduleName');
+
+//	echo $form->field($generator, 'moduleClass');
+//	echo $form->field($generator, 'moduleID');
+
+//	echo $form->field($generator, 'ns');
+//	echo $form->field($generator, 'baseClass');
+//	echo $form->field($generator, 'db');
+//	echo $form->field($generator, 'generateRelations')->checkbox();
+//	echo $form->field($generator, 'generateLabelsFromComments')->checkbox();
+*/
 class Generator extends \yii\gii\Generator
 {
 	public $db = 'db';
-	public $moduleName;
+	//public $moduleName;
 	public $baseNamespace = 'app\modules';
 	public $baseClass = 'infinite\db\ActiveRecord';
 
@@ -33,13 +50,16 @@ class Generator extends \yii\gii\Generator
 	public $generateLabelsFromComments = false;
 
 	public $tableName;
-	public $modelClass;
 	public $children = '';
 	public $parents = '';
 	public $independent = true;
 
+	public function getModelClass() {
+		return $this->generateClassName($this->tableName);
+	}
+
 	public function getModuleName() {
-		return $this->modelName;
+		return $this->modelClass;
 	}
 
 	public function getModuleClass() {
@@ -78,22 +98,22 @@ class Generator extends \yii\gii\Generator
 	{
 		return array_merge(parent::rules(), [
 			/* Module */
-			['moduleID, moduleClass, baseNamespace', 'filter', 'filter' => 'trim'],
-			['moduleID, moduleClass, baseNamespace', 'required'],
-			['moduleID', 'match', 'pattern' => '/^[\w\\-]+$/', 'message' => 'Only word characters and dashes are allowed.'],
-			['moduleClass, baseNamespace', 'match', 'pattern' => '/^[\w\\\\]*$/', 'message' => 'Only word characters and backslashes are allowed.'],
-			['moduleClass', 'validateModuleClass'],
+			//['moduleID, moduleClass, baseNamespace', 'filter', 'filter' => 'trim'],
+			//['moduleID, moduleClass, baseNamespace', 'required'],
+			//['moduleID', 'match', 'pattern' => '/^[\w\\-]+$/', 'message' => 'Only word characters and dashes are allowed.'],
+			//['moduleClass, baseNamespace', 'match', 'pattern' => '/^[\w\\\\]*$/', 'message' => 'Only word characters and backslashes are allowed.'],
+			//['moduleClass', 'validateModuleClass'],
 
 			/* Model */
-			['modelClass', 'filter', 'filter' => 'trim'],
+			//['modelClass', 'filter', 'filter' => 'trim'],
 			['tableName', 'required'],
-			['db, modelClass', 'match', 'pattern' => '/^\w+$/', 'message' => 'Only word characters are allowed.'],
+			//['db, modelClass', 'match', 'pattern' => '/^\w+$/', 'message' => 'Only word characters are allowed.'],
 			// ['ns, baseClass', 'match', 'pattern' => '/^[\w\\\\]+$/', 'message' => 'Only word characters and backslashes are allowed.'],
 			['tableName', 'match', 'pattern' => '/^(\w+\.)?([\w\*]+)$/', 'message' => 'Only word characters, and optionally an asterisk and/or a dot are allowed.'],
 			//['db', 'validateDb'],
 			//['ns', 'validateNamespace'],
 			['tableName', 'validateTableName'],
-			['modelClass', 'validateModelClass'],
+			//['modelClass', 'validateModelClass'],
 			//['baseClass', 'validateClass', 'params' => ['extends' => ActiveRecord::className()]],
 			//['generateRelations, generateLabelsFromComments', 'boolean'],
 
@@ -190,16 +210,27 @@ EOD;
 	 */
 	public function requiredTemplates()
 	{
-		return ['module.php', 'summary_widget.php', 'browse_widget.php', 'summary_view.php', 'model.php'];
+		return ['module.php', 'summary_widget.php', 'browse_widget.php', 'summary_view.php', 'model.php', 'migration.php'];
 	}
 
+	/**
+	 * @inheritdoc
+	 */
+	public function autoCompleteData()
+	{
+		return [
+			'tableName' => function () {
+				return $this->getDbConnection()->getSchema()->getTableNames();
+			},
+		];
+	}
 
 	/**
 	 * @inheritdoc
 	 */
 	public function stickyAttributes()
 	{
-		return ['ns', 'db', 'baseClass', 'generateRelations', 'generateLabelsFromComments'];
+		return ['baseNamespace'];
 	}
 
 
@@ -239,10 +270,17 @@ EOD;
 				'labels' => $this->generateLabels($tableSchema),
 				'rules' => $this->generateRules($tableSchema),
 				'relations' => isset($relations[$className]) ? $relations[$className] : [],
+				'migrationClassName' => $this->migrationClassName,
+				'migrationsNamespace' => $this->migrationsNamespace,
+				'createTableSyntax' => $this->generateCreateTableColumns($tableSchema)
 			];
 			$files[] = new CodeFile(
-				Yii::getAlias('@' . str_replace('\\', '/', $this->ns)) . '/' . $className . '.php',
+				Yii::getAlias('@' . str_replace('\\', '/', $this->modelNamespace)) . '/' . $className . '.php',
 				$this->render('model.php', $params)
+			);
+			$files[] = new CodeFile(
+				Yii::getAlias('@' . str_replace('\\', '/', $this->migrationsNamespace)) . '/' . $this->migrationClassName . '.php',
+				$this->render('migration.php', $params)
 			);
 		}
 		return $files;
@@ -266,7 +304,7 @@ EOD;
 	 */
 	public function getModulePath()
 	{
-		return Yii::getAlias('@' . str_replace('\\', '/', substr($this->moduleClass, 0, strrpos($this->moduleClass, '\\'))));
+		return Yii::getAlias('@' . str_replace('\\', '/', $this->moduleClass));
 	}
 
 	/**
@@ -283,9 +321,109 @@ EOD;
 	 */
 	public function getModelNamespace()
 	{
-		return substr($this->moduleClass, 0, strrpos($this->moduleClass, '\\')) . '\widgets';
+		return $this->moduleClass . '\widgets';
 	}
 
+	/**
+	 * @return string the model namespace of the module.
+	 */
+	public function getMigrationsNamespace()
+	{
+		return $this->moduleClass . '\migrations';
+	}
+
+	/**
+	 * @return string the model namespace of the module.
+	 */
+	public function getMigrationClassName()
+	{
+		return  'm' . gmdate('ymd_His') . '_initial_'.$this->tableName;
+	}
+
+
+
+	/**
+	 * Generates Create table schema
+	 * @param \yii\db\TableSchema $table the table schema
+	 * @return array the generated validation rules
+	 */
+	public function generateCreateTableColumns($table)
+	{
+		$fields = [];
+		$queryBuilder = $this->getDbConnection()->getQueryBuilder();
+		foreach ($table->columns as $column) {
+			$nullExtra = $signedExtra = $defaultExtra = $primaryKeyExtra  = $autoIncrementExtra = '';
+			$size = $column->size;
+			if (!is_null($column->scale)) {
+				$size .= ','. $column->scale;
+			}
+
+
+			if (!$column->allowNull) {
+				$nullExtra = ' NOT NULL';
+			}
+
+			if ($column->unsigned) {
+				$signedExtra = 'unsigned ';
+			}
+			if ($column->autoIncrement) {
+				$autoIncrementExtra = 'AUTO_INCREMENT';
+			}
+
+			if ($column->isPrimaryKey) {
+				$primaryKeyExtra = ' PRIMARY KEY';
+			}
+
+			if (!empty($column->enumValues)) {
+					$size = '\'' . implode('\',\'', $column->enumValues) . '\'';
+			}
+
+			if ($column->defaultValue !== false) {
+				$stringValue = $column->typecast($column->defaultValue);
+				if (is_null($stringValue)) {
+					if ($column->allowNull) {
+						$stringValue = 'NULL';
+					} else {
+						$stringValue = false;
+					}
+				} elseif (is_bool($stringValue)) {
+					$stringValue = ($stringValue) ? 1 : 0;
+				} else {
+					$stringValue = $this->getDbConnection()->getSchema()->quoteValue($stringValue);
+				}
+				if ($stringValue !== false) {
+					$defaultExtra = ' DEFAULT '. $stringValue;
+				}
+			}
+
+			$field = "'{$column->name}' => '";
+
+			// \infinite\base\Debug::d($column);exit;
+			$fieldType = $column->dbType;
+			preg_match('/^(\w+)(\((.+?)\))?$/', $fieldType, $fieldTypeParts);
+			if (!isset($fieldTypeParts[1])) {
+				var_dump($fieldTypeParts);
+				var_dump($column);exit;
+			}
+			$fieldTypeBare = $fieldTypeParts[1];
+
+			if ($fieldType === 'char(36)') {
+				$fieldType = $column->dbType .' CHARACTER SET ascii COLLATE ascii_bin';
+			} elseif(isset($this->getDbConnection()->getSchema()->typeMap[$fieldTypeBare])) {
+				$fieldType = $this->getDbConnection()->getSchema()->typeMap[$fieldTypeBare];
+				if ($size !== false) {
+					$fieldType .'('. $size .')';
+				}
+			}
+
+			$fieldComplete = trim($signedExtra . $fieldType . $nullExtra . $defaultExtra . $autoIncrementExtra . $primaryKeyExtra);
+
+			$field .= $fieldComplete .'\'';
+
+			$fields[] = $field;
+		}
+		return implode("\n\t\t\t", $fields);
+	}
 
 	/**
 	 * Generates the attribute labels for the specified table.
