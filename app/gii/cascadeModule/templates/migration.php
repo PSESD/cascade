@@ -13,17 +13,30 @@ class <?=$migrationClassName; ?> extends \infinite\db\Migration
 {
 	public function up()
 	{
+		$this->db->createCommand()->checkIntegrity(false)->execute();
+
 		$this->dropExistingTable('<?= $tableName; ?>');
-		$this->createTable('<?= $tableName; ?>', [<?= $createTableSyntax; ?>
-		]);
 		
-		return $this->execute($sql);
+		$this->createTable('<?= $tableName; ?>', [
+			<?= $createTableSyntax; ?>
+
+		]);
+
+		<?= $createTableIndices; ?>
+
+
+		$this->db->createCommand()->checkIntegrity(true)->execute();
+
+		return true;
 	}
 
 
 
 	public function down()
 	{
-		return $this->dropExistingTable('<?= $tableName; ?>');
+		$this->db->createCommand()->checkIntegrity(false)->execute();
+		$this->dropExistingTable('<?= $tableName; ?>');
+		$this->db->createCommand()->checkIntegrity(true)->execute();
+		return true;
 	}
 }

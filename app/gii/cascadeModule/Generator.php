@@ -46,6 +46,8 @@ class Generator extends \yii\gii\Generator
 	public $baseNamespace = 'app\modules';
 	public $baseClass = 'infinite\db\ActiveRecord';
 
+	public $migrationTimestamp;
+
 	public $generateRelations = true;
 	public $generateLabelsFromComments = false;
 
@@ -53,6 +55,13 @@ class Generator extends \yii\gii\Generator
 	public $children = '';
 	public $parents = '';
 	public $independent = true;
+
+	public function __construct() {
+		if (is_null($this->migrationTimestamp)) {
+			$this->migrationTimestamp = time();
+		}
+		return parent::__construct();
+	}
 
 	public function getModelClass() {
 		return $this->generateClassName($this->tableName);
@@ -113,7 +122,8 @@ class Generator extends \yii\gii\Generator
 			//['db', 'validateDb'],
 			//['ns', 'validateNamespace'],
 			['tableName', 'validateTableName'],
-			//['modelClass', 'validateModelClass'],
+			['migrationTimestamp', 'integer'],
+			['parents, children', 'safe'],
 			//['baseClass', 'validateClass', 'params' => ['extends' => ActiveRecord::className()]],
 			//['generateRelations, generateLabelsFromComments', 'boolean'],
 
@@ -242,7 +252,7 @@ EOD;
 		$files = [];
 		$modulePath = $this->getModulePath();
 		$files[] = new CodeFile(
-			$modulePath . '/' . StringHelper::basename($this->moduleClass) . '.php',
+			$modulePath . '/Module.php',
 			$this->render("module.php")
 		);
 		$files[] = new CodeFile(
@@ -263,22 +273,25 @@ EOD;
 		foreach ($this->getTableNames() as $tableName) {
 			$className = $this->generateClassName($tableName);
 			$tableSchema = $db->getTableSchema($tableName);
+			$myRelations = isset($relations[$className]) ? $relations[$className] : [];
 			$params = [
 				'tableName' => $tableName,
 				'className' => $className,
 				'tableSchema' => $tableSchema,
 				'labels' => $this->generateLabels($tableSchema),
 				'rules' => $this->generateRules($tableSchema),
-				'relations' => isset($relations[$className]) ? $relations[$className] : [],
+				'relations' => $myRelations,
 				'migrationClassName' => $this->migrationClassName,
 				'migrationsNamespace' => $this->migrationsNamespace,
-				'createTableSyntax' => $this->generateCreateTableColumns($tableSchema)
+				'createTableSyntax' => $this->generateCreateTableColumns($tableSchema),
+				'createTableIndices' => $this->generateTableIndices($tableSchema),
+				'columnSettingSkel' => $this->generateColumnSettings($tableSchema)
 			];
 			$files[] = new CodeFile(
 				Yii::getAlias('@' . str_replace('\\', '/', $this->modelNamespace)) . '/' . $className . '.php',
 				$this->render('model.php', $params)
 			);
-			$files[] = new CodeFile(
+			$files[] = $migration = new CodeFile(
 				Yii::getAlias('@' . str_replace('\\', '/', $this->migrationsNamespace)) . '/' . $this->migrationClassName . '.php',
 				$this->render('migration.php', $params)
 			);
@@ -312,7 +325,7 @@ EOD;
 	 */
 	public function getWidgetNamespace()
 	{
-		return substr($this->moduleClass, 0, strrpos($this->moduleClass, '\\')) . '\widgets';
+		return $this->moduleClass . '\widgets';
 	}
 
 
@@ -321,7 +334,7 @@ EOD;
 	 */
 	public function getModelNamespace()
 	{
-		return $this->moduleClass . '\widgets';
+		return $this->moduleClass . '\models';
 	}
 
 	/**
@@ -337,10 +350,87 @@ EOD;
 	 */
 	public function getMigrationClassName()
 	{
-		return  'm' . gmdate('ymd_His') . '_initial_'.$this->tableName;
+		return  'm' . gmdate('ymd_His', $this->migrationTimestamp) . '_initial_'.$this->tableName;
 	}
 
 
+	/**
+	 * Collects the foreign key column details for the given table.
+	 * @param TableSchema $table the table metadata
+	 */
+	protected function findTableKeys($table)
+	{
+		$r = [
+				'foreignKeys' => [],
+				'indices' => [],
+				'primaryKeys' => []
+			];
+		$row = $this->dbConnection->createCommand('SHOW CREATE TABLE ' . $this->dbConnection->getSchema()->quoteSimpleTableName($table->name))->queryOne();
+		if (isset($row['Create Table'])) {
+			$sql = $row['Create Table'];
+		} else {
+			$row = array_values($row);
+			$sql = $row[1];
+		}
+		$regexp = '/(PRIMARY KEY)\s+\(([^\)]+)\)/mi';
+		if (preg_match_all($regexp, $sql, $matches, PREG_SET_ORDER)) {
+			foreach ($matches as $match) {
+				$pks = array_map('trim', explode(',', str_replace('`', '', $match[2])));
+				$r['primaryKeys'][] = ['keys' => $pks];
+			}
+		}
+
+		$regexp = '/(UNIQUE KEY|INDEX|KEY)\s+([^\s]+)\s+\(([^\)]+)\)/mi';
+		if (preg_match_all($regexp, $sql, $matches, PREG_SET_ORDER)) {
+			foreach ($matches as $match) {
+				$unique = $match[1] === 'UNIQUE KEY';
+				$fname = trim(str_replace('`', '', $match[2]));
+				$pks = array_map('trim', explode(',', str_replace('`', '', $match[3])));
+				$r['indices'][$fname] = ['keys' => $pks, 'unique' => $unique];
+			}
+		}
+
+		$regexp = '/CONSTRAINT\s+([^\s]+)\sFOREIGN KEY\s+\(([^\)]+)\)\s+REFERENCES\s+([^\(^\s]+)\s*\(([^\)]+)\)\s+ON DELETE\s+((?:(?!\sON).)*)\s+ON UPDATE\s+((?:(?!,).)*)/mi';
+		if (preg_match_all($regexp, $sql, $matches, PREG_SET_ORDER)) {
+			foreach ($matches as $match) {
+				$fname = trim(str_replace('`', '', $match[1]));
+				$fks = array_map('trim', explode(',', str_replace('`', '', $match[2])));
+				$pks = array_map('trim', explode(',', str_replace('`', '', $match[4])));
+				$constraint = ['name' => $fname, 'table' => str_replace('`', '', $match[3]), 'keys' => []];
+				$constraint['onDelete'] = trim($match[5]);
+				$constraint['onUpdate'] = trim($match[6]);
+				foreach ($fks as $k => $name) {
+					$constraint['keys'][$name] = $pks[$k];
+				}
+				$r['foreignKeys'][] = $constraint;
+			}
+		}
+
+		return $r;
+	}
+
+	public function generateTableIndices($table) {
+		$tableName = $table->name;
+		$meta = $this->findTableKeys($table);
+		$niceName = lcfirst(Inflector::id2camel($tableName, '_'));
+		foreach ($meta['primaryKeys'] as $name => $parts) {
+			$keys = $parts['keys'];
+			$unique = !empty($parts['unique']);
+			$i[] = "\$this->addPrimaryKey('{$niceName}Pk', '{$tableName}', '".implode(',', $keys)."');";
+		}
+		
+		foreach ($meta['indices'] as $name => $parts) {
+			$keys = $parts['keys'];
+			$unique = !empty($parts['unique']);
+			$i[] = "\$this->createIndex('{$name}', '{$tableName}', '".implode(',', $keys)."', ". ($unique ? 'true' : 'false') .");";
+		}
+		foreach ($meta['foreignKeys'] as $fk) {
+			$keys = $parts['keys'];
+			$unique = !empty($parts['unique']);
+			$i[] = "\$this->addForeignKey('{$fk['name']}', '{$tableName}', '".implode(',', array_keys($fk['keys']))."', '{$fk['table']}', '".implode(',', array_values($fk['keys'])) ."', '{$fk['onDelete']}', '{$fk['onUpdate']}');";
+		}
+		return implode("\n\t\t", $i);
+	}
 
 	/**
 	 * Generates Create table schema
@@ -364,14 +454,14 @@ EOD;
 			}
 
 			if ($column->unsigned) {
-				$signedExtra = 'unsigned ';
+				$signedExtra = ' unsigned';
 			}
 			if ($column->autoIncrement) {
-				$autoIncrementExtra = 'AUTO_INCREMENT';
+				$autoIncrementExtra = ' AUTO_INCREMENT';
 			}
 
 			if ($column->isPrimaryKey) {
-				$primaryKeyExtra = ' PRIMARY KEY';
+			//	$primaryKeyExtra = ' PRIMARY KEY';
 			}
 
 			if (!empty($column->enumValues)) {
@@ -400,12 +490,15 @@ EOD;
 
 			// \infinite\base\Debug::d($column);exit;
 			$fieldType = $column->dbType;
-			preg_match('/^(\w+)(\((.+?)\))?$/', $fieldType, $fieldTypeParts);
+			preg_match('/^(\w+)(\((.+?)\))?\s*(.+)$/', $fieldType, $fieldTypeParts);
 			if (!isset($fieldTypeParts[1])) {
 				var_dump($fieldTypeParts);
 				var_dump($column);exit;
 			}
 			$fieldTypeBare = $fieldTypeParts[1];
+			// if (isset($fieldTypeBare[4]) AND $fieldTypeBare[4] === 'unsigned') {
+			// 	$signedExtra = ' unsigned';
+			// }
 
 			if ($fieldType === 'char(36)') {
 				$fieldType = $column->dbType .' CHARACTER SET ascii COLLATE ascii_bin';
@@ -416,13 +509,13 @@ EOD;
 				}
 			}
 
-			$fieldComplete = trim($signedExtra . $fieldType . $nullExtra . $defaultExtra . $autoIncrementExtra . $primaryKeyExtra);
+			$fieldComplete = trim($fieldType . $signedExtra . $nullExtra . $defaultExtra . $autoIncrementExtra . $primaryKeyExtra);
 
 			$field .= $fieldComplete .'\'';
 
 			$fields[] = $field;
 		}
-		return implode("\n\t\t\t", $fields);
+		return implode(",\n\t\t\t", $fields);
 	}
 
 	/**
@@ -449,6 +542,17 @@ EOD;
 		return $labels;
 	}
 
+	public function generateColumnSettings($table)
+	{
+		$types = [];
+		foreach ($table->columns as $column) {
+			if (in_array($column->name, array('id', 'created', 'modified', 'archived', 'deleted')) || strstr($column->name, '_id') !== false) { continue; }
+			$types[] = "'{$column->name}' => []";
+		}
+
+		return $types;
+	}
+
 	/**
 	 * Generates validation rules for the specified table.
 	 * @param \yii\db\TableSchema $table the table schema
@@ -462,7 +566,7 @@ EOD;
 			if ($column->autoIncrement) {
 				continue;
 			}
-			if (!$column->allowNull && $column->defaultValue === null) {
+			if (!$column->allowNull && $column->defaultValue === null && !$column->isPrimaryKey) {
 				$types['required'][] = $column->name;
 			}
 			switch ($column->type) {
@@ -483,7 +587,11 @@ EOD;
 				case Schema::TYPE_TIME:
 				case Schema::TYPE_DATETIME:
 				case Schema::TYPE_TIMESTAMP:
-					$types['safe'][] = $column->name;
+					if (in_array($column->name, ['created', 'deleted', 'modified'])) {
+						$types['unsafe'][] = $column->name;
+					} else {
+						$types['safe'][] = $column->name;
+					}
 					break;
 				default: // strings
 					if ($column->size > 0) {
@@ -535,6 +643,10 @@ EOD;
 				// Add relation for this table
 				$link = $this->generateRelationLink(array_flip($refs));
 				$relationName = $this->generateRelationName($relations, $className, $table, $fks[0], false);
+				if ($relationName === 'Id') {
+					$relationName = 'Registry';
+				}
+
 				$relations[$className][$relationName] = [
 					"return \$this->hasOne('$refClassName', $link);",
 					$refClassName,
@@ -650,6 +762,7 @@ EOD;
 			$key = Inflector::pluralize($key);
 		}
 		$name = $rawName = Inflector::id2camel($key, '_');
+
 		$i = 0;
 		while (isset($table->columns[$name])) {
 			$name = $rawName . ($i++);
@@ -657,7 +770,6 @@ EOD;
 		while (isset($relations[$className][$name])) {
 			$name = $rawName . ($i++);
 		}
-
 		return $name;
 	}
 
@@ -806,4 +918,5 @@ EOD;
 	{
 		return Yii::$app->{$this->db};
 	}
+
 }

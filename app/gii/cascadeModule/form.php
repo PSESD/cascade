@@ -4,9 +4,11 @@
  * @var yii\widgets\ActiveForm $form
  * @var yii\gii\generators\module\Generator $generator
  */
+	echo \yii\helpers\Html::activeHiddenInput($generator, 'migrationTimestamp');
 ?>
 <div class="module-form">
 <?php
+
 //	echo $form->field($generator, 'moduleName');
 
 //	echo $form->field($generator, 'moduleClass');

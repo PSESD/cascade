@@ -16,7 +16,7 @@ use \infinite\web\Response;
 use \infinite\db\behaviors\Relatable;
 use \infinite\db\behaviors\Access;
 
-abstract class DashboardBrowse extends \app\components\web\widgets\base\Widget {
+abstract class Browse extends \app\components\web\widgets\base\Widget {
 	public $objectId;
 	public $view = '\app\views\app\widgets\relationship\index';
 	public $viewStyleDefault = 'grid';

@@ -18,7 +18,7 @@ use \infinite\helpers\Html;
 use \infinite\db\behaviors\Relatable;
 use \infinite\db\behaviors\Access;
 
-class DashboardSummary extends \app\components\web\widgets\base\Widget {
+class Summary extends \app\components\web\widgets\base\Widget {
 	public $objectId;
 
 	protected $_gridCellSize = 'single half-height';

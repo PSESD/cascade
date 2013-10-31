@@ -48,6 +48,24 @@ class <?= $className ?> extends <?= '\\' . ltrim($generator->baseClass, '\\') . 
 		return [<?= "\n\t\t\t" . implode(",\n\t\t\t", $rules) . "\n\t\t" ?>];
 	}
 
+
+	/**
+	 * @inheritdoc
+	 */
+	public function fieldSettings()
+	{
+		return [<?= "\n\t\t\t" . implode(",\n\t\t\t", $columnSettingSkel) . "\n\t\t" ?>];
+	}
+
+
+	/**
+	 * @inheritdoc
+	 */
+	public function formSettings()
+	{
+		return [<?= "\n\t\t\t" . implode(",\n\t\t\t", $columnSettingSkel) . "\n\t\t" ?>];
+	}
+
 	/**
 	 * @inheritdoc
 	 */

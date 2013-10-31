@@ -16,7 +16,7 @@ echo "<?php\n";
 namespace <?=$ns; ?>;
 
 
-class <?=$className; ?> extends \app\components\objects\Module
+class Module extends \app\components\objects\Module
 {
 	public $widgetNamespace = '<?=$generator->getWidgetNamespace(); ?>';
 	public $modelNamespace = '<?=$generator->getModelNamespace(); ?>';
@@ -54,15 +54,16 @@ class <?=$className; ?> extends \app\components\objects\Module
 	 */
 	public function parents()
 	{
-		return array(<?php
+		return [<?php
 			if (!empty($generator->parents)) {
 				echo "\n";
 				foreach(explode(',', $generator->parents) as $parent) {
 					$parent = trim($parent);
-					echo "\t\t\t'{$parent}' => array(),\n";
+					echo "\t\t\t'{$parent}' => [],\n";
 				}
 			}
-		?>);
+		?>
+		];
 	}
 
 	/**
@@ -72,15 +73,16 @@ class <?=$className; ?> extends \app\components\objects\Module
 	 */
 	public function children()
 	{
-		return array(<?php
+		return [<?php
 			if (!empty($generator->children)) {
 				echo "\n";
 				foreach(explode(',', $generator->children) as $child) {
 					$child = trim($child);
-					echo "\t\t\t'{$child}' => array('uniqueChild' => true),\n";
+					echo "\t\t\t'{$child}' => ['uniqueChild' => true],\n";
 				}
 			}
-		?>);
+		?>
+		];
 	}
 
 	/**
@@ -90,6 +92,6 @@ class <?=$className; ?> extends \app\components\objects\Module
 	 */
 	public function taxonomies()
 	{
-		return array();
+		return [];
 	}
 }

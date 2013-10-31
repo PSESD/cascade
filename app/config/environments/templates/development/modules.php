@@ -12,7 +12,12 @@ return array_merge(include($parent), [
 	'debug' => ['class' => 'yii\debug\Module'],
 	'gii' => [
 		'class' => 'yii\gii\Module',
-
+		'allowedIPs' => ['*'],
+		'generators' => [
+			'cascadeObject' => [
+				'class' => 'app\gii\cascadeModule\Generator'
+			]
+		]
 	]
 ]);
 ?>
