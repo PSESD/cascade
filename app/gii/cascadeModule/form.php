@@ -4,6 +4,9 @@
  * @var yii\widgets\ActiveForm $form
  * @var yii\gii\generators\module\Generator $generator
  */
+
+\infinite\web\IconAsset::register($this);
+
 	echo \yii\helpers\Html::activeHiddenInput($generator, 'migrationTimestamp');
 ?>
 <div class="module-form">
@@ -15,10 +18,20 @@
 //	echo $form->field($generator, 'moduleID');
 
 	echo $form->field($generator, 'baseNamespace');
+	echo $form->field($generator, 'title');
+
+	echo '<div class="ic-icon-preview"></div>';
+	echo $form->field($generator, 'icon')->dropDownList($generator->possibleIcons());
+
 	echo $form->field($generator, 'tableName');
 	
+
 	echo $form->field($generator, 'children');
 	echo $form->field($generator, 'parents');
+
+
+	echo $form->field($generator, 'uniparental')->checkbox();
+	echo $form->field($generator, 'selfManaged')->checkbox();
 
 //	echo $form->field($generator, 'modelClass');
 //	echo $form->field($generator, 'ns');

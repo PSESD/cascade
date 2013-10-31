@@ -45,6 +45,13 @@ class Generator extends \yii\gii\Generator
 	//public $moduleName;
 	public $baseNamespace = 'app\modules';
 	public $baseClass = 'infinite\db\ActiveRecord';
+	
+	public $title;
+	public $uniparental = 0;
+	public $selfManaged = 1;
+	public $priority = 1;
+	public $icon ='ic-icon-info';
+
 
 	public $migrationTimestamp;
 
@@ -142,6 +149,9 @@ class Generator extends \yii\gii\Generator
 			'moduleID' => 'Module ID',
 			'moduleClass' => 'Module Class',
 
+			'uniparental' => 'Allow one parent',
+			'selfManaged' => 'Self-managed',
+
 			/* Model */
 
 			'ns' => 'Namespace',
@@ -163,6 +173,10 @@ class Generator extends \yii\gii\Generator
 			/* Module */
 			'moduleID' => 'This refers to the ID of the module, e.g., <code>admin</code>.',
 			'moduleClass' => 'This is the fully qualified class name of the module, e.g., <code>app\modules\admin\Module</code>.',
+
+			'title' => 'Single noun for this object type',
+			'uniparental' => 'Objects of this type can only have one parent.',
+			'selfManaged' => 'Objects of this type are managed from their own dashboard.',
 
 			/* Model */
 
@@ -312,6 +326,23 @@ EOD;
 		}
 	}
 
+
+	public function possibleIcons() {
+		$icons = array();
+		$folderPath = Yii::getAlias("@infinite/assets/img/icons/original_icons");
+		$folder = opendir($folderPath);
+		if (!$folder) { return array(); }
+		while (false !== ($file = readdir($folder))) {
+			$path = $folderPath . DIRECTORY_SEPARATOR . $file;
+			if (substr($file, 0, 1) === '.' OR is_dir($path)) { continue; }
+			$file = preg_replace('/(\_[0-9x]+)/', '', $file);
+			$file = preg_replace('/\.(.*)/', '', $file);
+			$className = $file;
+			$icons['ic-icon-'.$className] = $file;
+		}
+		return $icons;
+	}
+
 	/**
 	 * @return boolean the directory that contains the module class
 	 */
@@ -418,7 +449,7 @@ EOD;
 			$unique = !empty($parts['unique']);
 			$i[] = "\$this->addPrimaryKey('{$niceName}Pk', '{$tableName}', '".implode(',', $keys)."');";
 		}
-		
+
 		foreach ($meta['indices'] as $name => $parts) {
 			$keys = $parts['keys'];
 			$unique = !empty($parts['unique']);
