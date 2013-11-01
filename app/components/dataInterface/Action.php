@@ -1,9 +1,6 @@
 <?php
 namespace app\components\dataInterface;
 
-use Item;
-use Status;
-
 use \app\models\DataInterfaceLog;
 
 class Action extends \infinite\base\Object {

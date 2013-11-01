@@ -11,9 +11,9 @@ class Task_000002_db extends \infinite\setup\Task {
 	public function test() {
 		$request = $this->migrator->getRequest();
 		$request->setParams(['migrate/new', '--interactive=0', 1000]);
-		list($route, $params) = $request->resolve();            
+		// list($route, $params) = $request->resolve();            
         ob_start();
-        $this->migrator->runAction($route, $params);
+        $this->migrator->run();
         $result = ob_get_clean();
         preg_match('/Found ([0-9]+) new migration/',$result, $matches);
         if (empty($matches[1])) {
@@ -25,10 +25,10 @@ class Task_000002_db extends \infinite\setup\Task {
 	public function run() {
 		$request = $this->migrator->getRequest();
 		$request->setParams(['migrate', '--interactive=0']);
-		list($route, $params) = $request->resolve();
+		//list($route, $params) = $request->resolve();
         //var_dump([$route, $params]);exit;
         ob_start();
-        $this->migrator->runAction($route, $params);
+        $this->migrator->run();
         $result = ob_get_clean();
         return preg_match('/Migrated up successfully./', $result) === 1;
 	}
@@ -39,7 +39,10 @@ class Task_000002_db extends \infinite\setup\Task {
 			if (!is_file($configFile)) {
 				throw new Exception("Invalid console config path: {$configFile}");
 			}
-			$this->_migrator = new \yii\console\Application(require($configFile));
+			$config = require($configFile);
+			unset($config['components']['roleEngine']);
+			//var_dump($config);exit;
+			$this->_migrator = new \infinite\console\Application($config);
 		}
 		return $this->_migrator;
 	}

@@ -8,9 +8,6 @@
 
 namespace app\components\dataInterface;
 
-use Item;
-use Module;
-
 use \app\models\DataInterface;
 
 use \infinite\helpers\ArrayHelper;

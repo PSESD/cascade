@@ -13,30 +13,41 @@ $className = substr($className, $pos + 1);
 echo "<?php\n";
 ?>
 
-namespace <?=$ns; ?>;
+namespace <?=$generator->moduleNamespace; ?>;
 
+use Yii;
 
-class Module extends \app\components\objects\Module
+class Module extends \app\components\types\Module
 {
+	public $title = '<?= $generator->title; ?>';
+	public $icon = '<?= $generator->icon; ?>';
+	public $uniparental = <?php echo empty($generator->uniparental) ? 'false' : 'true'; ?>;
+	public $selfManaged = <?php echo empty($generator->selfManaged) ? 'false' : 'true'; ?>;
+
 	public $widgetNamespace = '<?=$generator->getWidgetNamespace(); ?>';
 	public $modelNamespace = '<?=$generator->getModelNamespace(); ?>';
 
+	/**
+	 * @inheritdoc
+	 */
 	public function init()
 	{
 		parent::init();
-
-		// custom initialization code goes here
+		
+		Yii::$app->registerMigrationAlias('<?= $generator->migrationsAlias; ?>');
 	}
 
+	/**
+	 * @inheritdoc
+	 */
 	public function widgets()
 	{
 		return parent::widgets();
 	}
 
+	
 	/**
-	 * Settings for parent relationship manager
-	 *
-	 * @return array settings for parent relationship manager
+	 * @inheritdoc
 	 */
 	public function parentSettings()
 	{
@@ -47,10 +58,9 @@ class Module extends \app\components\objects\Module
 		return $settings;
 	}
 
+	
 	/**
-	 *	List of parents for initialization; Use $this->objectType->parents for actual list of parents
-	 *
-	 * @return array of parent object types
+	 * @inheritdoc
 	 */
 	public function parents()
 	{
@@ -66,10 +76,9 @@ class Module extends \app\components\objects\Module
 		];
 	}
 
+	
 	/**
-	 *	List of children for initialization; Use $this->objectType->children for actual list of children
-	 *
-	 * @return array of child object types
+	 * @inheritdoc
 	 */
 	public function children()
 	{
@@ -85,10 +94,9 @@ class Module extends \app\components\objects\Module
 		];
 	}
 
+	
 	/**
-	 *	Set up taxonomies for this module
-	 *
-	 * @return array of taxonomies
+	 * @inheritdoc
 	 */
 	public function taxonomies()
 	{

@@ -2,7 +2,6 @@
 namespace app\components\dataInterface\connectors;
 
 use \infinite\base\exceptions\Exception;
-use DbMeta;
 
 class DbModel extends \infinite\base\Object {
 	protected $_interface;

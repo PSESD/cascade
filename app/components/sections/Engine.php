@@ -9,8 +9,6 @@
 namespace app\components\sections;
 
 use Yii;
-use Section;
-use Module;
 
 class Engine extends \infinite\base\Engine {
 	private $_sections = [];

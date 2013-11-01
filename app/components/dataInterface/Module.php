@@ -6,9 +6,6 @@ use \infinite\base\language\Noun;
 
 use \yii\base\Event;
 
-use Engine;
-
-
 abstract class Module extends \infinite\base\Module {
 	public $interfaceTitle;
 	protected $_interfaceItem;

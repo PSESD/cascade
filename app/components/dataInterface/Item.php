@@ -8,8 +8,6 @@
 
 namespace app\components\dataInterface;
 
-use Action;
-
 use \infinite\base\exceptions\Exception;
 
 class Item extends \infinite\base\Component {

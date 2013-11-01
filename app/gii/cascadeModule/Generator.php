@@ -16,41 +16,27 @@ use yii\db\ActiveRecord;
 use yii\db\Connection;
 use yii\db\Schema;
 use yii\helpers\Inflector;
+
 /**
- * This generator will generate the skeleton code needed by a module.
+ * This generator will generate the skeleton code needed for a 
  *
- * @author Qiang Xue <qiang.xue@gmail.com>
- * @since 2.0
+ * @author Jacob Morrison <jacob@infinitecascade.com>
+ * @since 1.0
  */
 
-/*
-	echo $form->field($generator, 'baseNamespace');
-	echo $form->field($generator, 'tableName');
-	echo $form->field($generator, 'modelClass');
-	//
-//	echo $form->field($generator, 'moduleName');
 
-//	echo $form->field($generator, 'moduleClass');
-//	echo $form->field($generator, 'moduleID');
-
-//	echo $form->field($generator, 'ns');
-//	echo $form->field($generator, 'baseClass');
-//	echo $form->field($generator, 'db');
-//	echo $form->field($generator, 'generateRelations')->checkbox();
-//	echo $form->field($generator, 'generateLabelsFromComments')->checkbox();
-*/
 class Generator extends \yii\gii\Generator
 {
 	public $db = 'db';
 	//public $moduleName;
 	public $baseNamespace = 'app\modules';
-	public $baseClass = 'infinite\db\ActiveRecord';
+	public $baseClass = 'app\components\db\ActiveRecord';
 	
 	public $title;
 	public $uniparental = 0;
 	public $selfManaged = 1;
 	public $priority = 1;
-	public $icon ='ic-icon-info';
+	public $icon;
 
 
 	public $migrationTimestamp;
@@ -75,11 +61,15 @@ class Generator extends \yii\gii\Generator
 	}
 
 	public function getModuleName() {
-		return $this->modelClass;
+		return preg_replace('/^Object/', 'Type', $this->modelClass);
+	}
+
+	public function getModuleNamespace() {
+		return $this->baseNamespace . '\\' . $this->moduleName;
 	}
 
 	public function getModuleClass() {
-		return $this->baseNamespace . '\\' . $this->moduleName;
+		return $this->moduleNamespace  .'\\' . 'Module';
 	}
 
 	public function getModuleID() {
@@ -122,7 +112,7 @@ class Generator extends \yii\gii\Generator
 
 			/* Model */
 			//['modelClass', 'filter', 'filter' => 'trim'],
-			['tableName', 'required'],
+			['tableName, icon, title', 'required'],
 			//['db, modelClass', 'match', 'pattern' => '/^\w+$/', 'message' => 'Only word characters are allowed.'],
 			// ['ns, baseClass', 'match', 'pattern' => '/^[\w\\\\]+$/', 'message' => 'Only word characters and backslashes are allowed.'],
 			['tableName', 'match', 'pattern' => '/^(\w+\.)?([\w\*]+)$/', 'message' => 'Only word characters, and optionally an asterisk and/or a dot are allowed.'],
@@ -130,7 +120,7 @@ class Generator extends \yii\gii\Generator
 			//['ns', 'validateNamespace'],
 			['tableName', 'validateTableName'],
 			['migrationTimestamp', 'integer'],
-			['parents, children', 'safe'],
+			['parents, children, uniparental, selfManaged', 'safe'],
 			//['baseClass', 'validateClass', 'params' => ['extends' => ActiveRecord::className()]],
 			//['generateRelations, generateLabelsFromComments', 'boolean'],
 
@@ -149,7 +139,7 @@ class Generator extends \yii\gii\Generator
 			'moduleID' => 'Module ID',
 			'moduleClass' => 'Module Class',
 
-			'uniparental' => 'Allow one parent',
+			'uniparental' => 'Allow only one parent',
 			'selfManaged' => 'Self-managed',
 
 			/* Model */
@@ -273,14 +263,16 @@ EOD;
 			$modulePath . '/widgets/Browse.php',
 			$this->render("browse_widget.php")
 		);
-		$files[] = new CodeFile(
-			$modulePath . '/widgets/Summary.php',
-			$this->render("summary_widget.php")
-		);
-		$files[] = new CodeFile(
-			$modulePath . '/views/widgets/summary/index.php',
-			$this->render("summary_view.php")
-		);
+		if (!empty($this->selfManaged)) {
+			$files[] = new CodeFile(
+				$modulePath . '/widgets/Summary.php',
+				$this->render("summary_widget.php")
+			);
+			$files[] = new CodeFile(
+				$modulePath . '/views/widgets/summary/index.php',
+				$this->render("summary_view.php")
+			);
+		}
 
 		$relations = $this->generateRelations();
 		$db = $this->getDbConnection();
@@ -327,6 +319,7 @@ EOD;
 	}
 
 
+
 	public function possibleIcons() {
 		$icons = array();
 		$folderPath = Yii::getAlias("@infinite/assets/img/icons/original_icons");
@@ -348,7 +341,7 @@ EOD;
 	 */
 	public function getModulePath()
 	{
-		return Yii::getAlias('@' . str_replace('\\', '/', $this->moduleClass));
+		return Yii::getAlias('@' . str_replace('\\', '/', $this->moduleNamespace));
 	}
 
 	/**
@@ -356,7 +349,7 @@ EOD;
 	 */
 	public function getWidgetNamespace()
 	{
-		return $this->moduleClass . '\widgets';
+		return $this->moduleNamespace . '\widgets';
 	}
 
 
@@ -365,7 +358,7 @@ EOD;
 	 */
 	public function getModelNamespace()
 	{
-		return $this->moduleClass . '\models';
+		return $this->moduleNamespace . '\models';
 	}
 
 	/**
@@ -373,7 +366,15 @@ EOD;
 	 */
 	public function getMigrationsNamespace()
 	{
-		return $this->moduleClass . '\migrations';
+		return $this->moduleNamespace . '\migrations';
+	}
+
+	/**
+	 * @return string the model namespace of the module.
+	 */
+	public function getMigrationsAlias()
+	{
+		return '@' . str_replace('\\', '/', $this->migrationsNamespace);
 	}
 
 	/**
@@ -440,27 +441,55 @@ EOD;
 		return $r;
 	}
 
+	public function getPrimaryKeyLocation($table) {
+		// if multiple, put the primary key in the indicies section
+		$count = 0;
+		foreach ($table->columns as $column) {
+			if ($column->isPrimaryKey) { $count++; }
+			if ($count > 1) { return 'index'; }
+		}
+
+		return 'table_build';
+	}
+
 	public function generateTableIndices($table) {
 		$tableName = $table->name;
 		$meta = $this->findTableKeys($table);
 		$niceName = lcfirst(Inflector::id2camel($tableName, '_'));
-		foreach ($meta['primaryKeys'] as $name => $parts) {
-			$keys = $parts['keys'];
-			$unique = !empty($parts['unique']);
-			$i[] = "\$this->addPrimaryKey('{$niceName}Pk', '{$tableName}', '".implode(',', $keys)."');";
+
+		if ($this->getPrimaryKeyLocation($table) === 'index') {
+			foreach ($meta['primaryKeys'] as $name => $parts) {
+				$keys = $parts['keys'];
+				$unique = !empty($parts['unique']);
+				$i[] = "\$this->addPrimaryKey('{$niceName}Pk', '{$tableName}', '".implode(',', $keys)."');";
+			}
 		}
 
 		foreach ($meta['indices'] as $name => $parts) {
 			$keys = $parts['keys'];
+			$name = $this->fixIndexName($name, $table, $keys);
 			$unique = !empty($parts['unique']);
 			$i[] = "\$this->createIndex('{$name}', '{$tableName}', '".implode(',', $keys)."', ". ($unique ? 'true' : 'false') .");";
 		}
+
 		foreach ($meta['foreignKeys'] as $fk) {
-			$keys = $parts['keys'];
-			$unique = !empty($parts['unique']);
+			$keys = $fk['keys'];
+			$unique = !empty($fk['unique']);
+			$name = $this->fixIndexName($fk['name'], $table, array_values($keys));
 			$i[] = "\$this->addForeignKey('{$fk['name']}', '{$tableName}', '".implode(',', array_keys($fk['keys']))."', '{$fk['table']}', '".implode(',', array_values($fk['keys'])) ."', '{$fk['onDelete']}', '{$fk['onUpdate']}');";
 		}
 		return implode("\n\t\t", $i);
+	}
+
+	public function fixIndexName($name, $table, $keys) {
+		if (strpos($name, '_') === false) { return $name; }
+		$niceName = preg_replace('/object/', '', $table->name);
+		$niceName = lcfirst(Inflector::id2camel($niceName, '_'));
+		$indices = [];
+		foreach ($keys as $key) {
+			$indices[] = Inflector::id2camel(substr($key, 0, strpos($key, '_id')), '_');
+		}
+		return $niceName . implode('', $indices);
 	}
 
 	/**
@@ -491,30 +520,28 @@ EOD;
 				$autoIncrementExtra = ' AUTO_INCREMENT';
 			}
 
-			if ($column->isPrimaryKey) {
-			//	$primaryKeyExtra = ' PRIMARY KEY';
+			if ($column->isPrimaryKey AND $this->getPrimaryKeyLocation($table) === 'table_build') {
+				$primaryKeyExtra = ' PRIMARY KEY';
 			}
 
 			if (!empty($column->enumValues)) {
 					$size = '\'' . implode('\',\'', $column->enumValues) . '\'';
 			}
 
-			if ($column->defaultValue !== false) {
-				$stringValue = $column->typecast($column->defaultValue);
-				if (is_null($stringValue)) {
-					if ($column->allowNull) {
-						$stringValue = 'NULL';
-					} else {
-						$stringValue = false;
-					}
-				} elseif (is_bool($stringValue)) {
-					$stringValue = ($stringValue) ? 1 : 0;
+			$stringValue = $column->typecast($column->defaultValue);
+			if (is_null($stringValue)) {
+				if ($column->allowNull) {
+					$stringValue = 'NULL';
 				} else {
-					$stringValue = $this->getDbConnection()->getSchema()->quoteValue($stringValue);
+					$stringValue = false;
 				}
-				if ($stringValue !== false) {
-					$defaultExtra = ' DEFAULT '. $stringValue;
-				}
+			} elseif (is_bool($stringValue)) {
+				$stringValue = ($stringValue) ? 1 : 0;
+			} else {
+				$stringValue = $this->getDbConnection()->getSchema()->quoteValue($stringValue);
+			}
+			if ($stringValue !== false) {
+				$defaultExtra = ' DEFAULT '. addslashes($stringValue);
 			}
 
 			$field = "'{$column->name}' => '";
@@ -533,15 +560,23 @@ EOD;
 
 			if ($fieldType === 'char(36)') {
 				$fieldType = $column->dbType .' CHARACTER SET ascii COLLATE ascii_bin';
+			} elseif ($fieldType === 'tinyint(1)') {
+				$fieldType = 'boolean';
 			} elseif(isset($this->getDbConnection()->getSchema()->typeMap[$fieldTypeBare])) {
 				$fieldType = $this->getDbConnection()->getSchema()->typeMap[$fieldTypeBare];
+				$qb = $this->getDbConnection()->getQueryBuilder();
+				if (isset($qb->typeMap[$fieldType])) {
+					preg_match('/^(\w+)(\((.+?)\))?\s*(.+)$/', $qb->typeMap[$fieldType], $baseTypeParts);
+					if (isset($fieldTypeParts[4]) && isset($baseTypeParts[4]) && $fieldTypeParts[4] !== $baseTypeParts[4]) {
+						$size = preg_replace('/[^0-9\,]/', '', $fieldTypeParts[4]);
+					}
+				}
 				if ($size !== false) {
-					$fieldType .'('. $size .')';
+					$fieldType .= '('. $size .')';
 				}
 			}
 
 			$fieldComplete = trim($fieldType . $signedExtra . $nullExtra . $defaultExtra . $autoIncrementExtra . $primaryKeyExtra);
-
 			$field .= $fieldComplete .'\'';
 
 			$fields[] = $field;

@@ -107,15 +107,15 @@ class m131031_173117_initial_core_cascade extends \infinite\db\Migration
         $this->addForeignKey('metaRegistryFk', 'meta', 'registry_id', 'registry', 'id', 'CASCADE', 'CASCADE');
         $this->addForeignKey('metaMetaKey', 'meta', 'meta_key_id', 'meta_key', 'id', 'CASCADE', 'CASCADE');
 
-        // object_model
-        $this->dropExistingTable('object_model');
-        $this->createTable('object_model', [
+        // object_type
+        $this->dropExistingTable('object_type');
+        $this->createTable('object_type', [
             'name' => 'string NOT NULL PRIMARY KEY',
             'system_version' => 'float DEFAULT NULL',
             'created' => 'datetime DEFAULT NULL',
             'modified' => 'datetime DEFAULT NULL'
         ]);
-        // $this->addPrimaryKey('primary0', 'object_model', 'name');
+        // $this->addPrimaryKey('primary0', 'object_type', 'name');
 
         // relation_taxonomy
         $this->dropExistingTable('relation_taxonomy');

@@ -25,6 +25,5 @@ require_once(INFINITE_APP_VENDOR_PATH . DIRECTORY_SEPARATOR . 'yiisoft/yii2/yii/
 
 $configPath =  INFINITE_APP_ENVIRONMENT_PATH . DIRECTORY_SEPARATOR .  'web-test.php';
 $config = require_once($configPath);
-
-$app = app\setup\Setup::createSetupApplication($config);
-$app->run();
+$application = new infinite\web\Application($config);
+$application->run();

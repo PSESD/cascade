@@ -1,8 +1,6 @@
 <?php
 namespace app\components\dataInterface\connectors;
 
-use DbModel;
-
 use \app\models\Registry;
 use \app\models\Relation;
 use \app\models\KeyTranslation;

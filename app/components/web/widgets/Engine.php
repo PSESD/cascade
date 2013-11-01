@@ -8,8 +8,6 @@
 
 namespace app\components\web\widgets;
 
-use Item;
-
 use \infinite\base\exceptions\Exception;
 
 class Engine extends \infinite\base\Engine {

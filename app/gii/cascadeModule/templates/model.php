@@ -15,7 +15,7 @@
 echo "<?php\n";
 ?>
 
-namespace <?= $generator->ns ?>;
+namespace <?= $generator->getModelNamespace() ?>;
 
 /**
  * This is the model class for table "<?= $tableName ?>".
@@ -32,12 +32,22 @@ namespace <?= $generator->ns ?>;
  */
 class <?= $className ?> extends <?= '\\' . ltrim($generator->baseClass, '\\') . "\n" ?>
 {
+	use \app\components\objects\ActiveRecordTrait;
+
 	/**
 	 * @inheritdoc
 	 */
 	public static function tableName()
 	{
 		return '<?= $tableName ?>';
+	}
+
+	/**
+	 * @inheritdoc
+	 */
+	public function behaviors()
+	{
+		return array_merge(parent::behaviors(), []);
 	}
 
 	/**

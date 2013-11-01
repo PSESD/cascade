@@ -31,7 +31,6 @@ require_once(INFINITE_APP_VENDOR_PATH . DIRECTORY_SEPARATOR . 'yiisoft/yii2/yii/
 
 $configPath =  INFINITE_APP_ENVIRONMENT_PATH . DIRECTORY_SEPARATOR .  'console.php';
 $config = require_once($configPath);
-$application = new yii\console\Application($config);
-Yii::setAlias('@cascade', INFINITE_APP_APP_PATH);
+$application = new infinite\console\Application($config);
 $exitCode = $application->run();
 exit($exitCode);

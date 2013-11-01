@@ -1,8 +1,6 @@
 <?php
 namespace app\components\dataInterface\connectors;
 
-use DbModel;
-
 use \infinite\base\exceptions\Exception;
 
 class DbMeta extends \infinite\base\Object {

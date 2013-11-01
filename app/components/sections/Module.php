@@ -9,7 +9,6 @@
 namespace app\components\sections;
 
 use Yii;
-use Item;
 
 use \infinite\base\language\Noun;
 use \infinite\base\exceptions\Exception;

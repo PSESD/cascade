@@ -8,9 +8,6 @@
 
 namespace app\components\web\form;
 
-use Field;
-use Segment;
-
 class Model extends \yii\base\Model {
 	static $_fields = array();
 

@@ -12,7 +12,7 @@ return array(
 	'name' => 'Cascade',
 	'basePath' => dirname(__FILE__).DIRECTORY_SEPARATOR.'..'.DIRECTORY_SEPARATOR.'..'.DIRECTORY_SEPARATOR.'..',
 	// preloading 'log' component
-	'preload' => array('log', 'debug'),
+	'preload' => array('log', 'debug', 'types'),
 	// autoloading model and component classes
 	'language' => 'en',
 
@@ -39,6 +39,8 @@ return array(
 			'loginUrl' => array('/app/login'),
 		),
 		'roleEngine' => include(INFINITE_APP_ENVIRONMENT_PATH . DIRECTORY_SEPARATOR . 'roles.php'),
+		'types' => ['class' => '\app\components\types\Engine'],
+		'gk' => array('class' => '\infinite\security\Gatekeeper'),
 		'session' => array(
 			'class' => '\infinite\web\DbSession',
 			//'connectionID' => 'db',
@@ -47,7 +49,6 @@ return array(
 			'timeout' => '4000' // be sure to change yiic.php too
 		),
 		
-		'gk' => array('class' => '\infinite\security\Gatekeeper'),
 		'urlManager' => array(
 			'enablePrettyUrl' => true,
 			'showScriptName' => false,

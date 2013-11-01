@@ -11,7 +11,7 @@ return [
 	'id' => 'cascade',
 	'name' => 'Cascade',
 	'basePath' => dirname(dirname(dirname(dirname(__FILE__)))),
-	'preload' => array('log'),
+	'preload' => array('log', 'types'),
 	'language' => 'en',
 	'controllerPath' => '@app/commands',
 	'controllerNamespace' => 'app\commands',
@@ -27,6 +27,7 @@ return [
 		'db' => include(INFINITE_APP_ENVIRONMENT_PATH . DIRECTORY_SEPARATOR . "database.php"),
 		'roleEngine' => include(INFINITE_APP_ENVIRONMENT_PATH . DIRECTORY_SEPARATOR . 'roles.php'),
 		'gk' => array('class' => '\infinite\security\Gatekeeper'),
+		'types' => ['class' => '\app\components\types\Engine'],
 		'log' => [
 			'class' => 'yii\log\Logger',
 			'traceLevel' => YII_DEBUG ? 3 : 0,
