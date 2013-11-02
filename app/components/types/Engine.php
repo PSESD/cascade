@@ -25,13 +25,18 @@ class Engine extends \infinite\base\Engine {
 	protected $_loaded = false;
 
 	public function loadModules() {
+
 		if (!$this->_loaded) {
+			Yii::beginProfile('ModuleLoad');
 			$this->_loaded = true;
 			foreach (Yii::$app->modules as $module => $settings) {
 				if (preg_match('/^Type/', $module) === 0) { continue; }
 				$mod = Yii::$app->getModule($module);
 			}
+			$this->trigger(self::EVENT_AFTER_TYPE_REGISTRY);
+			Yii::endProfile('ModuleLoad');
 		}
+		
 	}
 
 	public function isReady() {
@@ -80,10 +85,7 @@ class Engine extends \infinite\base\Engine {
 	 * @return unknown
 	 */
 	public function beforeRequest() {
-		Yii::beginProfile('ModuleLoad');
 		$this->loadModules();
-		$this->trigger(self::EVENT_AFTER_TYPE_REGISTRY);
-		Yii::endProfile('ModuleLoad');
 		return parent::beforeRequest();
 	}
 

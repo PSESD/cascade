@@ -5,7 +5,7 @@
  * @license http://www.yiiframework.com/license/
  */
 
-namespace app\gii\cascadeModule;
+namespace app\gii\cascadeSectionModule;
 
 use Yii;
 use yii\gii\CodeFile;
@@ -86,7 +86,7 @@ class Generator extends \yii\gii\Generator
 	 */
 	public function getName()
 	{
-		return 'Cascade Module Generator';
+		return 'Cascade Section Module Generator';
 	}
 
 	/**
@@ -94,7 +94,7 @@ class Generator extends \yii\gii\Generator
 	 */
 	public function getDescription()
 	{
-		return 'This generator helps you to generate the skeleton code needed by a Cascade module.';
+		return 'This generator helps you to generate the skeleton code needed by a Cascade section module.';
 	}
 
 	/**

@@ -19,12 +19,11 @@ use \infinite\base\language\Noun;
 
 use \yii\base\Controller;
 
-abstract class Module extends \infinite\base\Module {
-	public $objectTitle;
+abstract class Module extends \app\components\base\EngineModule {
+	public $title;
 	public $version = 1;
 
 	public $objectSubInfo = array();
-	public $parentModule = false;
 	public $icon = 'ic-icon-info';
 	public $priority = 1000; //lower is better
 
@@ -36,24 +35,19 @@ abstract class Module extends \infinite\base\Module {
 
 
 	/**
-	 *
-	 *
-	 * @param unknown $id
-	 * @param unknown $parent
-	 * @param unknown $config (optional)
+	 * @inheritdoc
 	 */
-	function __construct($id, $parent, $config=null) {
-		parent::__construct($id, $parent, $config);
-		
+	public function __construct($id, $parent, $config=null) {
 		if (!isset(Yii::$app->types)) { throw new Exception('Cannot find the object type registry!'); }
 		if (!($this->_objectType = Yii::$app->types->add($this))) { throw new Exception('Could not register type '. $this->shortName .'!'); }
-
+		
 		Yii::$app->types->on(Engine::EVENT_AFTER_TYPE_REGISTRY, array($this, 'onBeginRequest'));
 		if (isset(Yii::$app->controller)) {
 			throw new Exception("This is a happy exception!");
 			Yii::$app->controller->on(Controller::EVENT_BEFORE_ACTION, array($this, 'onBeforeControllerAction'));
 		}
-		$this->loadSubModules();
+		
+		parent::__construct($id, $parent, $config);
 	}
 
 	/**
@@ -67,13 +61,14 @@ abstract class Module extends \infinite\base\Module {
 		if (!isset($_SERVER['PASS_THRU']) or $_SERVER['PASS_THRU'] != md5(Yii::$app->params['salt'] . 'PASS')) {
 			throw new HttpException(400, 'Invalid request!');
 		}
-		return true;
+		return parent::onBeforeControllerAction($event);
 	}
 
 	public function onBeginRequest($event) {
 		if (isset(Yii::$app->taxonomyEngine) and !Yii::$app->taxonomyEngine->register($this, $this->taxonomies())) { throw new Exception('Could not register widgets for '. $this->shortName .'!'); }
 		if (isset(Yii::$app->widgetEngine) and !Yii::$app->widgetEngine->register($this, $this->widgets())) { throw new Exception('Could not register widgets for '. $this->shortName .'!'); }
 		if (isset(Yii::$app->roleEngine) and !Yii::$app->roleEngine->register($this, $this->roles())) { throw new Exception('Could not register roles for '. $this->shortName .'!'); }	
+		return parent::onBeginRequest($event);
 	}
 
 	
@@ -98,13 +93,16 @@ abstract class Module extends \infinite\base\Module {
 		return $this->modelNamespace .'\\'. 'Object'.$this->shortName;
 	}
 
-	public function getShortName() {
-		preg_match('/Type([A-Za-z]+)\\\Module/', get_class($this), $matches);
-		if (!isset($matches[1])) {
-			throw new Exception(get_class($this). " is not set up correctly!");
-		}
-		return $matches[1];
+	public function getModuleType() {
+		return 'Type';
 	}
+	// public function getShortName() {
+	// 	preg_match('/Type([A-Za-z]+)\\\Module/', get_class($this), $matches);
+	// 	if (!isset($matches[1])) {
+	// 		throw new Exception(get_class($this). " is not set up correctly!");
+	// 	}
+	// 	return $matches[1];
+	// }
 
 	public function upgrade($from) {
 		return true;

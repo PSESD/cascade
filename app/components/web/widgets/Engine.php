@@ -16,9 +16,24 @@ class Engine extends \infinite\base\Engine {
 
 	protected $_registry = array();
 	protected $_registryLocations = array();
+
+	public function loadModules() {
+		if (!$this->_loaded) {
+			Yii::beginProfile('ModuleLoad');
+			$this->_loaded = true;
+			foreach (Yii::$app->modules as $module => $settings) {
+				if (preg_match('/^Widget/', $module) === 0) { continue; }
+				$mod = Yii::$app->getModule($module);
+			}
+			$this->trigger(self::EVENT_AFTER_TYPE_REGISTRY);
+			Yii::endProfile('ModuleLoad');
+		}
+		
+	}
+
 	// $params is for options that will be built into the widget so it can refresh itself
 	// $base are things the widget should be able to get from the params, but you don't want to have it refetch it if you have it
-
+	
 	/**
 	 *
 	 *
