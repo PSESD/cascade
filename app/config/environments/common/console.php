@@ -11,7 +11,7 @@ return [
 	'id' => 'cascade',
 	'name' => 'Cascade',
 	'basePath' => dirname(dirname(dirname(dirname(__FILE__)))),
-	'preload' => array('log'),
+	'preload' => array('log', 'collectors'),
 	'language' => 'en',
 	'controllerPath' => '@app/commands',
 	'controllerNamespace' => 'app\commands',
@@ -21,12 +21,12 @@ return [
 	),
 	'modules' => $modules,
 	'extensions' => include(INFINITE_APP_VENDOR_PATH . DIRECTORY_SEPARATOR . 'yiisoft'. DIRECTORY_SEPARATOR . 'extensions.php'),
-	'collectors' => include(INFINITE_APP_ENVIRONMENT_PATH . DIRECTORY_SEPARATOR . 'collectors.php'),
-
+	
 	// application components
 	'components' => [ 
 		'cache' => include(INFINITE_APP_ENVIRONMENT_PATH . DIRECTORY_SEPARATOR . 'cache.php'),
 		'db' => include(INFINITE_APP_ENVIRONMENT_PATH . DIRECTORY_SEPARATOR . "database.php"),
+		'collectors' => include(INFINITE_APP_ENVIRONMENT_PATH . DIRECTORY_SEPARATOR . 'collectors.php'),
 		'gk' => array('class' => '\infinite\security\Gatekeeper'),
 		'log' => [
 			'class' => 'yii\log\Logger',

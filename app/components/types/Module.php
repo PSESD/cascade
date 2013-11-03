@@ -51,6 +51,7 @@ abstract class Module extends \app\components\base\CollectorModule {
 	}
 
 	public function onAfterLoad($event) {
+		echo "boom";exit;
 		if (isset(Yii::$app->taxonomyEngine) and !Yii::$app->taxonomyEngine->register($this, $this->taxonomies())) { throw new Exception('Could not register widgets for '. $this->shortName .'!'); }
 		if (isset(Yii::$app->widgetEngine) and !Yii::$app->widgetEngine->register($this, $this->widgets())) { throw new Exception('Could not register widgets for '. $this->shortName .'!'); }
 		if (isset(Yii::$app->roleEngine) and !Yii::$app->roleEngine->register($this, $this->roles())) { throw new Exception('Could not register roles for '. $this->shortName .'!'); }	

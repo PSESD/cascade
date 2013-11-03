@@ -1,7 +1,7 @@
 <?php
 namespace app\components\types;
 
-class Item extends \infinite\base\CollectorItem {
+class Item extends \infinite\base\collector\Item {
 	protected $_children = [];
 	protected $_parents = [];
 	protected $_sections;
@@ -54,7 +54,21 @@ class Item extends \infinite\base\CollectorItem {
 		$this->_parents[$name] = $relationship;
 		return true;
 	}
-	
+
+		/**
+	 *
+	 *
+	 * @param unknown $type
+	 * @return unknown
+	 */
+	public function getChild($type) {
+		if (isset($this->_children[$type])) {
+			return $this->_children[$type];
+		}
+		return false;
+	}
+
+
 	/**
 	 *
 	 *

@@ -1,7 +1,7 @@
 <?php
 namespace app\components\dataInterface;
 
-class Collector extends \infinite\base\ModuleCollector {
+class Collector extends \infinite\base\collector\Module {
 	public function getCollectorItemClass() {
 		return '\app\components\dataInterface\Item';
 	}

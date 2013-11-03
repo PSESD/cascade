@@ -1,7 +1,7 @@
 <?php
 namespace app\components\sections;
 
-class Collector extends \infinite\base\ModuleCollector {
+class Collector extends \infinite\base\collector\Module {
 	public function getCollectorItemClass() {
 		return '\app\components\web\sections\Item';
 	}

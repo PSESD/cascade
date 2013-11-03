@@ -9,10 +9,10 @@ class Task_000006_collectors extends \infinite\setup\Task {
 	}
 	
 	public function test() {
-		return $this->setup->app()->isReady();
+		return $this->setup->app()->collectors->areReady();
 	}
 	public function run() {
-		return $this->setup->app()->initializeCollectors();
+		return $this->setup->app()->collectors->initialize();
 	}
 	public function getFields() {
 		return false;
