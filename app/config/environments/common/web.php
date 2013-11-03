@@ -6,13 +6,13 @@
  * @package cascade
  */
 
-
 return array(
 	'id' => 'cascade',
 	'name' => 'Cascade',
-	'basePath' => dirname(__FILE__).DIRECTORY_SEPARATOR.'..'.DIRECTORY_SEPARATOR.'..'.DIRECTORY_SEPARATOR.'..',
+	'basePath' => INFINITE_APP_APP_PATH,
+	'vendorPath' => INFINITE_APP_INSTALL_PATH . DIRECTORY_SEPARATOR . 'vendor',
 	// preloading 'log' component
-	'preload' => array('log', 'debug', 'collectors'),
+	'preload' => array('log', 'collectors'),
 	// autoloading model and component classes
 	'language' => 'en',
 

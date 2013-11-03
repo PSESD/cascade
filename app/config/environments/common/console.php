@@ -10,7 +10,8 @@ unset($modules['debug']);
 return [
 	'id' => 'cascade',
 	'name' => 'Cascade',
-	'basePath' => dirname(dirname(dirname(dirname(__FILE__)))),
+	'basePath' => INFINITE_APP_APP_PATH,
+	'vendorPath' => INFINITE_APP_INSTALL_PATH . DIRECTORY_SEPARATOR . 'vendor',
 	'preload' => array('log', 'collectors'),
 	'language' => 'en',
 	'controllerPath' => '@app/commands',

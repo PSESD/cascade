@@ -10,7 +10,10 @@ return [
 			'class' => '\app\components\types\Collector',
 		],
 		'sections' => [
-			'class' => '\app\components\sections\Collector',
+			'class' => '\app\components\section\Collector',
+		],
+		'taxonomies' => [
+			'class' => '\app\components\taxonomy\Collector',
 		],
 		'dataInterfaces' => [
 			'class' => '\app\components\dataInterface\Collector',

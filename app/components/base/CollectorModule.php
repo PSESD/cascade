@@ -20,9 +20,9 @@ abstract class CollectorModule extends \infinite\base\Module {
 	 */
 	public function __construct($id, $parent, $config=null) {
 		if (!isset(Yii::$app->collectors[$this->collectorName])) { throw new Exception('Cannot find the collector '. $this->collectorName .'!'); }
-		if (!($this->_collectorItem = Yii::$app->collectors[$this->collectorName]->register($this))) { throw new Exception('Could not register '. $this->shortName .' in '. $this->collectorName .'!'); }
+		if (!($this->_collectorItem = Yii::$app->collectors[$this->collectorName]->register(null, $this))) { throw new Exception('Could not register '. $this->shortName .' in '. $this->collectorName .'!'); }
 
-		Yii::$app->collectors->onAfterLoad(array($this, 'onAfterLoad'));
+		Yii::$app->collectors->onAfterInit(array($this, 'onAfterInit'));
 
 		if (isset(Yii::$app->controller)) {
 			throw new Exception("This is a happy exception!");
@@ -51,7 +51,7 @@ abstract class CollectorModule extends \infinite\base\Module {
 		return true;
 	}
 
-	public function onAfterLoad($event) {
+	public function onAfterInit($event) {
 		return true;
 	}
 }

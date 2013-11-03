@@ -1,8 +1,7 @@
 <?php
-namespace app\components\types\taxonomy;
+namespace app\components\taxonomy;
 
 use Yii;
-use Engine;
 
 use \yii\base\Event;
 

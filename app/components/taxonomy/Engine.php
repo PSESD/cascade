@@ -6,10 +6,9 @@
  * @package cascade
  */
 
-namespace app\components\types\taxonomy;
+namespace app\components\taxonomy;
 
 use Yii;
-use TypeItem;
 
 use \infinite\base\exceptions\Exception;
 

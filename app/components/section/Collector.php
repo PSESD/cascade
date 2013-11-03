@@ -1,5 +1,5 @@
 <?php
-namespace app\components\sections;
+namespace app\components\section;
 
 class Collector extends \infinite\base\collector\Module {
 	public function getCollectorItemClass() {

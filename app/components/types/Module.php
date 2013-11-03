@@ -50,12 +50,11 @@ abstract class Module extends \app\components\base\CollectorModule {
 		return parent::onBeforeControllerAction($event);
 	}
 
-	public function onAfterLoad($event) {
-		echo "boom";exit;
-		if (isset(Yii::$app->taxonomyEngine) and !Yii::$app->taxonomyEngine->register($this, $this->taxonomies())) { throw new Exception('Could not register widgets for '. $this->shortName .'!'); }
-		if (isset(Yii::$app->widgetEngine) and !Yii::$app->widgetEngine->register($this, $this->widgets())) { throw new Exception('Could not register widgets for '. $this->shortName .'!'); }
-		if (isset(Yii::$app->roleEngine) and !Yii::$app->roleEngine->register($this, $this->roles())) { throw new Exception('Could not register roles for '. $this->shortName .'!'); }	
-		return parent::onAfterLoad($event);
+	public function onAfterInit($event) {
+		if (!isset(Yii::$app->collectors['taxonomies']) || !Yii::$app->collectors['taxonomies']->registerMultiple($this, $this->taxonomies())) { throw new Exception('Could not register widgets for '. $this->systemId .'!'); }
+		//if (!isset(Yii::$app->collectors['widgets']) || !Yii::$app->collectors['widgets']->registerMultiple($this, $this->widgets())) { throw new Exception('Could not register widgets for '. $this->systemId .'!'); }
+		if (!isset(Yii::$app->collectors['roles']) || !Yii::$app->collectors['roles']->registerMultiple($this, $this->roles())) { throw new Exception('Could not register roles for '. $this->systemId .'!'); }	
+		return parent::onAfterInit($event);
 	}
 
 	
