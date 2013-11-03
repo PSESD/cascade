@@ -13,5 +13,6 @@ $config = array_merge($config, [
 		'id' => '%%_.application_id%%',
 		'name' => '%%general.application_name%%',
 ]);
+$config['preload'][] = 'debug';
 return $config;
 ?>

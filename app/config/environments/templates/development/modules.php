@@ -17,8 +17,11 @@ return array_merge(include($parent), [
 		'class' => 'yii\gii\Module',
 		'allowedIPs' => ['*'],
 		'generators' => [
-			'cascadeObject' => [
-				'class' => 'app\gii\cascadeModule\Generator'
+			'cascadeSection' => [
+				'class' => '\app\gii\cascadeSectionModule\Generator'
+			],
+			'cascadeType' => [
+				'class' => '\app\gii\cascadeTypeModule\Generator'
 			]
 		]
 	]
