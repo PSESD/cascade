@@ -19,7 +19,7 @@ use \infinite\base\language\Noun;
 
 use \yii\base\Controller;
 
-abstract class Module extends \app\components\base\EngineModule {
+abstract class Module extends \app\components\base\CollectorModule {
 	public $title;
 	public $version = 1;
 
@@ -31,23 +31,9 @@ abstract class Module extends \app\components\base\EngineModule {
 	public $independent = true;
 
 	public $sectionName;
-	protected $_objectType;
 
-
-	/**
-	 * @inheritdoc
-	 */
-	public function __construct($id, $parent, $config=null) {
-		if (!isset(Yii::$app->types)) { throw new Exception('Cannot find the object type registry!'); }
-		if (!($this->_objectType = Yii::$app->types->add($this))) { throw new Exception('Could not register type '. $this->shortName .'!'); }
-		
-		Yii::$app->types->on(Engine::EVENT_AFTER_TYPE_REGISTRY, array($this, 'onBeginRequest'));
-		if (isset(Yii::$app->controller)) {
-			throw new Exception("This is a happy exception!");
-			Yii::$app->controller->on(Controller::EVENT_BEFORE_ACTION, array($this, 'onBeforeControllerAction'));
-		}
-		
-		parent::__construct($id, $parent, $config);
+	public function getCollectorName() {
+		return 'types';
 	}
 
 	/**
@@ -64,17 +50,17 @@ abstract class Module extends \app\components\base\EngineModule {
 		return parent::onBeforeControllerAction($event);
 	}
 
-	public function onBeginRequest($event) {
+	public function onAfterLoad($event) {
 		if (isset(Yii::$app->taxonomyEngine) and !Yii::$app->taxonomyEngine->register($this, $this->taxonomies())) { throw new Exception('Could not register widgets for '. $this->shortName .'!'); }
 		if (isset(Yii::$app->widgetEngine) and !Yii::$app->widgetEngine->register($this, $this->widgets())) { throw new Exception('Could not register widgets for '. $this->shortName .'!'); }
 		if (isset(Yii::$app->roleEngine) and !Yii::$app->roleEngine->register($this, $this->roles())) { throw new Exception('Could not register roles for '. $this->shortName .'!'); }	
-		return parent::onBeginRequest($event);
+		return parent::onAfterLoad($event);
 	}
 
 	
 	public function setup() {
 		$results = array(true);
-		if (!empty($this->primaryModel) AND !empty($this->objectType->parents)) {
+		if (!empty($this->primaryModel) AND !empty($this->collectorItem->parents)) {
 			$groups = array('staff');
 			foreach ($groups as $groupName) {
 				$group = Group::getBySystemName($groupName, true);
@@ -167,7 +153,7 @@ abstract class Module extends \app\components\base\EngineModule {
 		if ($this->isPrimaryType) {
 			return 1;
 		}
-		$parents = $this->objectType->parents;
+		$parents = $this->collectorItem->parents;
 		if (!empty($parents)) {
 			$maxLevel = 1;
 			foreach ($parents as $rel) {
@@ -204,9 +190,6 @@ abstract class Module extends \app\components\base\EngineModule {
 		return Yii::$app->sections->get($this->shortName, array('sectionTitle' => $newSectionTitle, 'icon' => $this->icon, 'shortName' => $this->shortName));
 	}
 
-	public function getObjectType() {
-		return $this->_objectType;
-	}
 
 	/**
 	 *
@@ -352,7 +335,7 @@ abstract class Module extends \app\components\base\EngineModule {
 	}
 
 	public function getIsChildless() {
-		if (empty($this->objectType) OR empty($this->objectType->children)) {
+		if (empty($this->collectorItem) OR empty($this->collectorItem->children)) {
 			return true;
 		}
 		return false;
@@ -406,7 +389,7 @@ abstract class Module extends \app\components\base\EngineModule {
 		}
 		if (!$primaryModel) { return false; }
 		$m = array('primary' => array('model' => $primaryModel, 'parents' => false));
-		$parents = $this->objectType->parents;
+		$parents = $this->collectorItem->parents;
 		if (!empty($parents)) {
 			$m['primary']['parents'] = array();
 			if (!$primaryModel->isNewRecord) {

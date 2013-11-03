@@ -1,6 +1,6 @@
 <?php
 return array(
-	'class' => '\infinite\security\role\Engine',
+	'class' => '\infinite\security\role\Collector',
 	'initial' => array(
 		'owner' => array(
 			'name' => 'Owner',

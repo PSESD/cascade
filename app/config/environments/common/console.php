@@ -11,7 +11,7 @@ return [
 	'id' => 'cascade',
 	'name' => 'Cascade',
 	'basePath' => dirname(dirname(dirname(dirname(__FILE__)))),
-	'preload' => array('log', 'types'),
+	'preload' => array('log'),
 	'language' => 'en',
 	'controllerPath' => '@app/commands',
 	'controllerNamespace' => 'app\commands',
@@ -20,14 +20,14 @@ return [
 		'sprite' => '\infinite\console\controllers\SpriteController'
 	),
 	'modules' => $modules,
-	'extensions' => include(INFINITE_APP_VENDOR_PATH . DIRECTORY_SEPARATOR . 'yii-extensions.php'),
+	'extensions' => include(INFINITE_APP_VENDOR_PATH . DIRECTORY_SEPARATOR . 'yiisoft'. DIRECTORY_SEPARATOR . 'extensions.php'),
+	'collectors' => include(INFINITE_APP_ENVIRONMENT_PATH . DIRECTORY_SEPARATOR . 'collectors.php'),
+
 	// application components
 	'components' => [ 
 		'cache' => include(INFINITE_APP_ENVIRONMENT_PATH . DIRECTORY_SEPARATOR . 'cache.php'),
 		'db' => include(INFINITE_APP_ENVIRONMENT_PATH . DIRECTORY_SEPARATOR . "database.php"),
-		'roleEngine' => include(INFINITE_APP_ENVIRONMENT_PATH . DIRECTORY_SEPARATOR . 'roles.php'),
 		'gk' => array('class' => '\infinite\security\Gatekeeper'),
-		'types' => ['class' => '\app\components\types\Engine'],
 		'log' => [
 			'class' => 'yii\log\Logger',
 			'traceLevel' => YII_DEBUG ? 3 : 0,

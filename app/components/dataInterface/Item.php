@@ -10,7 +10,7 @@ namespace app\components\dataInterface;
 
 use \infinite\base\exceptions\Exception;
 
-class Item extends \infinite\base\Component {
+class Item extends \infinite\base\CollectorItem {
 	public $error;
 
 	private $_name;

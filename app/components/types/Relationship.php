@@ -33,7 +33,7 @@ class Relationship extends \infinite\base\Object {
 	 * @param object  $child
 	 * @param unknown $options (optional)
 	 */
-	public function __construct(Type $parent, Type $child, $options = array()) {
+	public function __construct(Item $parent, Item $child, $options = array()) {
 		$this->_parent = $parent;
 		$this->_child = $child;
 		$this->mergeOptions($options);
@@ -64,7 +64,7 @@ class Relationship extends \infinite\base\Object {
 	 * @param unknown $options (optional)
 	 * @return unknown
 	 */
-	static public function get(Type $parent, Type $child, $options = array()) {
+	static public function get(Item $parent, Item $child, $options = array()) {
 		$key = md5($parent->name ."-". $child->name);
 		if (isset(self::$_relationships[$key])) {
 			self::$_relationships[$key]->mergeOptions($options);

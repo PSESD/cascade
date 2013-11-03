@@ -3,17 +3,16 @@ namespace app\setup\tasks;
 
 use \infinite\setup\Exception;
 
-class Task_000006_types extends \infinite\setup\Task {
+class Task_000006_collectors extends \infinite\setup\Task {
 	public function getTitle() {
-		return 'Type Registration';
+		return 'Collector Item Setup';
 	}
 	
 	public function test() {
-		return $this->setup->app()->types->isReady();
+		return $this->setup->app()->isReady();
 	}
 	public function run() {
-		return $this->setup->app()->types->prepareTypes();
-		return true;
+		return $this->setup->app()->initializeCollectors();
 	}
 	public function getFields() {
 		return false;

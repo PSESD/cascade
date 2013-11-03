@@ -26,7 +26,7 @@ require_once(INFINITE_APP_VENDOR_PATH . DIRECTORY_SEPARATOR . 'yiisoft/yii2/yii/
 $configPath =  INFINITE_APP_ENVIRONMENT_PATH . DIRECTORY_SEPARATOR .  'web.php';
 $config = require_once($configPath);
 $application = new infinite\web\Application($config);
-if (!$application->types->isReady()) {
+if (!$application->isReady()) {
 	header("Location: /setup.php");
 	exit;
 }

@@ -12,34 +12,32 @@ return array(
 	'name' => 'Cascade',
 	'basePath' => dirname(__FILE__).DIRECTORY_SEPARATOR.'..'.DIRECTORY_SEPARATOR.'..'.DIRECTORY_SEPARATOR.'..',
 	// preloading 'log' component
-	'preload' => array('log', 'debug', 'types'),
+	'preload' => array('log', 'debug'),
 	// autoloading model and component classes
 	'language' => 'en',
 
 	'modules' => include(INFINITE_APP_ENVIRONMENT_PATH . DIRECTORY_SEPARATOR . 'modules.php'),
-	'extensions' => include(INFINITE_APP_VENDOR_PATH . DIRECTORY_SEPARATOR . 'yii-extensions.php'),
+	'extensions' => include(INFINITE_APP_VENDOR_PATH . DIRECTORY_SEPARATOR . 'yiisoft'. DIRECTORY_SEPARATOR . 'extensions.php'),
+	'collectors' => include(INFINITE_APP_ENVIRONMENT_PATH . DIRECTORY_SEPARATOR . 'collectors.php'),
 
 	// application components
 	'components' => array(
 		'db' => include(INFINITE_APP_ENVIRONMENT_PATH . DIRECTORY_SEPARATOR . "database.php"),
 		'cache' => include(INFINITE_APP_ENVIRONMENT_PATH . DIRECTORY_SEPARATOR . 'cache.php'),
-		'clientScript' => include(INFINITE_APP_ENVIRONMENT_PATH . DIRECTORY_SEPARATOR . 'client_script.php'),
 		'request' => array(
 			'class' => '\infinite\web\request',
 			'enableCsrfValidation' => true,
 			'enableCookieValidation' => true,
 		),
 		'view' => [
-			'class' => '\infinite\base\view',
+			'class' => '\infinite\base\View',
 		],
 		'user' => array(
-			'class' => '\infinite\web\user',
+			'class' => '\infinite\web\User',
 			'enableAutoLogin' => false,
 			'identityClass' => '\app\models\User',
 			'loginUrl' => array('/app/login'),
 		),
-		'roleEngine' => include(INFINITE_APP_ENVIRONMENT_PATH . DIRECTORY_SEPARATOR . 'roles.php'),
-		'types' => ['class' => '\app\components\types\Engine'],
 		'gk' => array('class' => '\infinite\security\Gatekeeper'),
 		'session' => array(
 			'class' => '\infinite\web\DbSession',

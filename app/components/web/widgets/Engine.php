@@ -17,6 +17,10 @@ class Engine extends \infinite\base\Engine {
 	protected $_registry = array();
 	protected $_registryLocations = array();
 
+	public function getRegistry() {
+		return $this->_registry;
+	}
+
 	public function loadModules() {
 		if (!$this->_loaded) {
 			Yii::beginProfile('ModuleLoad');
