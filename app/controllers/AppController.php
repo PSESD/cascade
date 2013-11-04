@@ -51,7 +51,6 @@ class AppController extends Controller
 
 	public function actionIndex()
 	{
-		$g = \app\models\Group::find()->all();
 		return $this->render('index');
 	}
 

@@ -2,9 +2,12 @@
 /**
  * @var yii\base\View $this
  */
-$this->title = 'My Yii Application';
-echo "<br /><br /><br /><br />";
-foreach (Yii::$app->collectors['widgets']->bucket as $item) {
-	var_dump($item->systemId);
-}
+use \infinite\helpers\Html;
+
+$this->title = 'Dashboard';
+
+echo Html::beginTag('div', ['class' => 'row']);
+$widgets = Yii::$app->collectors['widgets']->getLocation('child_objects');
+
+echo Html::endTag('div');
 ?>

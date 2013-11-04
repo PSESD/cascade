@@ -17,11 +17,11 @@ class AppAsset extends AssetBundle
 {
     public $sourcePath = '@app/assets';
 
-	public $basePath = '@webroot';
-	public $baseUrl = '@web';
+	// public $basePath = '@webroot';
+	// public $baseUrl = '@web';
 	public $css = ['css/site.css'];
 	public $js = [];
 	public $depends = [
-		'infinite\web\InfiniteAsset',
+		'\infinite\web\InfiniteAsset',
 	];
 }

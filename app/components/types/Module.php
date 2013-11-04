@@ -27,8 +27,8 @@ abstract class Module extends \app\components\base\CollectorModule {
 	public $icon = 'ic-icon-info';
 	public $priority = 1000; //lower is better
 
-	public $isPrimaryType = false;
-	public $independent = true;
+	public $uniparental = false;
+	public $selfManaged = true;
 
 	public $sectionName;
 
@@ -219,7 +219,7 @@ abstract class Module extends \app\components\base\CollectorModule {
 			} else {
 				Yii::trace("Warning: There is no browse class for the child objects of {$this->systemId}");
 			}
-			if ($this->isPrimaryType AND $summaryClassName) {
+			if ($this->selfManaged AND $summaryClassName) {
 				$summaryWidget = array();
 				$id = $this->systemId .'Summary';
 				$summaryWidget['class'] = $summaryClassName;

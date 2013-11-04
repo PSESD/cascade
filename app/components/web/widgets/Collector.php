@@ -45,7 +45,7 @@ class Collector extends \infinite\base\collector\Module {
 	 * @return unknown
 	 */
 	public function getLocation($location, $owner = null) {
-		$bucket = $this->getBucket('location:'.$location);
+		$bucket = $this->getBucket('locations:'.$location);
 		if (is_null($owner)) {
 			return $bucket->toArray();
 		} else {

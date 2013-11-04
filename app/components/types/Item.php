@@ -188,7 +188,7 @@ class Item extends \infinite\base\collector\Item {
 	 * @return unknown
 	 */
 	public function getChecked() {
-		if (!is_null($this->object) || !$this->object) { return false; }
+		if (is_null($this->object) || !$this->object) { return false; }
 		if (is_null($this->_checked)) {
 			$this->_checked = true;
 			foreach ($this->object->dependencies() as $dep) {

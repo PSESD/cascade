@@ -1,4 +1,7 @@
 /* site.css */
+body {
+    padding-top: 70px;
+}
 
 .site-login {
 	
