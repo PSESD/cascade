@@ -162,7 +162,7 @@ abstract class Browse extends \app\components\web\widgets\base\Widget {
 			$this->gridTitleMenu = array();
 		}
 		if (Yii::$app->gk->canGeneral('create', $this->owner->primaryModel)) {
-			$this->gridTitleMenu[] = array('url' => array('/app/create', 'module' => $this->owner->systemId, $this->instanceSettings['whoAmI'].'_object_id' => $this->objectId), 'icon' => 'ic-icon-plus', 'ajax' => true, 'title' => Yii::t('ic', 'Create and link '. $this->owner->title->getSingular(false)));
+			$this->gridTitleMenu[] = array('url' => array('/app/create', 'module' => $this->owner->systemId, $this->instanceSettings['whoAmI'].'_object_id' => $this->objectId), 'icon' => 'ic-icon-plus', 'ajax' => true, 'title' => 'Create and link '. $this->owner->title->getSingular(false));
 		}
 		if (!isset($this->instanceSettings['relationship'])) {
 			$type = $this->params['object']->typeModuleRef;

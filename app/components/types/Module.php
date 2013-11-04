@@ -20,7 +20,7 @@ use \infinite\base\language\Noun;
 use \yii\base\Controller;
 
 abstract class Module extends \app\components\base\CollectorModule {
-	public $title;
+	protected $_title;
 	public $version = 1;
 
 	public $objectSubInfo = array();
@@ -189,9 +189,12 @@ abstract class Module extends \app\components\base\CollectorModule {
 	 *
 	 * @return unknown
 	 */
+	
 	public function getTitle() {
-		if (is_object($this->objectTitle)) { return $this->objectTitle; }
-		return new Noun($this->objectTitle);
+		if (!is_object($this->_title)) {
+			$this->_title = new Noun($this->_title);
+		}
+		return $this->_title;
 	}
 
 

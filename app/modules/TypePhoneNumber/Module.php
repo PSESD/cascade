@@ -6,7 +6,7 @@ use Yii;
 
 class Module extends \app\components\types\Module
 {
-	public $title = 'Phone Number';
+	protected $_title = 'Phone Number';
 	public $icon = 'ic-icon-iphone';
 	public $uniparental = true;
 	public $selfManaged = false;

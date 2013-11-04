@@ -16,7 +16,11 @@ class Collector extends \infinite\base\collector\Module {
 	}
 
 	public function build($widgetName, $recreateParams = array(), $baseParams = array(), $state = array()) {
-		$widget = $this->getOne($widgetName);
+		if (is_object($widgetName)) {
+			$widget = $widgetName;
+		} else {
+			$widget = $this->getOne($widgetName);
+		}
 		if (is_null($widget->object)) {
 			return false;
 		}

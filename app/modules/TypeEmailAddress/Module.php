@@ -6,7 +6,7 @@ use Yii;
 
 class Module extends \app\components\types\Module
 {
-	public $title = 'Email Address';
+	protected $_title = 'Email Address';
 	public $icon = 'ic-icon-at';
 	public $uniparental = true;
 	public $selfManaged = false;
