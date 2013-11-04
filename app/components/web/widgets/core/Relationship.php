@@ -14,7 +14,7 @@ use Yii;
 use \infinite\helpers\Html;
 use \infinite\db\behaviors\Relatable;
 
-abstract class Relationship extends DasboardBrowse {
+abstract class Relationship extends Browse {
 	public $view = '\app\views\app\widgets\relationship\index';
 	public $descriptorField = 'link';
 	
@@ -49,14 +49,14 @@ abstract class Relationship extends DasboardBrowse {
 		}
 		$m[] =array(
 				'icon' => 'ic-icon-link',
-				'url' => Yii::$app->urlManager->createUrl(array('link', 'module' => $this->Owner->shortName, 'id' => '{id}', $this->instanceSettings['whoAmI'] .'_object_id' => '{'.$this->instanceSettings['whoAmI'].'_object_id}')),
+				'url' => Yii::$app->urlManager->createUrl(array('link', 'module' => $this->owner->systemId, 'id' => '{id}', $this->instanceSettings['whoAmI'] .'_object_id' => '{'.$this->instanceSettings['whoAmI'].'_object_id}')),
 				'label' => 'Update relationship',
 				'aclAction' => 'update',
 			);
 		$m[] = array(
 			'icon' => 'ic-icon-trash_stroke',
 			'url' => Yii::$app->urlManager->createUrl(array('delete', 'relation_id' => '{id}', 'object' => $this->objectType)),
-			'label' => 'Delete '. $this->Owner->title->getSingular(true),
+			'label' => 'Delete '. $this->owner->title->getSingular(true),
 			'aclAction' => 'delete',
 		);
 		return $m;
@@ -67,7 +67,7 @@ abstract class Relationship extends DasboardBrowse {
 		if (isset($this->instanceSettings['relationship'])
 			AND isset($this->instanceSettings['relationship']->child)
 			AND isset($this->instanceSettings['relationship']->parent)
-			AND $this->instanceSettings['relationship']->child->shortName === $this->instanceSettings['relationship']->parent->shortName
+			AND $this->instanceSettings['relationship']->child->systemId === $this->instanceSettings['relationship']->parent->systemId
 			AND isset($this->recreateParams['instanceSettings']['whoAmI'])
 		) {
 			if ($this->recreateParams['instanceSettings']['whoAmI'] === 'child') {

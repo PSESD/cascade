@@ -52,7 +52,7 @@ abstract class Module extends \app\components\base\CollectorModule {
 
 	public function onAfterInit($event) {
 		if (!isset(Yii::$app->collectors['taxonomies']) || !Yii::$app->collectors['taxonomies']->registerMultiple($this, $this->taxonomies())) { throw new Exception('Could not register widgets for '. $this->systemId .'!'); }
-		//if (!isset(Yii::$app->collectors['widgets']) || !Yii::$app->collectors['widgets']->registerMultiple($this, $this->widgets())) { throw new Exception('Could not register widgets for '. $this->systemId .'!'); }
+		if (!isset(Yii::$app->collectors['widgets']) || !Yii::$app->collectors['widgets']->registerMultiple($this, $this->widgets())) { throw new Exception('Could not register widgets for '. $this->systemId .'!'); }
 		if (!isset(Yii::$app->collectors['roles']) || !Yii::$app->collectors['roles']->registerMultiple($this, $this->roles())) { throw new Exception('Could not register roles for '. $this->systemId .'!'); }	
 		return parent::onAfterInit($event);
 	}
@@ -76,30 +76,23 @@ abstract class Module extends \app\components\base\CollectorModule {
 	}
 
 	public function getPrimaryModel() {
-		return $this->modelNamespace .'\\'. 'Object'.$this->shortName;
+		return $this->modelNamespace .'\\'. 'Object'.$this->systemId;
 	}
 
 	public function getModuleType() {
 		return 'Type';
 	}
-	// public function getShortName() {
-	// 	preg_match('/Type([A-Za-z]+)\\\Module/', get_class($this), $matches);
-	// 	if (!isset($matches[1])) {
-	// 		throw new Exception(get_class($this). " is not set up correctly!");
-	// 	}
-	// 	return $matches[1];
-	// }
 
 	public function upgrade($from) {
 		return true;
 	}
 
 	public function getPossibleRoles() {
-		return Yii::$app->roleEngine->getRoles($this);
+		return Yii::$app->collectors['roles']->getRoles($this);
 	}
 
 	public function getPossibleRoleList() {
-		return Yii::$app->roleEngine->getRoleList($this);
+		return Yii::$app->collectors['roles']->getRoleList($this);
 	}
 
 	public function getCreatorRole() {
@@ -175,11 +168,11 @@ abstract class Module extends \app\components\base\CollectorModule {
 	 * @return unknown
 	 */
 	public function getSection($parent = null, $settings = array()) {
-		$name = $this->shortName;
-		if (!empty($parent) and $parent->shortName === $this->shortName) {
-			return Yii::$app->sections->get('related-'.$this->shortName, array('sectionTitle' => 'Related %%type.'. $this->shortName .'.title%%', 'icon' => $this->icon, 'shortName' => $settings['whoAmI'].'-'.$this->shortName, 'displayPriority' => -999));
+		$name = $this->systemId;
+		if (!empty($parent) and $parent->systemId === $this->systemId) {
+			return Yii::$app->sections->get('related-'.$this->systemId, array('sectionTitle' => 'Related %%type.'. $this->systemId .'.title%%', 'icon' => $this->icon, 'systemId' => $settings['whoAmI'].'-'.$this->systemId, 'displayPriority' => -999));
 		}
-		$newSectionTitle = '%%type.'. $this->shortName .'.title%%';
+		$newSectionTitle = '%%type.'. $this->systemId .'.title%%';
 		if (!is_null($this->sectionName)) {
 			$section = Yii::$app->sections->get($this->sectionName);
 			if (!empty($section)) {
@@ -187,7 +180,7 @@ abstract class Module extends \app\components\base\CollectorModule {
 			}
 			$newSectionTitle = $this->sectionName;
 		}
-		return Yii::$app->sections->get($this->shortName, array('sectionTitle' => $newSectionTitle, 'icon' => $this->icon, 'shortName' => $this->shortName));
+		return Yii::$app->sections->get($this->systemId, array('sectionTitle' => $newSectionTitle, 'icon' => $this->icon, 'systemId' => $this->systemId));
 	}
 
 
@@ -214,25 +207,33 @@ abstract class Module extends \app\components\base\CollectorModule {
 			// needs widget for children and summary page
 			if ($browseClassName) {
 				$childrenWidget = array();
-				$childrenWidget['name'] = 'Parent'. $this->shortName .'Browse';
-				$childrenWidget['class'] = $browseClassName;
+				$id = 'Parent'. $this->systemId .'Browse';
+				$childrenWidget['widget'] = [
+					'class' => $browseClassName,
+					'gridTitleIcon' => $this->icon, 
+					'gridTitle' => '%%relationship%% %%type.'. $this->systemId .'.title.plural%%'
+				];
 				$childrenWidget['locations'] = array('child_objects');
 				$childrenWidget['displayPriority'] = $this->priority;
-				$childrenWidget['settings'] = array('gridTitleIcon' => $this->icon, 'gridTitle' => '%%relationship%% %%type.'. $this->shortName .'.title.plural%%');
-				$widgets[$childrenWidget['name']] = $childrenWidget;
+				$widgets[$id] = $childrenWidget;
 			} else {
-				Yii::trace("Warning: There is no browse class for the child objects of {$this->shortName}");
+				Yii::trace("Warning: There is no browse class for the child objects of {$this->systemId}");
 			}
 			if ($this->isPrimaryType AND $summaryClassName) {
 				$summaryWidget = array();
-				$summaryWidget['name'] = $this->shortName .'Summary';
+				$id = $this->systemId .'Summary';
 				$summaryWidget['class'] = $summaryClassName;
+
+				$summaryWidget['widget'] = [
+					'class' => $summaryClassName,
+					'gridTitleIcon' => $this->icon, 
+					'gridTitle' => '%%type.'. $this->systemId .'.title.plural%%'
+				];
 				$summaryWidget['locations'] = array('front');
 				$summaryWidget['displayPriority'] = $this->priority;
-				$summaryWidget['settings'] = array('gridTitleIcon' => $this->icon, 'gridTitle' => '%%type.'. $this->shortName .'.title.plural%%');
-				$widgets[$summaryWidget['name']] = $summaryWidget;
+				$widgets[$id] = $summaryWidget;
 			} else {
-				Yii::trace("Warning: There is no summary class for {$this->shortName}");
+				Yii::trace("Warning: There is no summary class for {$this->systemId}");
 			}
 		} else {
 			if (!class_exists($browseClassName, false)) { $browseClassName = false; }
@@ -240,15 +241,19 @@ abstract class Module extends \app\components\base\CollectorModule {
 		}
 		if ($browseClassName) {
 			$parentsWidget = array();
-			$parentsWidget['name'] = 'Children'. $this->shortName .'Browse';
+			$id = 'Children'. $this->systemId .'Browse';
 			$parentsWidget['class'] = $browseClassName;
+			$parentsWidget['widget'] = [
+					'class' => $browseClassName,
+					'gridTitleIcon' => $this->icon, 
+					'gridTitle' => '%%relationship%% %%type.'. $this->systemId .'.title.plural%%'
+				];
 			$parentsWidget['locations'] = array('parent_objects');
 			$parentsWidget['displayPriority'] = $this->priority + 1;
-			$parentsWidget['settings'] = array('gridTitleIcon' => $this->icon, 'gridTitle' => '%%relationship%% %%type.'. $this->shortName .'.title.plural%%');
-			$widgets[$parentsWidget['name']] = $parentsWidget;
+			$widgets[$id] = $parentsWidget;
 			return $widgets;
 		} else {
-			Yii::trace("Warning: There is no browse class for the parent objects of {$this->shortName}");
+			Yii::trace("Warning: There is no browse class for the parent objects of {$this->systemId}");
 		}
 		return $widgets;
 	}

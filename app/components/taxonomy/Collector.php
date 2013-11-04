@@ -20,11 +20,11 @@ class Collector extends \infinite\base\collector\Module
 		return 'TaxonomyType';
 	}
 
-	public function register($owner, $itemComponent) {
+	public function register($owner, $itemComponent, $systemId = null) {
 		if ($itemComponent instanceof Module) {
-			return parent::register($owner, $itemComponent->settings);
+			return parent::register($owner, $itemComponent->settings, $systemId);
 		}
-		return parent::register($owner, $itemComponent);
+		return parent::register($owner, $itemComponent, $systemId);
 	}
 
 	public function prepareComponent($component) {

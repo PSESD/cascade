@@ -6,17 +6,32 @@ class Item extends \infinite\base\collector\Item {
 	protected $_parents = [];
 	protected $_sections;
 	protected $_checked;
+	protected $_init = false;
+
+	public function init() {
+		parent::init();
+		$this->_init = true;
+		$this->distributeRelationships();
+	}
 
 	public function setObject($object) {
 		parent::setObject($object);
-		if (is_null($object)) { return true; }
+		$this->distributeRelationships();
+		return true;
+	}
+
+	protected function distributeRelationships() {
+		if (!$this->_init || is_null($this->object)) {
+			return;
+		}
+
 		foreach ($this->object->children() as $key => $child) {
 			$options = array();
 			if (is_string($key)) {
 				$options = $child;
 				$child = $key;
 			}
-			$this->collector->addRelationship($this->name, $child, $options);
+			$this->collector->addRelationship($this->systemId, $child, $options);
 		}
 		foreach ($this->object->parents() as $key => $parent) {
 			$options = array();
@@ -25,9 +40,51 @@ class Item extends \infinite\base\collector\Item {
 				$parent = $key;
 			}
 
-			$this->collector->addRelationship($parent, $this->name, $options);
+			$this->collector->addRelationship($parent, $this->systemId, $options);
 		}
-		return true;
+	}
+	/**
+	 *
+	 *
+	 * @return unknown
+	 */
+	public function getSections() {
+		if (!is_null($this->_sections)) {
+			return $this->_sections;
+		}
+		$this->_sections = array();
+		foreach ($this->_children as $rel) {
+			if (!$rel->active) { continue; }
+			$child = $rel->child;
+			$instanceSettings = array('relationship' => $rel, 'whoAmI' => 'parent');
+			$items = Yii::$app->collectors['widgets']->getLocation('parent_objects', $child);
+			foreach ($items as $item) {
+				$section = $item->getSection($this->object, $instanceSettings);
+				if (empty($section)) { continue; }
+				if (!isset($this->_sections[$item->section->systemId])) {
+					$this->_sections[$section->systemId] = $section;
+				}
+				$this->_sections[$section->systemId]->addItem($this->object, $item, array('instanceSettings' => $instanceSettings));
+			}
+		}
+
+		foreach ($this->_parents as $rel) {
+			if (!$rel->active) { continue; }
+			$parent = $rel->parent;
+			$instanceSettings = array('relationship' => $rel, 'whoAmI' => 'child');
+			$items = Yii::$app->collectors['widgets']->getLocation('child_objects', $parent);
+			foreach ($items as $item) {
+				$section = $item->getSection($this->object, $instanceSettings);
+				if (empty($section)) { continue; }
+				if (!isset($this->_sections[$item->section->systemId])) {
+					$this->_sections[$section->systemId] = $section;
+				}
+				$this->_sections[$section->systemId]->addItem($this->object, $item, array('instanceSettings' => $instanceSettings));
+			}
+		}
+		
+		ArrayHelper::multisort($this->_sections, 'displayPriority');
+		return $this->_sections;
 	}
 
 	/**
@@ -131,6 +188,7 @@ class Item extends \infinite\base\collector\Item {
 	 * @return unknown
 	 */
 	public function getChecked() {
+		if (!is_null($this->object) || !$this->object) { return false; }
 		if (is_null($this->_checked)) {
 			$this->_checked = true;
 			foreach ($this->object->dependencies() as $dep) {

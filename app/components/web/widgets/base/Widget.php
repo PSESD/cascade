@@ -15,7 +15,7 @@ use \infinite\helpers\StringHelper;
 use \yii\helpers\Json;
 
 class Widget extends \yii\base\Widget {
-	public $Owner;
+	public $owner;
 	public $instanceSettings;
 
 	public $params = array();
@@ -169,8 +169,8 @@ class Widget extends \yii\base\Widget {
 	 */
 	public function renderPartial($view, $extra = array()) {
 		if ($this->grid) {
-			if (isset($this->Owner->shortName)) {
-				$this->classes[] = 'ic-type-'. $this->Owner->shortName;
+			if (isset($this->owner->systemId)) {
+				$this->classes[] = 'ic-type-'. $this->owner->systemId;
 			}
 			$this->classes[] = 'ic-widget-'. $this->niceName;
 			$this->classes[] = 'cell';
@@ -274,8 +274,8 @@ class Widget extends \yii\base\Widget {
 				return self::$_viewPaths[$className]=$path;
 			}
 		}
-		if (!empty($this->Owner)) {
-			return $this->Owner->getViewPath().DIRECTORY_SEPARATOR.'widgets'.DIRECTORY_SEPARATOR.$cleanName;
+		if (!empty($this->owner)) {
+			return $this->owner->getViewPath().DIRECTORY_SEPARATOR.'widgets'.DIRECTORY_SEPARATOR.$cleanName;
 		}
 		return Yii::$app->getViewPath().DIRECTORY_SEPARATOR.'widgets'.DIRECTORY_SEPARATOR.$cleanName;
 	}

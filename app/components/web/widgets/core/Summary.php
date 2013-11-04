@@ -30,13 +30,13 @@ class Summary extends \app\components\web\widgets\base\Widget {
 		$response = new Response('index', array(), $this);
 		$this->widgetTag = 'li';
 		$this->grid = true;
-		$this->gridTitle = Yii::t('ic', $this->Owner->title->getPlural(true));
-		$this->gridTitleUrl = array('/app/browse', 'module' => $this->Owner->shortName);
-		$this->gridTitleTitle = Yii::t('ic', 'Browse '. $this->Owner->title->getPlural(true));
+		$this->gridTitle = Yii::t('ic', $this->owner->title->getPlural(true));
+		$this->gridTitleUrl = array('/app/browse', 'module' => $this->owner->systemId);
+		$this->gridTitleTitle = Yii::t('ic', 'Browse '. $this->owner->title->getPlural(true));
 
 		$this->gridTitleMenu = array();
-		if (Yii::app()->gk->canGeneral('create', $this->Owner->primaryModel)) {
-			$this->gridTitleMenu[] = array('url' => array('/app/create', 'module' => $this->Owner->shortName), 'icon' => 'ic-icon-plus', 'ajax' => true, 'title' => Yii::t('ic', 'Create a '. $this->Owner->title->getSingular(true)));
+		if (Yii::app()->gk->canGeneral('create', $this->owner->primaryModel)) {
+			$this->gridTitleMenu[] = array('url' => array('/app/create', 'module' => $this->owner->systemId), 'icon' => 'ic-icon-plus', 'ajax' => true, 'title' => Yii::t('ic', 'Create a '. $this->owner->title->getSingular(true)));
 		}
 
 		$this->params['items'] = $this->getItems();
@@ -50,7 +50,7 @@ class Summary extends \app\components\web\widgets\base\Widget {
 	 * @return unknown
 	 */
 	public function getItems() {
-		return ObjectFamiliarity::familiarObjectsProvider($this->Owner->primaryModel, $this->state);
+		return ObjectFamiliarity::familiarObjectsProvider($this->owner->primaryModel, $this->state);
 	}
 
 

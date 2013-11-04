@@ -36,7 +36,6 @@ class Item extends \infinite\base\collector\Item {
 	 * @return unknown
 	 */
 	public function getTaxonomyList() {
-		$taxonomiesRaw = $this->getTaxonomies();
 		return ArrayHelper::map($this->getTaxonomies(), 'id', 'name');
 	}
 
@@ -56,8 +55,8 @@ class Item extends \infinite\base\collector\Item {
 
 	public function addTaxonomy($taxonomy) {
 		$this->taxonomies;
-		if (!is_array($this->_taxonomies)) {
-			$this->_taxonomies = array();
+		if (is_null($this->_taxonomies)) {
+			$this->taxonomies;
 		}
 		$this->_taxonomies[] = $taxonomy;
 	}

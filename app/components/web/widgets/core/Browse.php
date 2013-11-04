@@ -107,7 +107,7 @@ abstract class Browse extends \app\components\web\widgets\base\Widget {
 	public function getSettings() {
 		return array(
 			'id' => $this->widgetId .'-grid',
-			'emptyText' => 'No '. $this->Owner->title->plural .' found.',
+			'emptyText' => 'No '. $this->owner->title->plural .' found.',
 			'dataProvider' => $this->dataProvider,
 			'state' => $this->state,
 			'columns' => $this->columns,
@@ -135,13 +135,13 @@ abstract class Browse extends \app\components\web\widgets\base\Widget {
 		$m[] =array(
 				'icon' => 'ic-icon-pen',
 				'url' => Yii::$app->urlManager->createUrl(array('update', 'id' => '{'.$this->fieldPrefix.'id}')),
-				'label' => 'Update '. $this->Owner->title->getSingular(true),
+				'label' => 'Update '. $this->owner->title->getSingular(true),
 				'aclAction' => 'update',
 			);
 		$m[] = array(
 			'icon' => 'ic-icon-trash_stroke',
 			'url' => Yii::$app->urlManager->createUrl(array('delete', 'relation_id' => '{id}', 'object' => $this->objectType)),
-			'label' => 'Delete '. $this->Owner->title->getSingular(true),
+			'label' => 'Delete '. $this->owner->title->getSingular(true),
 			'aclAction' => 'delete',
 		);
 		return $m;
@@ -156,25 +156,25 @@ abstract class Browse extends \app\components\web\widgets\base\Widget {
 		$response = new Response($this->view, array(), $this);
 		$this->widgetTag = 'li';
 		$this->grid = true;
-		if (is_null($this->gridTitle) or $this->gridTitle === false) { $this->gridTitle = Yii::t('ic', $this->Owner->title->getPlural(true)); }
+		if (is_null($this->gridTitle) or $this->gridTitle === false) { $this->gridTitle = Yii::t('ic', $this->owner->title->getPlural(true)); }
 
 		if (is_null($this->gridTitleMenu)) {
 			$this->gridTitleMenu = array();
 		}
-		if (Yii::$app->gk->canGeneral('create', $this->Owner->primaryModel)) {
-			$this->gridTitleMenu[] = array('url' => array('/app/create', 'module' => $this->Owner->shortName, $this->instanceSettings['whoAmI'].'_object_id' => $this->objectId), 'icon' => 'ic-icon-plus', 'ajax' => true, 'title' => Yii::t('ic', 'Create and link '. $this->Owner->title->getSingular(false)));
+		if (Yii::$app->gk->canGeneral('create', $this->owner->primaryModel)) {
+			$this->gridTitleMenu[] = array('url' => array('/app/create', 'module' => $this->owner->systemId, $this->instanceSettings['whoAmI'].'_object_id' => $this->objectId), 'icon' => 'ic-icon-plus', 'ajax' => true, 'title' => Yii::t('ic', 'Create and link '. $this->owner->title->getSingular(false)));
 		}
 		if (!isset($this->instanceSettings['relationship'])) {
 			$type = $this->params['object']->typeModuleRef;
 			if (isset($this->instanceSettings['whoAmI']) and $this->instanceSettings['whoAmI'] === 'parent') {
-				$this->instanceSettings['relationship'] = $type->getChild($this->Owner->shortName);
+				$this->instanceSettings['relationship'] = $type->getChild($this->owner->systemId);
 			} else {
-				$this->instanceSettings['relationship'] = $type->getParent($this->Owner->shortName);
+				$this->instanceSettings['relationship'] = $type->getParent($this->owner->systemId);
 			}
 		}
 		$relationship = $this->instanceSettings['relationship'];
 		if (!$relationship->uniqueChild) {
-			$this->gridTitleMenu[] = array('url' => array('/app/link', 'module' => $this->Owner->shortName, $this->instanceSettings['whoAmI'].'_object_id' => $this->objectId), 'icon' => 'ic-icon-link', 'ajax' => true, 'title' => Yii::t('ic', 'Link an existing '. $this->Owner->title->getSingular(false)));
+			$this->gridTitleMenu[] = array('url' => array('/app/link', 'module' => $this->owner->systemId, $this->instanceSettings['whoAmI'].'_object_id' => $this->objectId), 'icon' => 'ic-icon-link', 'ajax' => true, 'title' => Yii::t('ic', 'Link an existing '. $this->owner->title->getSingular(false)));
 		}
 		$this->params['items'] = $this->getItems();
 		$response->handlePartial();

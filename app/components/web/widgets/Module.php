@@ -17,7 +17,7 @@ abstract class Module extends \app\components\base\EngineModule {
 		parent::__construct($id, $parent, $config);
 		
 		if (!isset(Yii::$app->types)) { throw new Exception('Cannot find the object type registry!'); }
-		if (!($this->_objectType = Yii::$app->types->add($this))) { throw new Exception('Could not register type '. $this->shortName .'!'); }
+		if (!($this->_objectType = Yii::$app->types->add($this))) { throw new Exception('Could not register type '. $this->systemId .'!'); }
 
 		Yii::$app->types->on(Engine::EVENT_AFTER_TYPE_REGISTRY, array($this, 'onBeginRequest'));
 		if (isset(Yii::$app->controller)) {
@@ -32,7 +32,7 @@ abstract class Module extends \app\components\base\EngineModule {
 	}
 
 	public function onBeginRequest($event) {
-		if (isset(Yii::$app->widgetEngine) and !Yii::$app->widgetEngine->register($this, $this->widgets())) { throw new Exception('Could not register widgets for '. $this->shortName .'!'); }
+		if (isset(Yii::$app->widgetEngine) and !Yii::$app->widgetEngine->register($this, $this->widgets())) { throw new Exception('Could not register widgets for '. $this->systemId .'!'); }
 	}
 
 	public function widgets() {
@@ -41,13 +41,13 @@ abstract class Module extends \app\components\base\EngineModule {
 		@class_exists($className);
 		if (class_exists($className, false)) {
 			$widget = array();
-			$widget['name'] = $this->shortName .'Content';
+			$id = $this->systemId .'Content';
 			$widget['class'] = $className;
 			$widget['locations'] = array('parent_objects', 'child_objects');
 			$widget['displayPriority'] = $this->priority;
-			$widget['settings'] = array('gridTitleIcon' => $this->icon, 'gridTitle' => '%%type.'. $this->shortName .'.title%%');
+			$widget['settings'] = array('gridTitleIcon' => $this->icon, 'gridTitle' => '%%type.'. $this->systemId .'.title%%');
 			$widget['section'] = 
-			$widgets[$widget['name']] = $widget;
+			$widgets[$id] = $widget;
 		}
 
 		return $widgets;
