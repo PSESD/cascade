@@ -21,7 +21,8 @@ abstract class CollectorModule extends \infinite\base\Module {
 	public function __construct($id, $parent, $config=null) {
 		if (!isset(Yii::$app->collectors[$this->collectorName])) { throw new Exception('Cannot find the collector '. $this->collectorName .'!'); }
 		if (!($this->_collectorItem = Yii::$app->collectors[$this->collectorName]->register(null, $this))) { throw new Exception('Could not register '. $this->shortName .' in '. $this->collectorName .'!'); }
-
+		$this->loadSubmodules();
+		
 		Yii::$app->collectors->onAfterInit(array($this, 'onAfterInit'));
 
 		if (isset(Yii::$app->controller)) {

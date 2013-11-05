@@ -38,6 +38,7 @@ class ObjectController extends Controller
 			'verbs' => [
 				'class' => VerbFilter::className(),
 				'actions' => [
+					'index' => ['get'],
 					'suggest' => ['get'],
 					'view' => ['get'],
 					'create' => ['get', 'post'],
@@ -62,6 +63,10 @@ class ObjectController extends Controller
 				'class' => 'yii\web\ErrorAction',
 			]
 		];
+	}
+
+	public function actionIndex() {
+		return $this->render('index');
 	}
 
 	/**

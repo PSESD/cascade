@@ -17,23 +17,23 @@ use \infinite\helpers\ArrayHelper;
 use \infinite\helpers\StringHelper;
 
 class Module extends \app\components\base\CollectorModule {
-	public $displayPriority = 100;
+	protected $_title;
+	public $version = 1;
+
+	public $objectSubInfo = array();
 	public $icon = 'ic-icon-info';
+	public $priority = 1000; //lower is better
 
 	protected $_items;
 	protected $_sectionTitle;
 
 
-	public function getCollectorName() {
-		return 'sections';
+	public function getModuleType() {
+		return 'Section';
 	}
 
-	public function loadSubModules() {
-		foreach ($this->modules as $module => $settings) {
-			$mod = $this->getModule($module);
-			$mod->init();
-		}
-		return true;
+	public function getCollectorName() {
+		return 'sections';
 	}
 
 	/**
@@ -78,12 +78,12 @@ class Module extends \app\components\base\CollectorModule {
 		return array();
 	}
 
-	public function setSectionTitle($value) {
-		$this->_sectionTitle = $value;
+	public function setTitle($value) {
+		$this->_title = $value;
 	}
 
 	public function getSectionTitle() {
-		return StringHelper::parseText($this->_sectionTitle);
+		return StringHelper::parseText($this->_title);
 	}
 
 	/**

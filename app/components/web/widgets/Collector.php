@@ -36,7 +36,7 @@ class Collector extends \infinite\base\collector\Module {
 		$widgetObject->run();
 
 		$this->lastBuildId = $widgetObject->getWidgetId();
-		$this->producedWidgets[$widgetObject->widgetId] = array('widget' => $widgetObject->niceName, 'id' => $widgetObject->getWidgetId(), 'params' => $widgetObject->recreateParams);
+		$this->producedWidgets[$widgetObject->widgetId] = array('widget' => $widgetObject->systemId, 'id' => $widgetObject->widgetId, 'params' => $widgetObject->recreateParams);
 
 		return ob_get_clean();
 	}

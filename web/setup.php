@@ -15,7 +15,7 @@ defined('INFINITE_APP_VENDOR_PATH') OR define('INFINITE_APP_VENDOR_PATH', dirnam
 
 register_shutdown_function(function() {
 	if (!error_get_last()) { return; }
-	echo '<pre>';
+	echo 'Boo! <pre>';
 	print_r(error_get_last());
 	echo '</pre>';
 });

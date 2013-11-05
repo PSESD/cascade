@@ -1,7 +1,7 @@
 <?php
 namespace app\setup\tasks;
 
-use \infinite\base\exceptions\Exception;
+use \infinite\setup\Exception;
 
 class Task_000002_db extends \infinite\setup\Task {
 	protected $_migrator;
@@ -11,7 +11,7 @@ class Task_000002_db extends \infinite\setup\Task {
 	public function test() {
 		$request = $this->migrator->getRequest();
 		$request->setParams(['migrate/new', '--interactive=0', 1000]);
-		// list($route, $params) = $request->resolve();            
+		list($route, $params) = $request->resolve();
         ob_start();
         $this->migrator->run();
         $result = ob_get_clean();
@@ -22,11 +22,10 @@ class Task_000002_db extends \infinite\setup\Task {
         $numberMatches = (int)$matches[1];
 		return $numberMatches === 0;
 	}
+
 	public function run() {
 		$request = $this->migrator->getRequest();
 		$request->setParams(['migrate', '--interactive=0']);
-		//list($route, $params) = $request->resolve();
-        //var_dump([$route, $params]);exit;
         ob_start();
         $this->migrator->run();
         $result = ob_get_clean();
@@ -40,7 +39,6 @@ class Task_000002_db extends \infinite\setup\Task {
 				throw new Exception("Invalid console config path: {$configFile}");
 			}
 			$config = require($configFile);
-			unset($config['components']['roleEngine']);
 			//var_dump($config);exit;
 			$this->_migrator = new \infinite\console\Application($config);
 		}

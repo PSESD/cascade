@@ -32,6 +32,10 @@ abstract class Module extends \app\components\base\CollectorModule {
 
 	public $sectionName;
 
+	public function init() {
+		parent::init();
+	}
+
 	public function getCollectorName() {
 		return 'types';
 	}
@@ -118,13 +122,6 @@ abstract class Module extends \app\components\base\CollectorModule {
 		return $ownerObject;
 	}
 
-	public function loadSubModules() {
-		foreach ($this->modules as $module => $settings) {
-			$mod = $this->getModule($module);
-			$mod->init();
-		}
-		return true;
-	}
 	/**
 	 *
 	 *
@@ -200,21 +197,21 @@ abstract class Module extends \app\components\base\CollectorModule {
 
 	public function widgets() {
 		$widgets = array();
-		$browseClassName = self::classNamespace() .'\widgets\\'. 'Browse';
-		$summaryClassName = self::classNamespace() .'\widgets\\'. 'Summary';
-		@class_exists($browseClassName);
-		@class_exists($summaryClassName);
+		$detailListClassName = self::classNamespace() .'\widgets\\'. 'DetailList';
+		$simpleListClassName = self::classNamespace() .'\widgets\\'. 'SimpleList';
+		@class_exists($detailListClassName);
+		@class_exists($simpleListClassName);
 		if (!$this->isChildless) {
-			if (!class_exists($browseClassName, false)) { $browseClassName = false; }
-			if (!class_exists($summaryClassName, false)) { $summaryClassName = false; }
+			if (!class_exists($detailListClassName, false)) { $detailListClassName = false; }
+			if (!class_exists($simpleListClassName, false)) { $simpleListClassName = false; }
 			// needs widget for children and summary page
-			if ($browseClassName) {
+			if ($detailListClassName) {
 				$childrenWidget = array();
 				$id = 'Parent'. $this->systemId .'Browse';
 				$childrenWidget['widget'] = [
-					'class' => $browseClassName,
-					'gridTitleIcon' => $this->icon, 
-					'gridTitle' => '%%relationship%% %%type.'. $this->systemId .'.title.plural%%'
+					'class' => $detailListClassName,
+					'icon' => $this->icon, 
+					'title' => '%%relationship%% %%type.'. $this->systemId .'.title.plural%%'
 				];
 				$childrenWidget['locations'] = array('child_objects');
 				$childrenWidget['displayPriority'] = $this->priority;
@@ -222,15 +219,15 @@ abstract class Module extends \app\components\base\CollectorModule {
 			} else {
 				Yii::trace("Warning: There is no browse class for the child objects of {$this->systemId}");
 			}
-			if ($this->selfManaged AND $summaryClassName) {
+			if ($this->selfManaged AND $simpleListClassName) {
 				$summaryWidget = array();
 				$id = $this->systemId .'Summary';
-				$summaryWidget['class'] = $summaryClassName;
+				$summaryWidget['class'] = $simpleListClassName;
 
 				$summaryWidget['widget'] = [
-					'class' => $summaryClassName,
-					'gridTitleIcon' => $this->icon, 
-					'gridTitle' => '%%type.'. $this->systemId .'.title.plural%%'
+					'class' => $simpleListClassName,
+					'icon' => $this->icon, 
+					'title' => '%%type.'. $this->systemId .'.title.plural%%'
 				];
 				$summaryWidget['locations'] = array('front');
 				$summaryWidget['displayPriority'] = $this->priority;
@@ -239,22 +236,21 @@ abstract class Module extends \app\components\base\CollectorModule {
 				Yii::trace("Warning: There is no summary class for {$this->systemId}");
 			}
 		} else {
-			if (!class_exists($browseClassName, false)) { $browseClassName = false; }
+			if (!class_exists($detailListClassName, false)) { $detailListClassName = false; }
 			// needs widget for parents
 		}
-		if ($browseClassName) {
+		if ($detailListClassName) {
 			$parentsWidget = array();
 			$id = 'Children'. $this->systemId .'Browse';
-			$parentsWidget['class'] = $browseClassName;
+			$parentsWidget['class'] = $detailListClassName;
 			$parentsWidget['widget'] = [
-					'class' => $browseClassName,
+					'class' => $detailListClassName,
 					'gridTitleIcon' => $this->icon, 
 					'gridTitle' => '%%relationship%% %%type.'. $this->systemId .'.title.plural%%'
 				];
 			$parentsWidget['locations'] = array('parent_objects');
 			$parentsWidget['displayPriority'] = $this->priority + 1;
 			$widgets[$id] = $parentsWidget;
-			return $widgets;
 		} else {
 			Yii::trace("Warning: There is no browse class for the parent objects of {$this->systemId}");
 		}

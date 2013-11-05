@@ -82,8 +82,11 @@ class Collector extends \infinite\base\collector\Module
 	public function getTableRegistry() {
 		if (is_null($this->_tableRegistry)) {
 			$objectTypeClass = $this->objectTypeRegistryClass;
-			$om = $objectTypeClass::find()->all();
-			$this->_tableRegistry = ArrayHelper::index($om, 'name');
+			$this->_tableRegistry = [];
+			if ($objectTypeClass::tableExists()) {
+				$om = $objectTypeClass::find()->all();
+				$this->_tableRegistry = ArrayHelper::index($om, 'name');
+			}
 		}
 		return $this->_tableRegistry;
 	}

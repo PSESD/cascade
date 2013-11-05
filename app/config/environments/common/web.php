@@ -52,7 +52,7 @@ return array(
 			'showScriptName' => false,
 			'rules' => [
 				// a standard rule mapping '/' to 'site/index' action
-				'' => 'app/index',
+				'' => 'object/index',
 				'<action:(view)>/<id:\S+>' => 'object/<action>',
 				// a standard rule to handle 'post/update' and so on
 				'<controller:\w+>/<action:\w+>' => '<controller>/<action>',
