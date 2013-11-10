@@ -30,7 +30,7 @@ return array(
 			'enableCookieValidation' => true,
 		),
 		'view' => [
-			'class' => '\infinite\base\View',
+			'class' => '\infinite\web\View',
 		],
 		'user' => array(
 			'class' => '\infinite\web\User',
