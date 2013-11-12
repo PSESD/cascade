@@ -2,5 +2,7 @@
 namespace app\components\web\widgets\base;
 
 class BaseList extends Widget {
-	
+	public function renderContent() {
+		
+	}
 }

@@ -14,7 +14,7 @@ use \infinite\base\language\Noun;
 use \infinite\base\exceptions\Exception;
 use \infinite\base\exceptions\HttpException;
 use \infinite\helpers\ArrayHelper;
-use \infinite\helpers\StringHelper;
+use \app\components\helpers\StringHelper;
 
 class Module extends \app\components\base\CollectorModule {
 	protected $_title;

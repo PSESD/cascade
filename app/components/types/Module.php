@@ -211,7 +211,7 @@ abstract class Module extends \app\components\base\CollectorModule {
 				$childrenWidget['widget'] = [
 					'class' => $detailListClassName,
 					'icon' => $this->icon, 
-					'title' => '%%relationship%% %%type.'. $this->systemId .'.title.plural%%'
+					'title' => '%%relationship%% %%type.'. $this->systemId .'.title.upperPlural%%'
 				];
 				$childrenWidget['locations'] = array('child_objects');
 				$childrenWidget['displayPriority'] = $this->priority;
@@ -227,7 +227,7 @@ abstract class Module extends \app\components\base\CollectorModule {
 				$summaryWidget['widget'] = [
 					'class' => $simpleListClassName,
 					'icon' => $this->icon, 
-					'title' => '%%type.'. $this->systemId .'.title.plural%%'
+					'title' => '%%type.'. $this->systemId .'.title.upperPlural%%'
 				];
 				$summaryWidget['locations'] = array('front');
 				$summaryWidget['displayPriority'] = $this->priority;
@@ -245,8 +245,8 @@ abstract class Module extends \app\components\base\CollectorModule {
 			$parentsWidget['class'] = $detailListClassName;
 			$parentsWidget['widget'] = [
 					'class' => $detailListClassName,
-					'gridTitleIcon' => $this->icon, 
-					'gridTitle' => '%%relationship%% %%type.'. $this->systemId .'.title.plural%%'
+					'icon' => $this->icon, 
+					'title' => '%%relationship%% %%type.'. $this->systemId .'.title.upperPlural%%'
 				];
 			$parentsWidget['locations'] = array('parent_objects');
 			$parentsWidget['displayPriority'] = $this->priority + 1;

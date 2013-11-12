@@ -81,12 +81,16 @@ class Collector extends \infinite\base\collector\Module
 
 	public function getTableRegistry() {
 		if (is_null($this->_tableRegistry)) {
+			Yii::beginProfile(__CLASS__.'::'.__FUNCTION__);
 			$objectTypeClass = $this->objectTypeRegistryClass;
 			$this->_tableRegistry = [];
+			
 			if ($objectTypeClass::tableExists()) {
 				$om = $objectTypeClass::find()->all();
+
 				$this->_tableRegistry = ArrayHelper::index($om, 'name');
 			}
+			Yii::endProfile(__CLASS__.'::'.__FUNCTION__);
 		}
 		return $this->_tableRegistry;
 	}
