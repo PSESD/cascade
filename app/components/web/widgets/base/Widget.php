@@ -14,7 +14,7 @@ use \app\components\helpers\StringHelper;
 use \infinite\helpers\Html;
 
 
-abstract class Widget extends \yii\bootstrap\Widget {
+abstract class Widget extends \yii\bootstrap\Widget implements \infinite\base\WidgetInterface {
 	use \infinite\base\ObjectTrait;
 	use \infinite\base\ComponentTrait;
 
@@ -28,12 +28,32 @@ abstract class Widget extends \yii\bootstrap\Widget {
 	public $recreateParams = array();
 	public $classes = array('ic-widget');
 
+	public $gridCellClass = '\infinite\web\grid\Cell';
+
 	protected $_widgetId;
 	protected $_systemId;
 	protected $_state;
-
+	protected $_gridCell;
 
 	abstract public function renderContent();
+
+	public function getGridCellSettings() {
+		return [
+			'columns' => 3,
+			'maxColumns' => 6
+		];
+	}
+
+	public function getCell() {
+		if (is_null($this->_gridCell)) {
+			$gridCellClass = $this->gridCellClass;
+			$objectSettings = $this->gridCellSettings;
+			$objectSettings['class'] = $gridCellClass;
+			$objectSettings['content'] = $this;
+			$this->_gridCell = Yii::createObject($objectSettings);
+		}
+		return $this->_gridCell;
+	}
 
 	public function getHeaderMenu() {
 		return [];
@@ -72,9 +92,11 @@ abstract class Widget extends \yii\bootstrap\Widget {
 	}
 
 	public function run() {
-		echo $this->renderHeader();
-		echo $this->renderContent();
-		echo $this->renderFooter();
+		echo $this->generate();
+	}
+
+	public function generate() {
+		return $this->renderHeader() . $this->renderContent() . $this->renderFooter();
 	}
 
 	public function parseText($text) {

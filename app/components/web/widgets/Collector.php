@@ -25,20 +25,18 @@ class Collector extends \infinite\base\collector\Module {
 			return false;
 		}
 
-		ob_start();
-		ob_implicit_flush(false);
 		$widgetObject = $widget->object;
 		$widgetObject->owner = $widget->owner;
 		$widgetObject->params = $baseParams;
 		$widgetObject->recreateParams = $recreateParams;
 		$widgetObject->state = $state;
 
-		$widgetObject->run();
+		$cell = $widgetObject->cell;
 
 		$this->lastBuildId = $widgetObject->getWidgetId();
 		$this->producedWidgets[$widgetObject->widgetId] = array('widget' => $widgetObject->systemId, 'id' => $widgetObject->widgetId, 'params' => $widgetObject->recreateParams);
 
-		return ob_get_clean();
+		return $cell;
 	}
 
 	/**
