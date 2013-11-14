@@ -31,10 +31,10 @@ class KeyTranslation extends \app\components\db\ActiveRecord
 	public function rules()
 	{
 		return [
-			['key', 'required'],
-			['created, modified', 'safe'],
-			['data_interface_id, registry_id', 'string', 'max' => 36],
-			['key', 'string', 'max' => 255]
+			[['key'], 'required'],
+			[['created', 'modified'], 'safe'],
+			[['data_interface_id', 'registry_id'], 'string', 'max' => 36],
+			[['key'], 'string', 'max' => 255]
 		];
 	}
 

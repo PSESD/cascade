@@ -31,11 +31,11 @@ class TaxonomyType extends \app\components\db\ActiveRecord
 	public function rules()
 	{
 		return [
-			['id, name', 'required'],
-			['system_version', 'number'],
-			['created, modified', 'safe'],
-			['id', 'string', 'max' => 36],
-			['name, system_id', 'string', 'max' => 255]
+			[['id', 'name'], 'required'],
+			[['system_version'], 'number'],
+			[['created', 'modified'], 'safe'],
+			[['id'], 'string', 'max' => 36],
+			[['name', 'system_id'], 'string', 'max' => 255]
 		];
 	}
 

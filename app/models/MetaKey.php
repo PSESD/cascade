@@ -30,10 +30,10 @@ class MetaKey extends \app\components\db\ActiveRecord
 	public function rules()
 	{
 		return [
-			['id, value_type', 'required'],
-			['created, modified', 'safe'],
-			['id', 'string', 'max' => 36],
-			['name, value_type', 'string', 'max' => 255]
+			[['id', 'value_type'], 'required'],
+			[['created', 'modified'], 'safe'],
+			[['id'], 'string', 'max' => 36],
+			[['name', 'value_type'], 'string', 'max' => 255]
 		];
 	}
 

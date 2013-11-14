@@ -40,12 +40,12 @@ class ObjectPhoneNumber extends \app\components\db\ActiveRecord
 	public function rules()
 	{
 		return [
-			['phone, extension', 'required'],
-			['no_call', 'boolean'],
-			['created, modified', 'unsafe'],
-			['id', 'string', 'max' => 36],
-			['phone', 'string', 'max' => 100],
-			['extension', 'string', 'max' => 15]
+			[['phone', 'extension'], 'required'],
+			[['no_call'], 'boolean'],
+			[['created', 'modified'], 'unsafe'],
+			[['id'], 'string', 'max' => 36],
+			[['phone'], 'string', 'max' => 100],
+			[['extension'], 'string', 'max' => 15]
 		];
 	}
 

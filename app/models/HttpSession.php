@@ -25,10 +25,10 @@ class HttpSession extends \app\components\db\ActiveRecord
 	public function rules()
 	{
 		return [
-			['id', 'required'],
-			['expire', 'integer'],
-			['data', 'string'],
-			['id', 'string', 'max' => 255]
+			[['id'], 'required'],
+			[['expire'], 'integer'],
+			[['data'], 'string'],
+			[['id'], 'string', 'max' => 255]
 		];
 	}
 

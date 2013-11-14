@@ -82,7 +82,7 @@ class Task_000001_environment extends \infinite\setup\Task {
 		if ($upgrade) { return true; }
 		
 		$templatePath = $this->setup->environmentTemplatesPath . DIRECTORY_SEPARATOR . $input['general']['template'];
-		$files = array('web.php', 'web-test.php', 'cache.php', 'console.php', 'database.php', 'modules.php', 'params.php', 'import.php', 'roles.php', 'client_script.php');
+		$files = array('web.php', 'web-test.php', 'cache.php', 'console.php', 'collectors.php', 'database.php', 'modules.php', 'params.php', 'import.php', 'roles.php', 'client_script.php');
 		foreach ($files as $file) {
 			$templateFilePath = $templatePath . DIRECTORY_SEPARATOR . $file;
 			if (!is_file($templateFilePath)) {

@@ -46,10 +46,10 @@ class ObjectAccount extends \app\components\db\ActiveRecord
 	public function rules()
 	{
 		return [
-			['name', 'required'],
-			['created, modified, deleted', 'unsafe'],
-			['id, created_user_id, modified_user_id, deleted_user_id', 'string', 'max' => 36],
-			['name, alt_name', 'string', 'max' => 255]
+			[['name'], 'required'],
+			[['created', 'modified', 'deleted'], 'unsafe'],
+			[['id', 'created_user_id', 'modified_user_id', 'deleted_user_id'], 'string', 'max' => 36],
+			[['name', 'alt_name'], 'string', 'max' => 255]
 		];
 	}
 

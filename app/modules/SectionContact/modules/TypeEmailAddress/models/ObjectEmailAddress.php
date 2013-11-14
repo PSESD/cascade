@@ -39,11 +39,11 @@ class ObjectEmailAddress extends \app\components\db\ActiveRecord
 	public function rules()
 	{
 		return [
-			['email_address', 'required'],
-			['no_mailings', 'boolean'],
-			['created, modified', 'unsafe'],
-			['id', 'string', 'max' => 36],
-			['email_address', 'string', 'max' => 255]
+			[['email_address'], 'required'],
+			[['no_mailings'], 'boolean'],
+			[['created', 'modified'], 'unsafe'],
+			[['id'], 'string', 'max' => 36],
+			[['email_address'], 'string', 'max' => 255]
 		];
 	}
 

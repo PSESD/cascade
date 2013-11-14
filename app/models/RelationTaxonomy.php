@@ -28,9 +28,9 @@ class RelationTaxonomy extends \app\components\db\ActiveRecord
 	public function rules()
 	{
 		return [
-			['relation_id, taxonomy_id', 'required'],
-			['relation_id', 'integer'],
-			['taxonomy_id', 'string', 'max' => 36]
+			[['relation_id', 'taxonomy_id'], 'required'],
+			[['relation_id'], 'integer'],
+			[['taxonomy_id'], 'string', 'max' => 36]
 		];
 	}
 

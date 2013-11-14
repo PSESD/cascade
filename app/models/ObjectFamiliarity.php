@@ -37,13 +37,13 @@ class ObjectFamiliarity extends \app\components\db\ActiveRecord
 	public function rules()
 	{
 		return [
-			['object_id, user_id, familiarity', 'required'],
-			['watching, created', 'boolean'],
-			['modified, accessed, familiarity', 'integer'],
-			['last_modified, last_accessed, first_accessed', 'safe'],
-			['object_id, user_id', 'string', 'max' => 36],
-			['model', 'string', 'max' => 255],
-			['session', 'string', 'max' => 32]
+			[['object_id', 'user_id', 'familiarity'], 'required'],
+			[['watching', 'created'], 'boolean'],
+			[['modified', 'accessed', 'familiarity'], 'integer'],
+			[['last_modified', 'last_accessed', 'first_accessed'], 'safe'],
+			[['object_id', 'user_id'], 'string', 'max' => 36],
+			[['model'], 'string', 'max' => 255],
+			[['session'], 'string', 'max' => 32]
 		];
 	}
 

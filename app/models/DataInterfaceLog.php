@@ -31,12 +31,12 @@ class DataInterfaceLog extends \app\components\db\ActiveRecord
 	public function rules()
 	{
 		return [
-			['data_interface_id', 'required'],
-			['message', 'string'],
-			['peak_memory', 'integer'],
-			['started, ended', 'safe'],
-			['data_interface_id', 'string', 'max' => 36],
-			['status', 'string', 'max' => 255]
+			[['data_interface_id'], 'required'],
+			[['message'], 'string'],
+			[['peak_memory'], 'integer'],
+			[['started', 'ended'], 'safe'],
+			[['data_interface_id'], 'string', 'max' => 36],
+			[['status'], 'string', 'max' => 255]
 		];
 	}
 

@@ -26,10 +26,10 @@ class ObjectType extends \app\components\db\ActiveRecord
 	public function rules()
 	{
 		return [
-			['name', 'required'],
-			['system_version', 'number'],
-			['created, modified', 'safe'],
-			['name', 'string', 'max' => 255]
+			[['name'], 'required'],
+			[['system_version'], 'number'],
+			[['created', 'modified'], 'safe'],
+			[['name'], 'string', 'max' => 255]
 		];
 	}
 

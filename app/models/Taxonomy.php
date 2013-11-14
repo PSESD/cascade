@@ -32,10 +32,10 @@ class Taxonomy extends \app\components\db\ActiveRecord
 	public function rules()
 	{
 		return [
-			['id, taxonomy_type_id, name', 'required'],
-			['created, modified', 'safe'],
-			['id, taxonomy_type_id', 'string', 'max' => 36],
-			['name, system_id', 'string', 'max' => 255]
+			[['id', 'taxonomy_type_id', 'name'], 'required'],
+			[['created', 'modified'], 'safe'],
+			[['id', 'taxonomy_type_id'], 'string', 'max' => 36],
+			[['name', 'system_id'], 'string', 'max' => 255]
 		];
 	}
 

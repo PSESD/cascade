@@ -34,12 +34,12 @@ class Meta extends \app\components\db\ActiveRecord
 	public function rules()
 	{
 		return [
-			['registry_id, meta_key_id', 'required'],
-			['value_text', 'string'],
-			['value_int', 'integer'],
-			['value_float', 'number'],
-			['value_datetime, created, modified', 'safe'],
-			['registry_id, meta_key_id', 'string', 'max' => 36]
+			[['registry_id', 'meta_key_id'], 'required'],
+			[['value_text'], 'string'],
+			[['value_int'], 'integer'],
+			[['value_float'], 'number'],
+			[['value_datetime', 'created', 'modified'], 'safe'],
+			[['registry_id', 'meta_key_id'], 'string', 'max' => 36]
 		];
 	}
 

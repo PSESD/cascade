@@ -32,10 +32,10 @@ class DataInterface extends \app\components\db\ActiveRecord
 	public function rules()
 	{
 		return [
-			['id, system_id', 'required'],
-			['last_sync, created, modified', 'safe'],
-			['id', 'string', 'max' => 36],
-			['name, system_id', 'string', 'max' => 255]
+			[['id', 'system_id'], 'required'],
+			[['last_sync', 'created', 'modified'], 'safe'],
+			[['id'], 'string', 'max' => 36],
+			[['name', 'system_id'], 'string', 'max' => 255]
 		];
 	}
 
