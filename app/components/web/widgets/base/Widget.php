@@ -11,7 +11,10 @@ namespace app\components\web\widgets\base;
 use Yii;
 
 use \app\components\helpers\StringHelper;
+
 use \infinite\helpers\Html;
+
+use \yii\bootstrap\Nav;
 
 
 abstract class Widget extends \yii\bootstrap\Widget implements \infinite\base\WidgetInterface {
@@ -63,6 +66,10 @@ abstract class Widget extends \yii\bootstrap\Widget implements \infinite\base\Wi
 		$parts = [];
 		if ($this->title) {
 			$menu = null;
+			$titleMenu = $this->renderTitleMenu();
+			if ($titleMenu) {
+				$menu = $titleMenu;
+			}
 			$parts[] = Html::tag('div', $this->parseText($this->title) . $menu, ['class' => 'panel-heading']);
 		}
 		if (empty($parts)) {
@@ -78,11 +85,19 @@ abstract class Widget extends \yii\bootstrap\Widget implements \infinite\base\Wi
 		if ($title) {
 			$parts[] = $title;
 		}
-
 		$parts[] = Html::beginTag('div', ['class' => 'panel-body']);
 		return implode("", $parts);
 	}
 
+	public function renderTitleMenu() {
+		$menu = $this->getHeaderMenu();
+		if (empty($menu)) { return false; }
+
+		return Nav::widget([
+			'items' => $menu,
+			'options' => ['class' => 'pull-right']
+		]);
+	}
 
 	public function renderFooter() {
 		$parts = [];
