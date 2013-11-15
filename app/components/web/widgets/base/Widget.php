@@ -70,7 +70,10 @@ abstract class Widget extends \yii\bootstrap\Widget implements \infinite\base\Wi
 			if ($titleMenu) {
 				$menu = $titleMenu;
 			}
-			$parts[] = Html::tag('div', $this->parseText($this->title) . $menu, ['class' => 'panel-heading']);
+			if ($this->icon) {
+				$icon = Html::tag('i', '', ['class' => 'ic-icon ic-icon-gray ic-icon-16 '. $this->icon]) . Html::tag('span', '', ['class' => 'break']);
+			}
+			$parts[] = Html::tag('div', Html::tag('h2', $icon . $this->parseText($this->title)) . $menu, ['class' => 'panel-heading']);
 		}
 		if (empty($parts)) {
 			return false;
@@ -95,7 +98,8 @@ abstract class Widget extends \yii\bootstrap\Widget implements \infinite\base\Wi
 
 		return Nav::widget([
 			'items' => $menu,
-			'options' => ['class' => 'pull-right']
+			'encodeLabels' => false,
+			'options' => ['class' => 'pull-right nav-pills']
 		]);
 	}
 

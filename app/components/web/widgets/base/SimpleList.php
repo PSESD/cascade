@@ -10,15 +10,4 @@ class SimpleList extends BaseList {
 	public function renderContent() {
 		return get_class($this->owner);
 	}
-
-	public function getHeaderMenu() {
-		$menu = [];
-		if (Yii::$app->gk->canGeneral('create', $this->owner->primaryModel)) {
-			$menu[] = [
-				'label' => 'Create',
-				'url' => '#'
-			];
-		}
-		return $menu;
-	}
 }

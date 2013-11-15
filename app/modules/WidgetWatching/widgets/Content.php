@@ -5,6 +5,7 @@ namespace app\modules\WidgetWatching\widgets;
 class Content extends \app\components\web\widgets\base\Widget
 {
 	public $title = 'Watching';
+	public $icon = 'ic-icon-eye';
 
 	public function getGridCellSettings() {
 		$gridSettings = parent::getGridCellSettings();
@@ -14,6 +15,6 @@ class Content extends \app\components\web\widgets\base\Widget
 	}
 
 	public function renderContent() {
-		return 'noo';
+		return 'noo<br ><br><br><br>hey';
 	}
 }
