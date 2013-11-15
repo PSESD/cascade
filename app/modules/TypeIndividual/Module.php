@@ -7,7 +7,7 @@ use Yii;
 class Module extends \app\components\types\Module
 {
 	protected $_title = 'Individual';
-	public $icon = 'ic-icon-user';
+	public $icon = 'fa fa-user';
 	public $uniparental = false;
 	public $selfManaged = true;
 

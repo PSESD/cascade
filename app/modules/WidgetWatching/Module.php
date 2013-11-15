@@ -7,7 +7,7 @@ use Yii;
 class Module extends \app\components\web\widgets\Module
 {
 	protected $_title = 'Watching';
-	public $icon = 'ic-icon-eye';
+	public $icon = 'fa fa-eye';
 	
 	public $widgetNamespace = 'app\modules\WidgetWatching\widgets';
 
