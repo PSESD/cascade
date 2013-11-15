@@ -17,8 +17,7 @@ return [
 	'controllerPath' => '@app/commands',
 	'controllerNamespace' => 'app\commands',
 	'controllerMap' => array(
-		'migrate' => '\infinite\console\controllers\MigrateController',
-		'sprite' => '\infinite\console\controllers\SpriteController'
+		'migrate' => '\infinite\console\controllers\MigrateController'
 	),
 	'modules' => $modules,
 	'extensions' => include(INFINITE_APP_VENDOR_PATH . DIRECTORY_SEPARATOR . 'yiisoft'. DIRECTORY_SEPARATOR . 'extensions.php'),

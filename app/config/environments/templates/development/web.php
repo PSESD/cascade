@@ -13,6 +13,7 @@ $config = array_merge($config, [
 		'id' => '%%_.application_id%%',
 		'name' => '%%general.application_name%%',
 ]);
+$config['components']['assetManager']['linkAssets'] = true;
 $config['preload'][] = 'debug';
 return $config;
 ?>

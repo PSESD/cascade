@@ -58,6 +58,9 @@ return array(
 				'<controller:\w+>/<action:\w+>' => '<controller>/<action>',
 			],
 		),
+		'assetManager' => [
+			'linkAssets' => false
+		],
 		'log' => [
 			'class' => 'yii\log\Logger',
 			'traceLevel' => YII_DEBUG ? 3 : 0,

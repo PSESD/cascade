@@ -49,6 +49,7 @@ class Task_000001_environment extends \infinite\setup\Task {
 		$input['_'] = array();
 		$input['_']['yiiDebug'] = ($input['general']['template'] === 'development') ? 'true' :'false';
 		$input['_']['yiiTraceLevel'] = ($input['general']['template'] === 'development') ? '3' :'0';
+		$input['_']['yiiEnv'] = ($input['general']['template'] === 'development') ? 'dev' :'prod';
 		$input['_']['version'] = $this->setup->version;
 		$input['_']['application_id'] = self::generateId($input['general']['application_name']);
 		$input['_']['envPath'] = $this->setup->environmentSetupsPath . DIRECTORY_SEPARATOR . $input['general']['template'];
