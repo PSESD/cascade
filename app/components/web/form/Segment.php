@@ -8,7 +8,7 @@
 
 namespace app\components\web\form;
 
-use \app\components\objects\fields\Model as ModelField;
+use \app\components\types\fields\Model as ModelField;
 
 use \infinite\helpers\Html;
 

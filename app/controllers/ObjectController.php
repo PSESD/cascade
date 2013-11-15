@@ -66,6 +66,12 @@ class ObjectController extends Controller
 	}
 
 	public function actionIndex() {
+		// echo Registry::parseModelAlias(\app\models\Group::modelAlias()) .'<br />';
+		// echo '<hr />';
+		// echo \app\modules\SectionContact\modules\TypePhoneNumber\models\ObjectPhoneNumber::modelAlias() .'<br />';
+		// echo Registry::parseModelAlias(\app\modules\SectionContact\modules\TypePhoneNumber\models\ObjectPhoneNumber::modelAlias());
+		// //echo "okay";
+		// exit;
 		return $this->render('index');
 	}
 

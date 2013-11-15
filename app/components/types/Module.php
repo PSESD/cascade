@@ -32,7 +32,13 @@ abstract class Module extends \app\components\base\CollectorModule {
 
 	public $sectionName;
 
+	public $widgetNamespace;
+	public $modelNamespace;
+
 	public function init() {
+		if (isset($this->modelNamespace)) {
+			Yii::$app->registerModelAlias(':'. $this->systemId, $this->modelNamespace);
+		}
 		parent::init();
 	}
 

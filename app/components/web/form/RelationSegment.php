@@ -10,7 +10,7 @@ namespace app\components\web\form;
 
 use Yii;
 
-use \app\components\objects\fields\Model as ModelField;
+use \app\components\types\fields\Model as ModelField;
 use \app\models\Relation;
 use \app\models\Registry;
 

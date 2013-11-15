@@ -7,7 +7,7 @@
  */
 
 
-namespace app\components\object;
+namespace app\components\types;
 
 trait ActiveRecordTrait {
 	public function behaviors() {
