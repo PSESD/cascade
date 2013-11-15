@@ -1,38 +1,40 @@
 <?php
 namespace app\components\web\widgets;
 
-abstract class Module extends \app\components\base\EngineModule {
+use Yii;
+
+use \infinite\base\exceptions\Exception;
+
+use \yii\base\Controller;
+
+abstract class Module extends \infinite\base\Module {
 	public $title;
 	public $icon = 'ic-icon-info';
+	public $priority = 1000; //lower is better
+
 	public $widgetNamespace;
 
+
 	/**
-	 *
-	 *
-	 * @param unknown $id
-	 * @param unknown $parent
-	 * @param unknown $config (optional)
+	 * @inheritdoc
 	 */
 	public function __construct($id, $parent, $config=null) {
-		parent::__construct($id, $parent, $config);
-		
-		if (!isset(Yii::$app->types)) { throw new Exception('Cannot find the object type registry!'); }
-		if (!($this->_objectType = Yii::$app->types->add($this))) { throw new Exception('Could not register type '. $this->systemId .'!'); }
+		Yii::$app->collectors->onAfterInit(array($this, 'onAfterInit'));
 
-		Yii::$app->types->on(Engine::EVENT_AFTER_TYPE_REGISTRY, array($this, 'onBeginRequest'));
 		if (isset(Yii::$app->controller)) {
 			throw new Exception("This is a happy exception!");
 			Yii::$app->controller->on(Controller::EVENT_BEFORE_ACTION, array($this, 'onBeforeControllerAction'));
 		}
-		$this->loadSubModules();
+		
+		parent::__construct($id, $parent, $config);
 	}
 
 	public function getModuleType() {
-		return 'widget';
+		return 'Widget';
 	}
 
-	public function onBeginRequest($event) {
-		if (isset(Yii::$app->widgetEngine) and !Yii::$app->widgetEngine->register($this, $this->widgets())) { throw new Exception('Could not register widgets for '. $this->systemId .'!'); }
+	public function onAfterInit($event) {
+		if (isset(Yii::$app->collectors['widgets']) and !Yii::$app->collectors['widgets']->registerMultiple($this, $this->widgets())) { throw new Exception('Could not register widgets for '. $this->systemId .'!'); }
 	}
 
 	public function widgets() {
@@ -40,16 +42,18 @@ abstract class Module extends \app\components\base\EngineModule {
 		$className = $this->widgetNamespace .'\\'. 'Content';
 		@class_exists($className);
 		if (class_exists($className, false)) {
-			$widget = array();
+			$summaryWidget = array();
 			$id = $this->systemId .'Content';
-			$widget['class'] = $className;
-			$widget['locations'] = array('parent_objects', 'child_objects');
-			$widget['displayPriority'] = $this->priority;
-			$widget['settings'] = array('gridTitleIcon' => $this->icon, 'gridTitle' => '%%type.'. $this->systemId .'.title%%');
-			$widget['section'] = 
-			$widgets[$id] = $widget;
+			$summaryWidget['widget'] = [
+				'class' => $className,
+				'icon' => $this->icon, 
+				// 'title' => '%%type.'. $this->systemId .'.title.upperPlural%%'
+			];
+			$summaryWidget['locations'] = array('front');
+			$summaryWidget['displayPriority'] = $this->priority;
+			$widgets[$id] = $summaryWidget;
 		}
-
+		//var_dump($widgets);exit;
 		return $widgets;
 	}
 

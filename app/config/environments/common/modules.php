@@ -8,6 +8,9 @@
 
 
 return [
+	'WidgetWatching' => [
+	    'class' => 'app\modules\WidgetWatching\Module',
+	],
 	'TypeAccount' => [
 	    'class' => 'app\modules\TypeAccount\Module',
 	],

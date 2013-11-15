@@ -222,8 +222,6 @@ abstract class Module extends \app\components\base\CollectorModule {
 			if ($this->selfManaged AND $simpleListClassName) {
 				$summaryWidget = array();
 				$id = $this->systemId .'Summary';
-				$summaryWidget['class'] = $simpleListClassName;
-
 				$summaryWidget['widget'] = [
 					'class' => $simpleListClassName,
 					'icon' => $this->icon, 
@@ -242,7 +240,6 @@ abstract class Module extends \app\components\base\CollectorModule {
 		if ($detailListClassName) {
 			$parentsWidget = array();
 			$id = 'Children'. $this->systemId .'Browse';
-			$parentsWidget['class'] = $detailListClassName;
 			$parentsWidget['widget'] = [
 					'class' => $detailListClassName,
 					'icon' => $this->icon, 
