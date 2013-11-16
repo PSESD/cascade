@@ -15,9 +15,6 @@ return array(
 	'preload' => array('log', 'collectors'),
 	// autoloading model and component classes
 	'language' => 'en',
-	'aliases' => [
-		'@models' => '@app/models'
-	],
 	'modules' => include(INFINITE_APP_ENVIRONMENT_PATH . DIRECTORY_SEPARATOR . 'modules.php'),
 	'extensions' => include(INFINITE_APP_VENDOR_PATH . DIRECTORY_SEPARATOR . 'yiisoft'. DIRECTORY_SEPARATOR . 'extensions.php'),
 

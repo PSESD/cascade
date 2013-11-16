@@ -7,17 +7,20 @@ use \infinite\web\grid\Grid;
 
 $this->title = 'Dashboard';
 echo Html::beginTag('div', ['class' => 'row']);
+Yii::beginProfile("Build Grid");
 $widgets = Yii::$app->collectors['widgets']->getLocation('front');
-var_dump(count($widgets));
 ArrayHelper::multisort($widgets, ['displayPriority', 'name'], [true, false]);
-Yii::beginProfile("Building Grid");
 $grid = new Grid;
 $cells = [];
+Yii::beginProfile("Collect Widgets");
 foreach ($widgets as $item => $widget) {
 	$cells[] = Yii::$app->collectors['widgets']->build($widget, array(), array());
 }
+Yii::endProfile("Collect Widgets");
 $grid->addCells($cells);
+Yii::endProfile("Build Grid");
+Yii::beginProfile("Render Grid");
 echo $grid->generate();
-Yii::endProfile("Building Grid");
+Yii::endProfile("Render Grid");
 echo Html::endTag('div');
 ?>

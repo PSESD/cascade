@@ -115,7 +115,10 @@ abstract class Widget extends \yii\bootstrap\Widget implements \infinite\base\Wi
 	}
 
 	public function generate() {
-		return $this->renderHeader() . $this->renderContent() . $this->renderFooter();
+		Yii::beginProfile(get_called_class() .':'. __FUNCTION__);
+		$result = $this->renderHeader() . $this->renderContent() . $this->renderFooter();
+		Yii::endProfile(get_called_class() .':'. __FUNCTION__);
+		return $result;
 	}
 
 	public function parseText($text) {

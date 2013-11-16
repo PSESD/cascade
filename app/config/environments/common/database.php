@@ -13,6 +13,8 @@ return array(
 	'emulatePrepare' => true,
 	'username' => INFINITE_APP_DATABASE_USERNAME,
 	'password' => INFINITE_APP_DATABASE_PASSWORD,
-	'charset' => 'utf8'
+	'charset' => 'utf8',
+	'enableSchemaCache' => true
+
 );
 ?>
