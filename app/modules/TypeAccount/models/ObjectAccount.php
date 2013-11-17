@@ -22,7 +22,7 @@ namespace app\modules\TypeAccount\models;
  */
 class ObjectAccount extends \app\components\db\ActiveRecord
 {
-	use \app\components\objects\ActiveRecordTrait;
+	use \app\components\types\ActiveRecordTrait;
 
 	/**
 	 * @inheritdoc

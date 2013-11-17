@@ -31,7 +31,7 @@ namespace app\modules\TypeIndividual\models;
  */
 class ObjectIndividual extends \app\components\db\ActiveRecord
 {
-	use \app\components\objects\ActiveRecordTrait;
+	use \app\components\types\ActiveRecordTrait;
 
 	/**
 	 * @inheritdoc
