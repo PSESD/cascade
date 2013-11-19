@@ -5,9 +5,11 @@ use \infinite\setup\Exception;
 
 class Task_000002_db extends \infinite\setup\Task {
 	protected $_migrator;
+	
 	public function getTitle() {
 		return 'Database';
 	}
+
 	public function test() {
 		$request = $this->migrator->getRequest();
 		$request->setParams(['migrate/new', '--interactive=0', 1000]);

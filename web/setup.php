@@ -33,8 +33,13 @@ $config = array(
 	'basePath' => INFINITE_APP_INSTALL_PATH,
 	'name' => 'Application Template'
 );
-
-$app = \app\setup\Setup::createSetupApplication($config);
-$app->run();
+try {
+	$app = \app\setup\Setup::createSetupApplication($config);
+	$app->run();
+} catch (\Exception $e) {
+	$app->params['error'] = true;
+	$app->params['message'] = $e->getMessage();
+	$app->render('message');
+}
 
 ?>

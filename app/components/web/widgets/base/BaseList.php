@@ -39,7 +39,7 @@ class BaseList extends Widget {
 			$menu[] = [
 				'label' => '<i class="glyphicon glyphicon-plus"></i>',
 				'linkOptions' => ['title' => 'Create'],
-				'url' => '#'
+				'url' => ['object/create', 'type' => $this->owner->systemId]
 			];
 		}
 		return $menu;

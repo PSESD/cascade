@@ -95,12 +95,25 @@ abstract class Widget extends \yii\bootstrap\Widget implements \infinite\base\Wi
 	public function renderTitleMenu() {
 		$menu = $this->getHeaderMenu();
 		if (empty($menu)) { return false; }
-
+		$this->backgroundifyMenu($menu);
 		return Nav::widget([
 			'items' => $menu,
 			'encodeLabels' => false,
 			'options' => ['class' => 'pull-right nav-pills']
 		]);
+	}
+
+	protected function backgroundifyMenu(&$items) {
+		if (!is_array($items)) { return; }
+		foreach ($items as $k => $v) {
+			if (!isset($items[$k]['linkOptions'])) { $items[$k]['linkOptions'] = []; }
+			if (!isset($items[$k]['linkOptions']['data-background'])) {
+				$items[$k]['linkOptions']['data-handler'] = 'background';
+			}
+			if (isset($items[$k]['items'])) {
+				$this->backgroundifyMenu($items[$k]['items']);
+			}
+		}
 	}
 
 	public function renderFooter() {

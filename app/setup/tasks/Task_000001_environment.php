@@ -12,6 +12,15 @@ class Task_000001_environment extends \infinite\setup\Task {
 	
 	public function test()
 	{
+		if ($this->setup->isEnvironmented) {
+			try {
+				$oe = ini_set('display_errors', 0);
+				$dbh = new \PDO('mysql:host='.INFINITE_APP_DATABASE_HOST.';port='.INFINITE_APP_DATABASE_PORT.';dbname='. INFINITE_APP_DATABASE_DBNAME, INFINITE_APP_DATABASE_USERNAME, INFINITE_APP_DATABASE_PASSWORD);
+				ini_set('display_errors', $oe);
+			} catch (\Exception $e) {
+				throw new Exception("Unable to connect to database! Please verify your settings in <code>env.php</code>.");
+			}
+		}
 		return $this->setup->isEnvironmented && $this->setup->version <= $this->setup->instanceVersion;
 	}
 

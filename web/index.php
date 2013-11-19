@@ -25,9 +25,14 @@ require_once(INFINITE_APP_VENDOR_PATH . DIRECTORY_SEPARATOR . 'yiisoft/yii2/yii/
 
 $configPath =  INFINITE_APP_ENVIRONMENT_PATH . DIRECTORY_SEPARATOR .  'web.php';
 $config = require_once($configPath);
-$application = new infinite\web\Application($config);
-if (!$application->collectors->areReady()) {
-	header("Location: /setup.php");
+try {
+	$application = new infinite\web\Application($config);
+	if (!$application->collectors->areReady()) {
+		header("Location: /setup.php");
+		exit;
+	}
+	$application->run();
+} catch (\PDOException $e) {
+	header("Location: /error.php?code=db");
 	exit;
 }
-$application->run();
