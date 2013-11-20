@@ -6,7 +6,7 @@
  * @package cascade
  */
 
-namespace app\components\types\fields;
+namespace app\components\db\fields;
 
 class RawText extends BaseFormat {
 	public function get() {

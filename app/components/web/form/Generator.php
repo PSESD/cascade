@@ -8,6 +8,8 @@
 
 namespace app\components\web\form;
 
+use Yii;
+
 use \infinite\helpers\Html;
 
 class Generator extends \infinite\base\Object {
@@ -46,12 +48,12 @@ class Generator extends \infinite\base\Object {
 		}
 		$result = array();
 		$result[] = Html::beginForm('', 'post', array('class' => $this->class));
-		$result[] = Html::beginTag('div', '', array('class' => 'form'));
+		$result[] = Html::beginTag('div', array('class' => 'form'));
 		foreach ($this->_items as $item) {
 			$result[] = $item->get();
 		}
-		if (!Yii::app()->request->isAjaxRequest) {
-			$result[] = Html::beginTag('div', '', array('class' => 'buttons'));
+		if (!Yii::$app->request->isAjax) {
+			$result[] = Html::beginTag('div', array('class' => 'buttons'));
 			$result[] = Html::submitButton('Save');
 			$result[] = Html::endTag('div');
 		}

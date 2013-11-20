@@ -11,7 +11,7 @@ use Yii;
 
 use \app\models\Group;
 use \app\models\Relation;
-use \app\web\form\Generator as FormGenerator;
+use \app\components\web\form\Generator as FormGenerator;
 
 use \infinite\base\exceptions\Exception;
 use \infinite\base\exceptions\HttpException;

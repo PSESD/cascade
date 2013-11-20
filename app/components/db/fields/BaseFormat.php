@@ -6,7 +6,7 @@
  * @package cascade
  */
 
-namespace app\components\types\fields;
+namespace app\components\db\fields;
 
 abstract class BaseFormat extends \infinite\base\Object {
 	protected $_field;

@@ -14,7 +14,7 @@ class Request extends \infinite\web\Request {
 
 	public function init() {
 		parent::init();
-		Yii::app()->attachEventHandler('onBeginRequest', array($this, 'startRequest'));
+		Yii::$app->attachEventHandler('onBeginRequest', array($this, 'startRequest'));
 	}
 
 	public function startRequest() {

@@ -6,11 +6,8 @@
  * @package cascade
  */
 
-namespace app\components\types\fields;
+namespace app\components\db\fields;
 
-use HumanFieldDetector;
-use FormatText;
-use BaseFormat;
 
 use \app\components\web\form\Field as FormField;
 
@@ -106,12 +103,14 @@ class Model extends \infinite\base\Component {
 		if (!$this->model) {
 			return false;
 		}
+
+		$modelName = get_class($this->model);
 		
-		if (!isset($this->model->metaData->columns[$this->field])) {
+		if (!isset($modelName::getTableSchema()->columns[$this->field])) {
 			return false;
 		}
 
-		return $this->model->metaData->columns[$this->field];
+		return $modelName::getTableSchema()->columns[$this->field];
 	}
 
 

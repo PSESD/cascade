@@ -11,7 +11,6 @@ use app\models\DeleteForm;
 
 use infinite\web\Controller;
 use infinite\base\exceptions\HttpException;
-use infinite\web\Response;
 
 use yii\web\AccessControl;
 use yii\web\VerbFilter;
@@ -92,7 +91,7 @@ class ObjectController extends Controller
 		$scores = array();
 
 		foreach ($modules as $module) {
-			$moduleObject = Yii::app()->types->get($module);
+			$moduleObject = Yii::$app->types->get($module);
 			$results = array('name' => $moduleObject->title->getPlural(true), 'results' => array());
 			$raw = $moduleObject->search($term, array('ignore' => $ignore));
 			$results['results'] = array();
@@ -120,7 +119,7 @@ class ObjectController extends Controller
 		if (!$object->can('read')) {
 			throw new HttpException(403, "Unable to access object.");
 		}
-		Yii::app()->request->object = $object;
+		Yii::$app->request->object = $object;
 		$type = $this->params['type'] = $object->typeModule;
 		$sections = $this->params['sections'] = $typeRef->getSections();
 		$this->params['active'] = $this->params['default'] = null;
@@ -142,13 +141,16 @@ class ObjectController extends Controller
 	 *
 	 */
 	public function actionCreate() {
-		if (empty($_GET['module']) or !($module = Yii::app()->types->get($_GET['module']))) {
-			throw new HttpException(404, "Unknown object type ". (empty($_GET['module']) ? '' : $_GET['module']));
+		if (empty($_GET['type']) or !($type = Yii::$app->collectors['types']->getOne($_GET['type']))) {
+			throw new HttpException(404, "Unknown object type ". (empty($_GET['type']) ? '' : $_GET['type']));
 		}
-		if (!Yii::app()->gk->canGeneral('create', $module->primaryModel)) {
+		$module = $type->object;
+		if (!Yii::$app->gk->canGeneral('create', $module->primaryModel)) {
 			throw new HttpException(403, "You do not have access to create {$module->title->getPlural(true)}");
 		}
-		$response = new Response('create', array('dialog' => true, 'dialogSettings' => array('title' => 'Create '.$module->title->getSingular(true) , 'width' => '800px')));
+		$this->response->view = 'create';
+		$this->response->ajaxDialog = true;
+		$this->response->ajaxDialog = array('title' => 'Create '.$module->title->getSingular(true) , 'width' => '800px');
 
 		$models = $module->getModels();
 		$this->params['form'] = $module->getForm($models);
@@ -157,26 +159,23 @@ class ObjectController extends Controller
 		}
 		$this->params['form']->ajax = true;
 		if (!empty($_POST)) {
-			// RDebug::d($models);
-			// RDebug::d($_POST);exit;
 			if ($this->params['form']->isValid) {
 				if ($module->saveModels($models)) {
-					$response->justStatus = true;
-					$response->success =  $module->title->getSingular(true). ' has been saved!';
+					$this->response->justStatus = true;
+					$this->response->success =  $module->title->getSingular(true). ' has been saved!';
 					if (!empty($_GET['parent_object_id'])) {
-						$response->refresh = '.ic-type-'. $module->shortName;
+						$this->response->refresh = '.ic-type-'. $module->shortName;
 					} else {
-						$response->redirect = array('view', 'id' => $models['primary']['model']->id);
+						$this->response->redirect = array('view', 'id' => $models['primary']['model']->id);
 					}
 					ObjectFamiliarity::created($models['primary']['model']);
 				} else {
-					$response->error = 'Error saving '. $module->title->getSingular(false);
+					$this->response->error = 'Error saving '. $module->title->getSingular(false);
 				}
 			} else {
-				$response->error = 'Please address the errors and try again.' . print_r($models['primary']['model']->errors, true);
+				$this->response->error = 'Please address the errors and try again.' . print_r($models['primary']['model']->errors, true);
 			}
 		}
-		$response->handle();
 	}
 
 	/**
@@ -211,8 +210,8 @@ class ObjectController extends Controller
 		$models = array();
 		$settings = array();
 		$relationship = null;
-		if (empty($_GET['module']) or !($module = Yii::app()->types->get($_GET['module']))) {
-			throw new HttpException(404, "Unknown object type ". (empty($_GET['module']) ? '' : $_GET['module']));
+		if (empty($_GET['type']) or !($module = Yii::$app->types->get($_GET['type']))) {
+			throw new HttpException(404, "Unknown object type ". (empty($_GET['type']) ? '' : $_GET['type']));
 		}
 
 		if (!empty($_GET['parent_object_id'])) {
@@ -239,7 +238,7 @@ class ObjectController extends Controller
 			}
 			$response = new Response('link', array('dialog' => true, 'dialogSettings' => array('title' => 'Update '.$module->title->getSingular(true) .' Relationship' , 'width' => '800px')));
 		} else {
-			$settings = array('limitModules' => array($_GET['module']), 'addFormLabel' => 'Search for Existing '.$module->title->getSingular(true), 'ignoreSuggestions' => array($relationshipType => array($object->id)));
+			$settings = array('limitModules' => array($_GET['type']), 'addFormLabel' => 'Search for Existing '.$module->title->getSingular(true), 'ignoreSuggestions' => array($relationshipType => array($object->id)));
 			$response = new Response('link', array('dialog' => true, 'dialogSettings' => array('title' => 'Link Existing '.$module->title->getSingular(true) , 'width' => '800px')));
 		}
 		//$models = array('primary' => array('model' => 'Relation'));
@@ -446,8 +445,8 @@ class ObjectController extends Controller
 				if (!isset($widget['data']['sectionCount'])) {
 					$widget['data']['sectionCount'] = $sectionCount;
 				}
-				$w['rendered'] = Yii::app()->widgetEngine->build($widget['name'], $widget['data'], array(), array_merge($baseState, $widget['state']));
-				$w['id'] =  Yii::app()->widgetEngine->lastBuildId;
+				$w['rendered'] = Yii::$app->widgetEngine->build($widget['name'], $widget['data'], array(), array_merge($baseState, $widget['state']));
+				$w['id'] =  Yii::$app->widgetEngine->lastBuildId;
 				$package[$i] = $w;
 			}
 		}

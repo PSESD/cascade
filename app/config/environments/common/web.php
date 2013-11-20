@@ -31,6 +31,9 @@ return array(
 		'view' => [
 			'class' => '\infinite\web\View',
 		],
+		'response' => [
+			'class' => '\infinite\web\Response'
+		],
 		'user' => array(
 			'class' => '\infinite\web\User',
 			'enableAutoLogin' => false,

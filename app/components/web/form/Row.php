@@ -44,10 +44,10 @@ class Row extends \infinite\base\Object {
 		}
 		$result = array();
 		if (count($this->_items) === 1 and false) { // temporary disabled
-			$result[] = Html::beginTag('div', '', array('class' => $baseClass.' single-row'));
+			$result[] = Html::beginTag('div', array('class' => $baseClass.' single-row'));
 			$result[] = $this->_items[0]->get($model, $formField);
 		} else {
-			$result[] = Html::beginTag('div', '', array('class' => $baseClass));
+			$result[] = Html::beginTag('div', array('class' => $baseClass));
 			$rowContent = '';
 			$total = $left = count($this->_items);
 			$widthLeft = 100;

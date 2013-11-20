@@ -15,7 +15,7 @@ use \yii\helpers\Json;
 class Field extends \infinite\base\Object {
 	public $modelField;
 	public $options;
-	public $htmlOptions;
+	public $htmlOptions = [];
 	public $default;
 	public $label;
 	public $required; // for selectors
@@ -119,7 +119,7 @@ class Field extends \infinite\base\Object {
 			$item = Html::activePasswordField($model, $field, $this->htmlOptions);
 			break;
 		case 'text':
-			$item = Html::activeTextField($model, $field, $this->htmlOptions);
+			$item = Html::activeTextInput($model, $field, $this->htmlOptions);
 			break;
 		case 'date':
 			if (!isset($this->htmlOptions['class'])) {

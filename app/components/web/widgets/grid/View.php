@@ -50,8 +50,8 @@ class View extends \yii\base\Widget {
 		if (!empty($this->state['fetch'])) {
 			ob_clean();
 			// you need a subset of the data
-			Yii::app()->controller->json($data);
-			Yii::app()->end();
+			Yii::$app->controller->json($data);
+			Yii::$app->end();
 		} else {
 			$columnSettings = $this->getColumnSettings();
 			$options = array();
@@ -218,7 +218,7 @@ class View extends \yii\base\Widget {
 	 */
 	public function getFormatter() {
 		if ($this->_formatter===null)
-			$this->_formatter=Yii::app()->format;
+			$this->_formatter=Yii::$app->format;
 		return $this->_formatter;
 	}
 

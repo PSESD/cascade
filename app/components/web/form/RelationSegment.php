@@ -202,7 +202,7 @@ class RelationSegment extends \infinite\base\Object {
 		$settingsJson = json_encode($settings);
 		$script = 'setTimeout(function(){ $("#'. $uniqueId .'").relationBuilder('.$settingsJson.'); }, 300);';
 		//$script = "var setts = $settingsJson; setTimeout(function(){ console.log(setts); }, 300);";
-		if (Yii::$app->request->isAjaxRequest) {
+		if (Yii::$app->request->isAjax) {
 			$result[] = Html::script($script);
 		} else {
 			Html::onLoadBlock($script);
