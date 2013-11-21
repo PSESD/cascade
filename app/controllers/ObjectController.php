@@ -208,6 +208,7 @@ class ObjectController extends Controller
 	 *
 	 */
 	public function actionLink() {
+		throw new Exception("Not yet implemented");
 		$models = array();
 		$settings = array();
 		$relationship = null;

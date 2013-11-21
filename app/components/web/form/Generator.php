@@ -61,7 +61,7 @@ class Generator extends \infinite\base\Object {
 		}
 		if (!Yii::$app->request->isAjax) {
 			$result[] = Html::beginTag('div', array('class' => 'form-group'));
-			$result[] = Html::beginTag('div', array('class' => 'col-lg-offset-1 col-lg-11'));
+			$result[] = Html::beginTag('div', array('class' => 'col-sm-12'));
 			$result[] = Html::submitButton('Save', ['class' => 'btn btn-primary']);;
 			$result[] = Html::endTag('div');
 			$result[] = Html::endTag('div');

@@ -8,27 +8,22 @@
 
 namespace app\components\db\fields;
 
+use \app\components\web\form\fields\Relation as RelationFormField;
 
-use \app\components\web\form\fields\Model as ModelFormField;
+class Relation extends Base {
+	protected $_human = true;
 
-class Model extends Base {
 	/**
-	 *
-	 *
-	 * @param unknown $value
-	 * @return unknown
+	 * 
 	 */
 	public function setFormField($value) {
 		if (is_array($value)) {
-			$value = new ModelFormField($this, $value);
+			$value = new RelationFormField($this, $value);
 		}
 
 		$this->_formField = $value;
 		return true;
 	}
-
-
 }
-
 
 ?>

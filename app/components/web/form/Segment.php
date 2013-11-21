@@ -8,14 +8,20 @@
 
 namespace app\components\web\form;
 
+use Yii;
+
 use \app\components\types\fields\Model as ModelField;
 
+use \infinite\web\grid\Grid;
 use \infinite\helpers\Html;
 
 class Segment extends FormObject {
+	public $cellClass = '\app\components\web\form\fields\Cell';
+
 	protected $_name;
 	protected $_model;
 	protected $_settings;
+	protected $_grid;
 
 
 	/**
@@ -78,35 +84,18 @@ class Segment extends FormObject {
 	 * @return unknown
 	 */
 	public function get() {
-		$result = '';
-		if (isset($this->_settings['preSegments'])) {
-			foreach ($this->_settings['preSegments'] as $segment) {
-				$result .= $segment->get();
-			}
-		}
-		
+		$result = [];
 		if (!empty($this->_settings['title'])) {
-			$result .= Html::beginTag('fieldset');
-			$result .= Html::tag('legend', $this->_settings['title']);
-		}
-		if (!isset($this->_settings['formField'])) {
-			$this->_settings['formField'] = array();
+			$result[] = Html::beginTag('fieldset');
+			$result[] = Html::tag('legend', $this->_settings['title']);
 		}
 
-		if (isset($this->_settings['fields'])) {
-			foreach ($this->_settings['fields'] as $field) {
-				$result .= $field->get(null, $this->_settings['formField']);
-			}
-		}
+		$result[] = $this->grid->generate();
+
 		if (!empty($this->_settings['title'])) {
-			$result .= Html::endTag('fieldset');
+			$result[] = Html::endTag('fieldset');
 		}
-		if (isset($this->_settings['postSegments'])) {
-			foreach ($this->_settings['postSegments'] as $segment) {
-				$result .= $segment->get();
-			}
-		}
-		return $result;
+		return implode("\n", $result);
 	}
 
 
@@ -128,101 +117,57 @@ class Segment extends FormObject {
 		if (!isset($this->_settings['formField'])) {
 			$this->_settings['formField'] = array();
 		}
-		if (!isset($this->_settings['formField']['tabular'])) {
-			$this->_settings['formField']['tabular'] = array();
-		}
-
-		if (isset($this->_settings['preSegments'])) {
-			$this->_settings['preSegments'] = array();
-		}
-		if (isset($this->_settings['postSegments'])) {
-			$this->_settings['postSegments'] = array();
-		}
-
-		// if (isset($this->_settings['parents'])) {
-		// 	$this->_settings['preSegments']['parents'] = new RelationSegment($this->_model, 'parents', $this->_settings['parents']);
-		// 	$this->_settings['preSegments']['parents']->owner = $this;
-		// }
-
-		// if (isset($this->_settings['children'])) {
-		// 	$this->_settings['postSegments']['children'] = new RelationSegment($this->_model, 'children', $this->_settings['children']);
-		// 	$this->_settings['postSegments']['children']->owner = $this;
-		// }
-
-		if (isset($this->_settings['childModels'])) {
-			foreach ($this->_settings['childModels'] as $k => $sm) {
-				if (!isset($sm['class'])) {
-					$sm['class'] = 'Relation';
-				}
-				$sm['parent'] = $this;
-				if (!isset($sm['fieldSettings'])) {
-					$sm['fieldSettings'] = array();
-				}
-				if (!isset($sm['formField'])) {
-					$sm['formField'] = array();
-				}
-				if (!isset($sm['formField']['tabular'])) {
-					$sm['formField']['tabular'] = array(md5($k));
-				}
-				if (!isset($sm['model'])) {
-					$sm['model'] = new $sm['class'];
-				}
-				$this->_settings['postSegments'][$k] = new Segment($sm['model'], $k, $sm);
-				$this->_settings['postSegments'][$k]->owner = $this;
-				if (empty($sm['ignoreInvalid']) and !$this->_settings['postSegments'][$k]->isValid) {
-					$this->isValid = false;
-				} else {
-					$sm['model']->clearErrors();
-				}
-			}
-		}
 
 		$modelClass = get_class($this->_model);
 		$fields = $modelClass::getFields($this->_model, $this->_settings['fieldSettings']);
+		$fieldsTemplate = false;
 
-		if (!empty($this->_settings['fields'])) {
-			$fieldsTemplate = $this->_settings['fields'];
-			$this->_settings['fields'] = array();
-			foreach ($fieldsTemplate as $row) {
-				if (!isset($row['fields'])) { continue; }
-				$rowItems = [];
-				foreach ($row['fields'] as $field) {
-					if (!isset($fields[$field])) { continue; }
-					if ($field === false) {
-						$rowItems[] = false;
-					} else {
-						$fields[$field]->formField->owner = $this;
-						$rowItems[] = $fields[$field]->formField;
-					}
-				}
-				$distribution = isset($row['distribution']) ? $row['distribution'] : null;
-				$this->_settings['fields'][] = (new Row($rowItems))->distribute($distribution);
-			}
-		} elseif (!isset($this->_settings['fields'])) {
-			$this->_settings['fields'] = array();
-			if (!$this->_model->isNewRecord) {
-				$this->_settings['fields'][] = $fields['id']->formField;
-			}
-			foreach ($fields as $field) {
+		if (!isset($this->_settings['fields'])) {
+			$fieldTemplate = [];
+			foreach ($fields as $fieldName => $field) {
 				$field->formField->owner = $this;
 				if (!$field->human) { continue; }
-				$this->_settings['fields'][] = new Row($field->formField);
+				$fieldsTemplate[] = [$fieldName];
 			}
+		} else {
+			$fieldsTemplate = $this->_settings['fields'];
 		}
-		if (isset($this->_settings['matchFields'])) {
-			if (!isset($this->_settings['fields'])) {
-				$this->_settings['fields'] = array();
+
+		if ($fieldsTemplate !== false) {
+			$this->_settings['fields'] = array();
+			if (!$this->_model->isNewRecord) {
+				$this->grid->prependContent($fields['id']->formField);
 			}
-			$matchFields = array();
-			foreach ($this->_settings['matchFields'] as $k => $sm) {
-				$field = new ModelField($this->_model, $k, $sm);
-				$matchFields[] = $field->formField;
+			$cellClass = $this->cellClass;
+			foreach ($fieldsTemplate as $rowFields) {
+				$rowItems = [];
+				foreach ($rowFields as $fieldKey => $fieldSettings) {
+					if (is_numeric($fieldKey)) {
+						$fieldKey = $fieldSettings;
+						$fieldSettings = [];
+					}
+					if (!isset($fields[$fieldKey])) { continue; }
+
+					if ($fieldKey === false) {
+						$rowItems[] = false;
+					} else {
+						$fields[$fieldKey]->formField->owner = $this;
+						$rowItems[] = Yii::createObject(['class' => $cellClass, 'content' => $fields[$fieldKey]->formField->configure($fieldSettings)]);
+					}
+				}
+				$this->grid->addRow($rowItems);
 			}
-			$this->_settings['fields'][] = new Row($matchFields);
 		}
 		return true;
 	}
 
+	public function getGrid()
+	{
+		if (is_null($this->_grid)) {
+			$this->_grid = new Grid;
+		}
+		return $this->_grid;
+	}
 
 }
 

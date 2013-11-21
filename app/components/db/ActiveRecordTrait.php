@@ -111,6 +111,12 @@ trait ActiveRecordTrait {
 		return null;
 	}
 
+
+	public function formSettings($name, $settings = [])
+	{
+		return null;
+	}
+
 	/**
 	 *
 	 *

@@ -6,26 +6,27 @@
  * @package cascade
  */
 
-namespace app\components\web\form;
+namespace app\components\web\form\fields;
 
 use \infinite\helpers\Html;
 use \infinite\base\exceptions\Exception;
 
 use \yii\helpers\Json;
 
-class Field extends FormObject {
+abstract class Base extends \infinite\base\Object implements \infinite\web\grid\CellContentInterface {
+	use \app\components\web\form\FormObjectTrait;
+	use \infinite\web\grid\CellContentTrait;
+
 	public $modelField;
 	public $options;
 	public $htmlOptions = [];
 	public $default;
 	public $label;
-	public $columns = 12;
 	public $required; // for selectors
 	public $showLabel = true;
 	public $showError = true;
 
 	protected $_type;
-
 	protected $_model;
 
 	/**
@@ -42,19 +43,6 @@ class Field extends FormObject {
 		}
 		return true;
 	}
-
-
-
-	/**
-	 *
-	 *
-	 * @param unknown $model        (optional)
-	 * @param unknown $formSettings (optional)
-	 */
-	public function render($model = null, $formSettings = array()) {
-		echo $this->get($model, $formSettings);
-	}
-
 
 	/**
 	 *
@@ -85,16 +73,14 @@ class Field extends FormObject {
 	 * @param unknown $formSettings (optional)
 	 * @return unknown
 	 */
-	public function get($model = null, $formSettings = array()) {
-		if (is_null($model)) {
-			$model = $this->model;
-		}
+	public function generate() {
+		$model = $this->model;
 		if (!$this->generator || !$this->generator->form) {
 			throw new Exception("Unable to find generator form.");
 		}
 		$form = $this->generator->form;
 		$pre = $post = null;
-		$field = $this->getModelField($formSettings);
+		$field = $this->getModelField();
 
 		$fieldConfig = [
 				'template' => "<div class=\"\">{input}</div>\n<div class=\"\">{error}</div>",

@@ -75,7 +75,10 @@ class ObjectAccount extends \app\components\db\ActiveRecord
 			$settings['title'] = false;
 		}
 		$settings['fields'] = array();
-		$settings['fields'][] = ['fields' => ['name', 'alt_name'], 'distribution' => [8, 4]];
+		$settings['fields'][] = ['name' => ['columns' => 8], 'alt_name' => ['columns' => 4]];
+		if ($this->isNewRecord) {
+			$settings['fields'][] = ['fields' => ['parent:Account']];
+		}
 		return $settings;
 	}
 

@@ -20,6 +20,7 @@ use \yii\bootstrap\Nav;
 abstract class Widget extends \yii\bootstrap\Widget implements \infinite\base\WidgetInterface {
 	use \infinite\base\ObjectTrait;
 	use \infinite\base\ComponentTrait;
+	use \infinite\web\grid\CellContentTrait;
 
 	public $owner;
 	public $instanceSettings;
