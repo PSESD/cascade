@@ -71,9 +71,9 @@ class <?= $className ?> extends <?= '\\' . ltrim($generator->baseClass, '\\') . 
 	/**
 	 * @inheritdoc
 	 */
-	public function formSettings()
+	public function formSettings($name, $settings = [])
 	{
-		return [<?= "\n\t\t\t" . implode(",\n\t\t\t", $columnSettingSkel) . "\n\t\t" ?>];
+		return parent::formSettings($name, $settings);
 	}
 
 	/**

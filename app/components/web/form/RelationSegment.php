@@ -17,14 +17,13 @@ use \app\models\Registry;
 use \infinite\helpers\Html;
 use \infinite\db\behaviors\Relatable;
 
-class RelationSegment extends \infinite\base\Object {
+class RelationSegment extends FormObject {
 	protected $_relationType;
 	protected $_possibleRelatives;
 	protected $_parentModel;
 	protected $_initialModels;
 	protected $_objectType;
 	protected $_settings;
-	public $isValid = true;
 
 
 	/**

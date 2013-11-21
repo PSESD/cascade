@@ -12,11 +12,10 @@ use \app\components\types\fields\Model as ModelField;
 
 use \infinite\helpers\Html;
 
-class Segment extends \infinite\base\Object {
+class Segment extends FormObject {
 	protected $_name;
 	protected $_model;
 	protected $_settings;
-	public $isValid = true;
 
 
 	/**
@@ -140,13 +139,15 @@ class Segment extends \infinite\base\Object {
 			$this->_settings['postSegments'] = array();
 		}
 
-		if (isset($this->_settings['parents'])) {
-			$this->_settings['preSegments']['parents'] = new RelationSegment($this->_model, 'parents', $this->_settings['parents']);
-		}
+		// if (isset($this->_settings['parents'])) {
+		// 	$this->_settings['preSegments']['parents'] = new RelationSegment($this->_model, 'parents', $this->_settings['parents']);
+		// 	$this->_settings['preSegments']['parents']->owner = $this;
+		// }
 
-		if (isset($this->_settings['children'])) {
-			$this->_settings['postSegments']['children'] = new RelationSegment($this->_model, 'children', $this->_settings['children']);
-		}
+		// if (isset($this->_settings['children'])) {
+		// 	$this->_settings['postSegments']['children'] = new RelationSegment($this->_model, 'children', $this->_settings['children']);
+		// 	$this->_settings['postSegments']['children']->owner = $this;
+		// }
 
 		if (isset($this->_settings['childModels'])) {
 			foreach ($this->_settings['childModels'] as $k => $sm) {
@@ -167,6 +168,7 @@ class Segment extends \infinite\base\Object {
 					$sm['model'] = new $sm['class'];
 				}
 				$this->_settings['postSegments'][$k] = new Segment($sm['model'], $k, $sm);
+				$this->_settings['postSegments'][$k]->owner = $this;
 				if (empty($sm['ignoreInvalid']) and !$this->_settings['postSegments'][$k]->isValid) {
 					$this->isValid = false;
 				} else {
@@ -177,12 +179,32 @@ class Segment extends \infinite\base\Object {
 
 		$modelClass = get_class($this->_model);
 		$fields = $modelClass::getFields($this->_model, $this->_settings['fieldSettings']);
-		if (!isset($this->_settings['fields']) and !(is_array($this->_settings) and array_key_exists('fields', $this->_settings) and $this->_settings['fields'] === false)) {
+
+		if (!empty($this->_settings['fields'])) {
+			$fieldsTemplate = $this->_settings['fields'];
+			$this->_settings['fields'] = array();
+			foreach ($fieldsTemplate as $row) {
+				if (!isset($row['fields'])) { continue; }
+				$rowItems = [];
+				foreach ($row['fields'] as $field) {
+					if (!isset($fields[$field])) { continue; }
+					if ($field === false) {
+						$rowItems[] = false;
+					} else {
+						$fields[$field]->formField->owner = $this;
+						$rowItems[] = $fields[$field]->formField;
+					}
+				}
+				$distribution = isset($row['distribution']) ? $row['distribution'] : null;
+				$this->_settings['fields'][] = (new Row($rowItems))->distribute($distribution);
+			}
+		} elseif (!isset($this->_settings['fields'])) {
 			$this->_settings['fields'] = array();
 			if (!$this->_model->isNewRecord) {
 				$this->_settings['fields'][] = $fields['id']->formField;
 			}
 			foreach ($fields as $field) {
+				$field->formField->owner = $this;
 				if (!$field->human) { continue; }
 				$this->_settings['fields'][] = new Row($field->formField);
 			}

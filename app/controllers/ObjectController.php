@@ -149,8 +149,9 @@ class ObjectController extends Controller
 			throw new HttpException(403, "You do not have access to create {$module->title->getPlural(true)}");
 		}
 		$this->response->view = 'create';
-		$this->response->ajaxDialog = true;
-		$this->response->ajaxDialog = array('title' => 'Create '.$module->title->getSingular(true) , 'width' => '800px');
+
+		$this->response->task = 'dialog';
+		$this->response->taskOptions = array('title' => 'Create '.$module->title->getSingular(true) , 'width' => '800px');
 
 		$models = $module->getModels();
 		$this->params['form'] = $module->getForm($models);

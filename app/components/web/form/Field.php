@@ -9,15 +9,17 @@
 namespace app\components\web\form;
 
 use \infinite\helpers\Html;
+use \infinite\base\exceptions\Exception;
 
 use \yii\helpers\Json;
 
-class Field extends \infinite\base\Object {
+class Field extends FormObject {
 	public $modelField;
 	public $options;
 	public $htmlOptions = [];
 	public $default;
 	public $label;
+	public $columns = 12;
 	public $required; // for selectors
 	public $showLabel = true;
 	public $showError = true;
@@ -87,64 +89,61 @@ class Field extends \infinite\base\Object {
 		if (is_null($model)) {
 			$model = $this->model;
 		}
+		if (!$this->generator || !$this->generator->form) {
+			throw new Exception("Unable to find generator form.");
+		}
+		$form = $this->generator->form;
 		$pre = $post = null;
 		$field = $this->getModelField($formSettings);
+
+		$fieldConfig = [
+				'template' => "<div class=\"\">{input}</div>\n<div class=\"\">{error}</div>",
+				'labelOptions' => ['class' => "control-label"],
+		];
+		if ($this->showLabel) {
+			$fieldConfig['template'] = "{label}\n".$fieldConfig['template'];
+		}
+		$item = $form->field($model, $field, $fieldConfig);
+		if (!isset($this->htmlOptions['class'])) {
+			$this->htmlOptions['class'] = '';
+		}
+		$this->htmlOptions['class'] .= ' form-control';
 		switch ($this->type) {
 		case 'checkBox':
-			$item = Html::activeCheckBox($model, $field, $this->htmlOptions);
+			$item->checkbox();
 			break;
 		case 'radioButton':
-			$item = Html::activeRadioButton($model, $field, $this->htmlOptions);
+			$item->radio();
 			break;
 		case 'checkBoxList':
-			$item = Html::activeCheckBoxList($model, $field, $this->options, $this->htmlOptions);
+			$item->checkboxList($this->options);
 			break;
 		case 'radioButtonList':
-			$item = Html::activeRadioBoxList($model, $field, $this->options, $this->htmlOptions);
+			$item->radioList($this->options);
 			break;
 		case 'dropDownList':
-			$item = Html::activeDropDownList($model, $field, $this->options, $this->htmlOptions);
+			$item->dropDownList($this->options);
 			break;
 		case 'listBox':
-			$item = Html::activeListBox($model, $field, $this->options, $this->htmlOptions);
+			$item->listBox($this->options);
 			break;
 		case 'file':
-			$item = Html::activeRadioButton($model, $field, $this->htmlOptions);
+			$item->fileInput();
 			break;
 		case 'hidden':
 			$this->showLabel = false;
 			$item = Html::activeHiddenField($model, $field, $this->htmlOptions);
 			break;
 		case 'password':
-			$item = Html::activePasswordField($model, $field, $this->htmlOptions);
-			break;
-		case 'text':
-			$item = Html::activeTextInput($model, $field, $this->htmlOptions);
+			$item->password();
 			break;
 		case 'date':
-			if (!isset($this->htmlOptions['class'])) {
-				$this->htmlOptions['class'] = '';
-			}
 			$this->htmlOptions['class'] .= ' date';
-			$item = Html::activeTextField($model, $field, $this->htmlOptions);
-			break;
-		case 'objectMatch':
-			$this->htmlOptions['class'] = 'selector input-default-text';
-			if ($this->required) {
-				$this->htmlOptions['data-default-text'] = '(choose)';
-			} else {
-				$this->htmlOptions['data-default-text'] = '(none)';
-			}
-			$this->htmlOptions['maxlength'] = false;
-			$item = Html::activeAutocompleteField($model, $field, $this->htmlOptions);
 			break;
 		case 'textArea':
-			$item = Html::activeTextArea($model, $field, $this->htmlOptions);
+			$item->textarea();
 			break;
 		case 'rich':
-			if (!isset($this->htmlOptions['class'])) {
-				$this->htmlOptions['class'] = '';
-			}
 			$this->htmlOptions['class'] .= ' rich';
 			$editorSettings = array(
 				);
@@ -152,18 +151,8 @@ class Field extends \infinite\base\Object {
 			$item = Html::activeTextArea($model, $field, $this->htmlOptions);
 			break;
 		}
-		if ($this->showLabel) {
-			$labelSettings = array();
-			if (!is_null($this->label)) {
-				$labelSettings['label'] = $this->label;
-			}
-			if (!is_null($this->required)) {
-				$labelSettings['required'] = $this->required;
-			}
-			$pre = Html::activeLabel($model, $field, $labelSettings);
-		}
-		if ($this->showError) {
-			$post = Html::error($model, $field);
+		if ($item instanceof ActiveField) {
+			$item->inputOptions = $this->htmlOptions;
 		}
 		if (!empty($item)) {
 			return $pre.$item.$post;

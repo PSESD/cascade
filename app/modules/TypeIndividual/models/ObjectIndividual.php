@@ -57,7 +57,7 @@ class ObjectIndividual extends \app\components\db\ActiveRecord
 		return [
 			[['first_name'], 'required'],
 			[['birthday'], 'safe'],
-			[['created', 'modified', 'deleted'], 'unsafe'],
+			//[['created', 'modified', 'deleted'], 'unsafe'],
 			[['id', 'user_id', 'created_user_id', 'modified_user_id', 'deleted_user_id'], 'string', 'max' => 36],
 			[['prefix', 'suffix', 'first_name', 'middle_name', 'last_name', 'title', 'department'], 'string', 'max' => 255]
 		];
@@ -85,18 +85,18 @@ class ObjectIndividual extends \app\components\db\ActiveRecord
 	/**
 	 * @inheritdoc
 	 */
-	public function formSettings()
+	public function formSettings($name, $settings = [])
 	{
-		return [
-			'prefix' => [],
-			'suffix' => [],
-			'first_name' => [],
-			'middle_name' => [],
-			'last_name' => [],
-			'title' => [],
-			'department' => [],
-			'birthday' => []
-		];
+		if (!array_key_exists('title', $settings)) {
+			$settings['title'] = false;
+		}
+		$settings['fields'] = array();
+		$settings['fields'][] = ['fields' => ['first_name', 'middle_name', 'last_name'], 'distribution' => null];
+		$settings['fields'][] = ['fields' => ['title', 'department'], 'distribution' => null];
+		if (!$this->isNewRecord) {
+			$settings['fields'][] = ['fields' => ['birthday', false, false]];
+		}
+		return $settings;
 	}
 
 	/**

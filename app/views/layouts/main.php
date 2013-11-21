@@ -8,7 +8,13 @@ use yii\widgets\Breadcrumbs;
  * @var $this \infinite\base\View
  * @var $content string
  */
-app\config\AppAsset::register($this);
+app\components\web\assetBundles\AppAsset::register($this);
+
+$bodyAttributes = [];
+if (YII_ENV_DEV) {
+	if (!isset($bodyAttributes['class'])) { $bodyAttributes['class'] = ''; }
+	$bodyAttributes['class'] .= ' development';
+}
 ?>
 <?php $this->beginPage(); ?>
 <!DOCTYPE html>
@@ -19,7 +25,7 @@ app\config\AppAsset::register($this);
 	<title><?=Html::encode($this->title); ?></title>
 	<?php $this->head(); ?>
 </head>
-<body>
+<?= Html::beginTag('body', $bodyAttributes); ?>
 <?php $this->beginBody(); ?>
 	<?php
 		NavBar::begin([

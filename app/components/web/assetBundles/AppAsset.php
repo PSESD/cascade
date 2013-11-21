@@ -5,7 +5,7 @@
  * @license http://www.yiiframework.com/license/
  */
 
-namespace app\config;
+namespace app\components\web\assetBundles;
 
 use yii\web\AssetBundle;
 
@@ -22,6 +22,6 @@ class AppAsset extends AssetBundle
 	public $css = ['css/site.css'];
 	public $js = [];
 	public $depends = [
-		'\infinite\web\InfiniteAsset',
+		'\infinite\web\assetBundles\InfiniteAsset',
 	];
 }

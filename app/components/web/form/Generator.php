@@ -14,6 +14,8 @@ use \infinite\helpers\Html;
 
 class Generator extends \infinite\base\Object {
 	protected $_items;
+	public $form;
+
 	public $isValid = true;
 	public $class = '';
 	public $ajax = false;
@@ -27,6 +29,7 @@ class Generator extends \infinite\base\Object {
 			$this->_items = $this->_items[0];
 		}
 		foreach ($this->_items as $item) {
+			$item->owner = $this;
 			if (!$item->isValid) {
 				$this->isValid = false;
 			}
@@ -47,18 +50,24 @@ class Generator extends \infinite\base\Object {
 			$this->class .= " ajaxSubmit";
 		}
 		$result = array();
-		$result[] = Html::beginForm('', 'post', array('class' => $this->class));
-		$result[] = Html::beginTag('div', array('class' => 'form'));
+		list($this->form, $formStartRow) = ActiveForm::begin([
+			'options' => ['class' => ''] //form-horizontal
+		], false);
+		$result[] = $formStartRow;
+		// $result[] = Html::beginForm('', 'post', array('class' => $this->class));
+		$result[] = Html::beginTag('div', array('class' => ''));
 		foreach ($this->_items as $item) {
 			$result[] = $item->get();
 		}
 		if (!Yii::$app->request->isAjax) {
-			$result[] = Html::beginTag('div', array('class' => 'buttons'));
-			$result[] = Html::submitButton('Save');
+			$result[] = Html::beginTag('div', array('class' => 'form-group'));
+			$result[] = Html::beginTag('div', array('class' => 'col-lg-offset-1 col-lg-11'));
+			$result[] = Html::submitButton('Save', ['class' => 'btn btn-primary']);;
+			$result[] = Html::endTag('div');
 			$result[] = Html::endTag('div');
 		}
 		$result[] = Html::endTag('div');
-		$result[] = Html::endForm();
+		$result[] = ActiveForm::end(false);
 		return implode("\n", $result);
 	}
 
@@ -69,8 +78,6 @@ class Generator extends \infinite\base\Object {
 	public function render() {
 		echo $this->get();
 	}
-
-
 }
 
 

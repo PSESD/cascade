@@ -47,7 +47,7 @@ class ObjectAccount extends \app\components\db\ActiveRecord
 	{
 		return [
 			[['name'], 'required'],
-			[['created', 'modified', 'deleted'], 'unsafe'],
+			//[['created', 'modified', 'deleted'], 'unsafe'],
 			[['id', 'created_user_id', 'modified_user_id', 'deleted_user_id'], 'string', 'max' => 36],
 			[['name', 'alt_name'], 'string', 'max' => 255]
 		];
@@ -69,12 +69,14 @@ class ObjectAccount extends \app\components\db\ActiveRecord
 	/**
 	 * @inheritdoc
 	 */
-	public function formSettings()
+	public function formSettings($name, $settings = [])
 	{
-		return [
-			'name' => [],
-			'alt_name' => []
-		];
+		if (!array_key_exists('title', $settings)) {
+			$settings['title'] = false;
+		}
+		$settings['fields'] = array();
+		$settings['fields'][] = ['fields' => ['name', 'alt_name'], 'distribution' => [8, 4]];
+		return $settings;
 	}
 
 	/**
@@ -85,7 +87,7 @@ class ObjectAccount extends \app\components\db\ActiveRecord
 		return [
 			'id' => 'ID',
 			'name' => 'Name',
-			'alt_name' => 'Alt Name',
+			'alt_name' => 'Alternative Name',
 			'created' => 'Created',
 			'created_user_id' => 'Created User ID',
 			'modified' => 'Modified',

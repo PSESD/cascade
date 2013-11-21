@@ -10,10 +10,9 @@ namespace app\components\web\form;
 
 use \infinite\helpers\Html;
 
-class Row extends \infinite\base\Object {
+class Row extends FormObject {
 	protected $_items;
 	public $distribution;
-	public $compressed = false;
 
 	/**
 	 *
@@ -25,6 +24,46 @@ class Row extends \infinite\base\Object {
 		}
 	}
 
+	public function distribute($d) {
+		$this->distribution = $d;
+		return $this;
+	}
+
+	public function get($model = null, $formField = [])
+	{
+		if (empty($this->_items)) {
+			return '';
+		}
+		$result = array();
+		$result[] = Html::beginTag('div', array('class' => 'row'));
+		$total = $left = count($this->_items);
+		$columnsLeft = 12;
+		$n = 0;
+		foreach ($this->_items as $item) {
+			if (is_null($this->distribution)) {
+				$columns = floor(12 / $total);
+			} else {
+				if (isset($this->distribution[$n])) {
+					$columns = $this->distribution[$n];
+				} elseif (isset($columnsFroze)) {
+					$columns = $columnsFroze;
+				} else {
+					$columns = $columnsFroze = floor($columnsLeft / count($left));
+				}
+			}
+			$columnsLeft = $columnsLeft - $columns;
+			$result[] = Html::beginTag('div', ['class' => 'col-sm-'. $columns]);
+			if ($item === false) {
+				$result[] = '&nbsp;';
+			} else {
+				$result[] = $item->get($model, $formField);
+			}
+			$result[] = Html::endTag('div');
+			$n++;
+		}
+		$result[] = Html::endTag('div');
+		return implode("\n", $result);
+	}
 
 	/**
 	 *
@@ -33,7 +72,7 @@ class Row extends \infinite\base\Object {
 	 * @param unknown $formField (optional)
 	 * @return unknown
 	 */
-	public function get($model = null, $formField = array()) {
+	public function getOld($model = null, $formField = array()) {
 		if (empty($this->_items)) {
 			return '';
 		}
