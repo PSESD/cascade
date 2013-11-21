@@ -89,7 +89,7 @@ class Model extends \infinite\base\Component {
 	 */
 	public function getFormField() {
 		if (is_null($this->_formField)) {
-			$this->_formField = new FormField($this, array());
+			$this->formField = [];
 		}
 		return $this->_formField;
 	}

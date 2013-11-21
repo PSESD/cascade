@@ -140,7 +140,7 @@ class Field extends FormObject {
 		case 'date':
 			$this->htmlOptions['class'] .= ' date';
 			break;
-		case 'textArea':
+		case 'textarea':
 			$item->textarea();
 			break;
 		case 'rich':

@@ -77,9 +77,10 @@ class ObjectIndividual extends \app\components\db\ActiveRecord
 			'last_name' => [],
 			'title' => [],
 			'department' => [],
-			'birthday' => []
+			'birthday' => ['formField' => ['type' => 'date']]
 		];
 	}
+
 
 
 	/**
