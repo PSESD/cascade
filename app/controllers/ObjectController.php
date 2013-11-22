@@ -71,6 +71,7 @@ class ObjectController extends Controller
 		// echo Registry::parseModelAlias(\app\modules\SectionContact\modules\TypePhoneNumber\models\ObjectPhoneNumber::modelAlias());
 		// //echo "okay";
 		// exit;
+		//var_dump(Yii::$app->collectors['types']);
 		return $this->render('index');
 	}
 
@@ -153,8 +154,8 @@ class ObjectController extends Controller
 		$this->response->task = 'dialog';
 		$this->response->taskOptions = array('title' => 'Create '.$module->title->getSingular(true) , 'width' => '800px');
 
-		$models = $module->getModels();
-		$this->params['form'] = $module->getForm($models);
+		$model = $module->getModel();
+		$this->params['form'] = $module->getForm($model);
 		if (!$this->params['form']) {
 			throw new HttpException(403, "There is nothing to create for {$module->title->getPlural(true)}");
 		}

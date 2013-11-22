@@ -65,7 +65,7 @@ class Relationship extends \infinite\base\Object {
 	 * @return unknown
 	 */
 	static public function getOne(Item $parent, Item $child, $options = array()) {
-		$key = md5($parent->name ."-". $child->name);
+		$key = md5($parent->systemId ."-". $child->systemId);
 		if (isset(self::$_relationships[$key])) {
 			self::$_relationships[$key]->mergeOptions($options);
 		} else {

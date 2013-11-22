@@ -95,7 +95,7 @@ class ObjectIndividual extends \app\components\db\ActiveRecord
 		$settings['fields'][] = ['first_name', 'middle_name', 'last_name'];
 		$settings['fields'][] = ['title', 'department'];
 		if ($this->isNewRecord) {
-			$settings['fields'][] = ['child:EmailAddress', 'child:PhoneNumber'];
+			$settings['fields'][] = ['child:EmailAddress' => ['buildRelation' => false], 'child:PhoneNumber' => ['buildRelation' => false]];
 		}
 		if (!$this->isNewRecord) {
 			$settings['fields'][] = ['birthday', false];

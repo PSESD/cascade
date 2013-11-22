@@ -10,7 +10,7 @@ namespace app\components\web\form;
 
 use Yii;
 
-use \app\components\types\fields\Model as ModelField;
+use \app\components\db\fields\Model as ModelField;
 
 use \infinite\web\grid\Grid;
 use \infinite\helpers\Html;
@@ -74,7 +74,7 @@ class Segment extends FormObject {
 	 *
 	 */
 	public function render() {
-		echo $this->get();
+		echo $this->generate();
 	}
 
 
@@ -83,7 +83,7 @@ class Segment extends FormObject {
 	 *
 	 * @return unknown
 	 */
-	public function get() {
+	public function generate() {
 		$result = [];
 		if (!empty($this->_settings['title'])) {
 			$result[] = Html::beginTag('fieldset');
@@ -127,6 +127,7 @@ class Segment extends FormObject {
 			foreach ($fields as $fieldName => $field) {
 				$field->formField->owner = $this;
 				if (!$field->human) { continue; }
+				if (!($field instanceof ModelField)) { continue; }
 				$fieldsTemplate[] = [$fieldName];
 			}
 		} else {

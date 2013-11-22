@@ -13,8 +13,19 @@ use \app\components\web\form\fields\Relation as RelationFormField;
 class Relation extends Base {
 	protected $_human = true;
 	public $relationship;
-	public $modelRelationship;
+	public $modelRole; // either parent or child
 
+	public function getCompanion() {
+		if ($this->modelRole === 'parent') {
+			return $this->relationship->child;
+		} else {
+			return $this->relationship->parent;
+		}
+	}
+
+	public function getCompanionModel() {
+		
+	}
 	/**
 	 * 
 	 */

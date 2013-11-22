@@ -42,7 +42,7 @@ class Generator extends \infinite\base\Object {
 	 *
 	 * @return unknown
 	 */
-	public function get() {
+	public function generate() {
 		if (empty($this->_items)) {
 			return '';
 		}
@@ -57,7 +57,7 @@ class Generator extends \infinite\base\Object {
 		// $result[] = Html::beginForm('', 'post', array('class' => $this->class));
 		$result[] = Html::beginTag('div', array('class' => ''));
 		foreach ($this->_items as $item) {
-			$result[] = $item->get();
+			$result[] = $item->generate();
 		}
 		if (!Yii::$app->request->isAjax) {
 			$result[] = Html::beginTag('div', array('class' => 'form-group'));
@@ -76,7 +76,7 @@ class Generator extends \infinite\base\Object {
 	 *
 	 */
 	public function render() {
-		echo $this->get();
+		echo $this->generate();
 	}
 }
 

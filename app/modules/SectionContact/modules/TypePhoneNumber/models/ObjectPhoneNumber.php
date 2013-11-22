@@ -42,7 +42,7 @@ class ObjectPhoneNumber extends \app\components\db\ActiveRecord
 		return [
 			[['phone', 'extension'], 'required'],
 			[['no_call'], 'boolean'],
-			[['created', 'modified'], 'unsafe'],
+		//	[['created', 'modified'], 'unsafe'],
 			[['id'], 'string', 'max' => 36],
 			[['phone'], 'string', 'max' => 100],
 			[['extension'], 'string', 'max' => 15]
@@ -66,13 +66,17 @@ class ObjectPhoneNumber extends \app\components\db\ActiveRecord
 	/**
 	 * @inheritdoc
 	 */
-	public function formSettings()
+	public function formSettings($name, $settings = [])
 	{
-		return [
-			'phone' => [],
-			'extension' => [],
-			'no_call' => []
-		];
+		if (!array_key_exists('title', $settings)) {
+			$settings['title'] = false;
+		}
+		$settings['fields'] = array();
+		$settings['fields'][] = ['phone' => ['columns' => 8], 'extension' => ['columns' => 4]];
+		if (!$this->isNewRecord) {
+			$settings['fields'][] = ['no_call'];
+		}
+		return $settings;
 	}
 
 	/**

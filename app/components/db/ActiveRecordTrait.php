@@ -48,7 +48,10 @@ trait ActiveRecordTrait {
 	 * @return unknown
 	 */
 	public function form($name, $settings = array()) {
-		return new FormSegment($this, $name, $settings);
+		Yii::beginProfile(__CLASS__ .':'. __FUNCTION__);
+		$form = new FormSegment($this, $name, $settings);
+		Yii::endProfile(__CLASS__ .':'. __FUNCTION__);
+		return $form;
 	}
 
 	/**
@@ -113,7 +116,7 @@ trait ActiveRecordTrait {
 				$settings['model'] = $model;
 				$settings['field'] = $fieldName;
 				$settings['relationship'] = $relationship;
-				$settings['modelRelationship'] = 'child';
+				$settings['modelRole'] = 'child';
 
 				self::$_fields[$fieldKey][$fieldName] = Yii::createObject($settings);
 			}
@@ -127,7 +130,7 @@ trait ActiveRecordTrait {
 				$settings['model'] = $model;
 				$settings['field'] = $fieldName;
 				$settings['relationship'] = $relationship;
-				$settings['modelRelationship'] = 'parent';
+				$settings['modelRole'] = 'parent';
 
 				self::$_fields[$fieldKey][$fieldName] = Yii::createObject($settings);
 			}
@@ -144,10 +147,9 @@ trait ActiveRecordTrait {
 	}
 
 	public function getObjectTypeItem() {
-		if (Yii::$app->collectors['types']->has(get_class($this), 'primaryModel')) {
-			return Yii::$app->collectors['types']->getOne(get_class($this), 'primaryModel');
+		if (Yii::$app->collectors['types']->has(get_class($this), 'object.primaryModel')) {
+			return Yii::$app->collectors['types']->getOne(get_class($this), 'object.primaryModel');
 		}
-		var_dump(Yii::$app->collectors['types']->bucket('primaryModel'));exit;
 		return false;
 	}
 	/**

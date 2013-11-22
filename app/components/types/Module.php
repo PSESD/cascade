@@ -353,78 +353,12 @@ abstract class Module extends \app\components\base\CollectorModule {
 	 *
 	 * @return unknown
 	 */
-	public function getModels($primaryModel = null) {
-		$models = $this->_models($primaryModel);
-
-		if (!$models['primary']['model']->isNewRecord AND $this->objectLevel === 1) {
-			$models['primary']['parents'] = false;
-			$models['primary']['children'] = false;
-		} else {
-			if (!empty($_GET['parent_object_id']) and isset($models['primary']['parents']) and $models['primary']['parents'] !== false) {
-				$foundParent = false;
-				foreach ($models['primary']['parents'] as $pk => $parent) {
-					if ($parent['model']->parent_object_id == $_GET['parent_object_id']) {
-						$foundParent = true;
-						break;
-					}
-				}
-				if (!$foundParent) {
-					if (empty($models['primary']['parents'])) {
-						$models['primary']['parents'] = array();
-					}
-					$models['primary']['parents']['initialParentRelation'] = array('model' => new Relation);
-					$models['primary']['parents']['initialParentRelation']['model']->active = 1;
-					$models['primary']['parents']['initialParentRelation']['model']->parent_object_id = $_GET['parent_object_id'];
-					$models['primary']['parents']['initialParentRelation']['model']->child_object_id = $models['primary']['model'];
-					$models['primary']['parents']['initialParentRelation']['model']->setFormValues('initialParentRelation');
-				}
-			}
-		}
-		return $models;
-	}
-
-
-	/**
-	 *
-	 *
-	 * @param unknown $primaryModel (optional)
-	 * @return unknown
-	 */
-	protected function _models($primaryModel = null) {
+	public function getModel($primaryModel = null) {
 		if (is_null($primaryModel)) {
 			$primaryModel = new $this->primaryModel;
 		}
 		if (!$primaryModel) { return false; }
-		$m = array('primary' => array('model' => $primaryModel, 'parents' => false));
-		$parents = $this->collectorItem->parents;
-		if (!empty($parents)) {
-			$m['primary']['parents'] = array();
-			if (!$primaryModel->isNewRecord) {
-				$parentsRaw = $primaryModel->getRelations('parents', false);
-				foreach ($parentsRaw as $parent) {
-					$pKey = md5($parent->id);
-					$parent->setFormValues($pKey);
-					$m['primary']['parents'][$pKey] = array('model' => $parent);
-				}
-			}
-			if (!empty($_POST['Relation'])) {
-				$relations = array();
-				foreach ($_POST['Relation'] as $k => $relation) {
-					$relations[] = $k;
-					if (!isset($m['primary']['parents'][$k])) {
-						$m['primary']['parents'][$k] = array('model' => new Relation);
-						$m['primary']['parents'][$k]['model']->child_object_id = $primaryModel;
-					}
-					$m['primary']['parents'][$k]['model']->active = 1;
-					$m['primary']['parents'][$k]['model']->attributes = $relation;
-				}
-				foreach ($m['primary']['parents'] as $k => $relation) {
-					if (in_array($k, $relations)) { continue; }
-					$relation['model']->deleteOnSave = true;
-				}
-			}
-		}
-		return $m;
+		return $primaryModel;
 	}
 
 
@@ -436,7 +370,7 @@ abstract class Module extends \app\components\base\CollectorModule {
 	 */
 	public function saveModels($models = null) {
 		if (is_null($models)) {
-			$models = $this->getModels();
+			$models = $this->getModel();
 		}
 		foreach ($models as $key => $p) {
 			if ($key === 'primary') {
@@ -546,24 +480,25 @@ abstract class Module extends \app\components\base\CollectorModule {
 	 * @param unknown $primaryModel (optional)
 	 * @return unknown
 	 */
-	public function getForm($primaryModel = null) {
+	public function getForm($primaryModel = null, $settings = []) {
+		$formSegments = [$this->getFormSegment($primaryModel, $settings)];
+		return new FormGenerator($formSegments);
+	}
+
+	public function getFormSegment($primaryModel = null, $settings = [])
+	{
 		if (is_array($primaryModel)) {
 			$models = $primaryModel;
 		} else {
 			if (is_null($primaryModel)) {
 				$primaryModel = new $this->primaryModel;
 			}
-			$models = $this->getModels($primaryModel);
+			$models = $this->getModel($primaryModel);
 		}
 		if (empty($primaryModel)) {
 			return false;
 		}
-		$formSegments = array();
-		foreach ($models as $type => $settings) {
-			if (!isset($settings['model'])) { continue; }
-			$formSegments[$type] = $settings['model']->form($type, $settings);
-		}
-		return new FormGenerator($formSegments);
+		return $primaryModel->form('primary', $settings);
 	}
 }
 

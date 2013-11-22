@@ -41,7 +41,7 @@ class ObjectEmailAddress extends \app\components\db\ActiveRecord
 		return [
 			[['email_address'], 'required'],
 			[['no_mailings'], 'boolean'],
-			[['created', 'modified'], 'unsafe'],
+		//	[['created', 'modified'], 'unsafe'],
 			[['id'], 'string', 'max' => 36],
 			[['email_address'], 'string', 'max' => 255]
 		];
@@ -63,12 +63,17 @@ class ObjectEmailAddress extends \app\components\db\ActiveRecord
 	/**
 	 * @inheritdoc
 	 */
-	public function formSettings()
+	public function formSettings($name, $settings = [])
 	{
-		return [
-			'email_address' => [],
-			'no_mailings' => []
-		];
+		if (!array_key_exists('title', $settings)) {
+			$settings['title'] = false;
+		}
+		$settings['fields'] = array();
+		$settings['fields'][] = ['email_address'];
+		if (!$this->isNewRecord) {
+			$settings['fields'][] = ['no_mailings'];
+		}
+		return $settings;
 	}
 
 	/**
