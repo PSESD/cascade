@@ -110,7 +110,7 @@ class Relationship extends \infinite\base\Object {
 	 * @return unknown
 	 */
 	public function getParent() {
-		return $this->_parent->module;
+		return $this->_parent->object;
 	}
 
 
@@ -120,7 +120,7 @@ class Relationship extends \infinite\base\Object {
 	 * @return unknown
 	 */
 	public function getChild() {
-		return $this->_child->module;
+		return $this->_child->object;
 	}
 
 	/**

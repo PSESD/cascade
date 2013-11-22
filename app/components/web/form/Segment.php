@@ -146,6 +146,17 @@ class Segment extends FormObject {
 						$fieldKey = $fieldSettings;
 						$fieldSettings = [];
 					}
+					
+					if ($fieldKey === false || $fieldKey === ':empty') {
+						$rowItems[] = Yii::createObject(['class' => $cellClass, 'content' => '&nbsp;']);
+						continue;
+					}
+
+					if ($fieldKey === ':separator') {
+						$rowItems[] = Yii::createObject(['class' => $cellClass, 'content' => '<span class="separator"></span>']);
+						continue;
+					}
+
 					if (!isset($fields[$fieldKey])) { continue; }
 
 					if ($fieldKey === false) {

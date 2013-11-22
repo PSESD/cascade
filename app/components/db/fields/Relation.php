@@ -12,6 +12,8 @@ use \app\components\web\form\fields\Relation as RelationFormField;
 
 class Relation extends Base {
 	protected $_human = true;
+	public $relationship;
+	public $modelRelationship;
 
 	/**
 	 * 

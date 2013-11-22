@@ -9,10 +9,13 @@
 
 namespace app\components\db;
 
+use Yii;
+
 use app\components\web\form\Segment as FormSegment;
-use app\components\db\fields\Model as ModelField;
 
 trait ActiveRecordTrait {
+	public $modelFieldClass = 'app\components\db\fields\Model';
+	public $relationFieldClass = 'app\components\db\fields\Relation';
 
 	static protected $_fields = array();
 	protected $_defaultOrder = '{alias}.name ASC';
@@ -79,29 +82,74 @@ trait ActiveRecordTrait {
 	 * @param unknown $univeralFieldSettings (optional)
 	 * @return unknown
 	 */
-	public static function getFields($model = null, $univeralFieldSettings = null) {
-		if (is_null($model)) {
-			$model = self::find();
-		}
-		if (is_null($univeralFieldSettings)) {
-			$univeralFieldSettings = array();
-		}
-		$modelName = get_class($model);
+	public static function getFields() {
+		$modelName = static::className();
+		$model = new $modelName;
 		$fieldKey = md5($modelName .'.'. $model->primaryKey);
 		if (empty(self::$_fields[$fieldKey])) {
 			self::$_fields[$fieldKey] = array();
 			$fieldSettings = $model->fieldSettings();
 			foreach (array_merge($model->additionalFields(), $modelName::getTableSchema()->columns) as  $name => $column) {
-				$settings = $univeralFieldSettings;
+				$settings = [];
 				if (isset($fieldSettings[$name])) {
 					$settings = array_merge_recursive($settings, $fieldSettings[$name]);
 				}
-				self::$_fields[$fieldKey][$name] = new ModelField($model, $name, $settings);
+				$settings['class'] = $model->modelFieldClass;
+				$settings['model'] = $model;
+				$settings['field'] = $name;
+
+				self::$_fields[$fieldKey][$name] = Yii::createObject($settings);
+			}
+		}
+		$objectTypeItem = $model->objectTypeItem;
+		if ($objectTypeItem) {
+			foreach ($objectTypeItem->parents as $relationship) {
+				$fieldName = 'parent:'. $relationship->parent->systemId;
+				$settings = [];
+				if (isset($fieldSettings[$fieldName])) {
+					$settings = array_merge_recursive($settings, $fieldSettings[$fieldName]);
+				}
+				$settings['class'] = $model->relationFieldClass;
+				$settings['model'] = $model;
+				$settings['field'] = $fieldName;
+				$settings['relationship'] = $relationship;
+				$settings['modelRelationship'] = 'child';
+
+				self::$_fields[$fieldKey][$fieldName] = Yii::createObject($settings);
+			}
+			foreach ($objectTypeItem->children as $relationship) {
+				$fieldName = 'child:'. $relationship->child->systemId;
+				$settings = [];
+				if (isset($fieldSettings[$fieldName])) {
+					$settings = array_merge_recursive($settings, $fieldSettings[$fieldName]);
+				}
+				$settings['class'] = $model->relationFieldClass;
+				$settings['model'] = $model;
+				$settings['field'] = $fieldName;
+				$settings['relationship'] = $relationship;
+				$settings['modelRelationship'] = 'parent';
+
+				self::$_fields[$fieldKey][$fieldName] = Yii::createObject($settings);
 			}
 		}
 		return self::$_fields[$fieldKey];
 	}
 
+	public function getObjectType() {
+		$objectTypeItem = $this->objectTypeItem;
+		if ($objectTypeItem) {
+			return $objectTypeItem->object;
+		}
+		return false;
+	}
+
+	public function getObjectTypeItem() {
+		if (Yii::$app->collectors['types']->has(get_class($this), 'primaryModel')) {
+			return Yii::$app->collectors['types']->getOne(get_class($this), 'primaryModel');
+		}
+		var_dump(Yii::$app->collectors['types']->bucket('primaryModel'));exit;
+		return false;
+	}
 	/**
 	 *
 	 *

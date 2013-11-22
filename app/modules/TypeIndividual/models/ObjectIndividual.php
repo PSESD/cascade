@@ -92,10 +92,13 @@ class ObjectIndividual extends \app\components\db\ActiveRecord
 			$settings['title'] = false;
 		}
 		$settings['fields'] = array();
-		$settings['fields'][] = ['fields' => ['first_name', 'middle_name', 'last_name'], 'distribution' => null];
-		$settings['fields'][] = ['fields' => ['title', 'department'], 'distribution' => null];
+		$settings['fields'][] = ['first_name', 'middle_name', 'last_name'];
+		$settings['fields'][] = ['title', 'department'];
+		if ($this->isNewRecord) {
+			$settings['fields'][] = ['child:EmailAddress', 'child:PhoneNumber'];
+		}
 		if (!$this->isNewRecord) {
-			$settings['fields'][] = ['fields' => ['birthday', false, false]];
+			$settings['fields'][] = ['birthday', false];
 		}
 		return $settings;
 	}

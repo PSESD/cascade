@@ -12,24 +12,13 @@ abstract class Base extends \infinite\base\Object {
 
 	abstract public function setFormField($value);
 
-	/**
-	 *
-	 *
-	 * @param unknown $model
-	 * @param unknown $field
-	 * @param unknown $settings
-	 * @return unknown
-	 */
-	public function __construct($model, $field, $settings) {
-		$this->model = $model;
-		$this->field = $field;
-		foreach ($settings as $k => $v) {
-			$this->{$k} = $v;
+
+	public function init() {
+		parent::init();
+
+		if (!is_null($this->default) and $model->isDefaultValue($this->field)) {
+			$this->model->{$this->field} = $this->default;
 		}
-		if (!is_null($this->default) and $model->isDefaultValue($field)) {
-			$model->{$field} = $this->default;
-		}
-		return true;
 	}
 
 	/**

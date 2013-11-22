@@ -14,5 +14,6 @@ class Cell extends \infinite\web\grid\Cell
 	public $tabletSize = 'auto';
 	public $mediumDesktopSize = false; // baseline
 	public $largeDesktopSize = false;
+	protected $_defaultColumns = 'auto';
 }
 ?>
