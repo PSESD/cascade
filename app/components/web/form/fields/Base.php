@@ -29,21 +29,6 @@ abstract class Base extends \infinite\base\Object implements \infinite\web\grid\
 	protected $_type;
 	protected $_model;
 
-	/**
-	 *
-	 *
-	 * @param unknown $modelField
-	 * @param unknown $settings
-	 * @return unknown
-	 */
-	public function __construct($modelField, $settings) {
-		$this->modelField = $modelField;
-		foreach ($settings as $k => $v) {
-			$this->{$k} = $v;
-		}
-		return true;
-	}
-
 	abstract public function generate();
 
 	/**
@@ -53,7 +38,8 @@ abstract class Base extends \infinite\base\Object implements \infinite\web\grid\
 	 * @return unknown
 	 */
 	public function getModelField($formSettings = array()) {
-		return $this->field;
+
+		return "{$this->model->tabularPrefix}{$this->field}";
 	}
 
 

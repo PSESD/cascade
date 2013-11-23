@@ -1,6 +1,9 @@
 <?php
 namespace app\components\types;
 
+use Yii;
+use \infinite\helpers\ArrayHelper;
+
 class Item extends \infinite\base\collector\Item {
 	protected $_children = [];
 	protected $_parents = [];
@@ -39,7 +42,6 @@ class Item extends \infinite\base\collector\Item {
 				$options = $parent;
 				$parent = $key;
 			}
-
 			$this->collector->addRelationship($parent, $this->systemId, $options);
 		}
 	}
@@ -64,7 +66,7 @@ class Item extends \infinite\base\collector\Item {
 				if (!isset($this->_sections[$item->section->systemId])) {
 					$this->_sections[$section->systemId] = $section;
 				}
-				$this->_sections[$section->systemId]->addItem($this->object, $item, array('instanceSettings' => $instanceSettings));
+				$this->_sections[$section->systemId]->object->register($this->object, $item);
 			}
 		}
 
@@ -79,7 +81,7 @@ class Item extends \infinite\base\collector\Item {
 				if (!isset($this->_sections[$item->section->systemId])) {
 					$this->_sections[$section->systemId] = $section;
 				}
-				$this->_sections[$section->systemId]->addItem($this->object, $item, array('instanceSettings' => $instanceSettings));
+				$this->_sections[$section->systemId]->object->register($this->object, $item);
 			}
 		}
 		

@@ -14,7 +14,7 @@ namespace app\modules\SectionContact\modules\TypePhoneNumber\models;
  *
  * @property Registry $registry
  */
-class ObjectPhoneNumber extends \app\components\db\ActiveRecord
+class ObjectPhoneNumber extends \app\components\types\ActiveRecord
 {
 	use \app\components\types\ActiveRecordTrait;
 
@@ -40,7 +40,7 @@ class ObjectPhoneNumber extends \app\components\db\ActiveRecord
 	public function rules()
 	{
 		return [
-			[['phone', 'extension'], 'required'],
+			[['phone'], 'required'],
 			[['no_call'], 'boolean'],
 		//	[['created', 'modified'], 'unsafe'],
 			[['id'], 'string', 'max' => 36],

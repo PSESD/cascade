@@ -8,26 +8,8 @@
 
 namespace app\components\db\fields;
 
-
-use \app\components\web\form\fields\Model as ModelFormField;
-
 class Model extends Base {
-	/**
-	 *
-	 *
-	 * @param unknown $value
-	 * @return unknown
-	 */
-	public function setFormField($value) {
-		if (is_array($value)) {
-			$value = new ModelFormField($this, $value);
-		}
-
-		$this->_formField = $value;
-		return true;
-	}
-
-
+	public $formFieldClass = '\app\components\web\form\fields\Model';
 }
 
 

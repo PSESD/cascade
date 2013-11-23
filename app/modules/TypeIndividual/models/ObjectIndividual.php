@@ -29,10 +29,8 @@ namespace app\modules\TypeIndividual\models;
  * @property User $user
  * @property User[] $users
  */
-class ObjectIndividual extends \app\components\db\ActiveRecord
+class ObjectIndividual extends \app\components\types\ActiveRecord
 {
-	use \app\components\types\ActiveRecordTrait;
-
 	/**
 	 * @inheritdoc
 	 */

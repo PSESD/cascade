@@ -20,7 +20,7 @@ namespace app\modules\TypeAccount\models;
  * @property User $deletedUser
  * @property User $modifiedUser
  */
-class ObjectAccount extends \app\components\db\ActiveRecord
+class ObjectAccount extends \app\components\types\ActiveRecord
 {
 	use \app\components\types\ActiveRecordTrait;
 

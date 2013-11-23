@@ -30,7 +30,7 @@ class Generator extends \yii\gii\Generator
 	public $db = 'db';
 	//public $moduleName;
 	public $baseNamespace = 'app\modules';
-	public $baseClass = 'app\components\db\ActiveRecord';
+	public $baseClass = 'app\components\types\ActiveRecord';
 	
 	public $title;
 	public $uniparental = 0;

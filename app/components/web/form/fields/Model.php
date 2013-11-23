@@ -2,6 +2,7 @@
 namespace app\components\web\form\fields;
 
 use \infinite\base\exceptions\Exception;
+use \infinite\helpers\Html;
 
 class Model extends Base {
 	/**
@@ -59,7 +60,7 @@ class Model extends Base {
 			break;
 		case 'hidden':
 			$this->showLabel = false;
-			$item = Html::activeHiddenField($model, $field, $this->htmlOptions);
+			$item = Html::activeHiddenInput($model, $field, $this->htmlOptions);
 			break;
 		case 'password':
 			$item->password();

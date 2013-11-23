@@ -113,16 +113,17 @@ class ObjectController extends Controller
 	 *
 	 */
 	public function actionView() {
-		
-		if (empty($_GET['id']) or !($object = $this->params['object'] = Registry::getObject($_GET['id'], true)) or !($typeRef = $this->params['typeRef'] = $object->typeModuleRef)) {
+		if (empty($_GET['id']) or !($object = $this->params['object'] = Registry::getObject($_GET['id'], true)) or !($typeItem = $this->params['typeItem'] = $object->objectTypeItem)) {
 			throw new HttpException(404, "Unknown object.");
 		}
 		if (!$object->can('read')) {
 			throw new HttpException(403, "Unable to access object.");
 		}
-		Yii::$app->request->object = $object;
-		$type = $this->params['type'] = $object->typeModule;
-		$sections = $this->params['sections'] = $typeRef->getSections();
+		//Yii::$app->request->object = $object;
+		$this->response->view = 'view';
+
+		$type = $this->params['type'] = $object->objectType;
+		$sections = $this->params['sections'] = $typeItem->getSections();
 		$this->params['active'] = $this->params['default'] = null;
 		foreach ($sections as $section) {
 			if ($section->displayPriority > 0) {
@@ -130,12 +131,11 @@ class ObjectController extends Controller
 				break;
 			}
 		}
+		var_dump(array_keys($sections));
 		if (!empty($_GET['section'])) {
 			$this->params['active'] = $_GET['section'];
 		}
-		$response = new Response('view');
-		ObjectFamiliarity::accessed($object);
-		$response->handle();
+		//ObjectFamiliarity::accessed($object);
 	}
 
 	/**
@@ -150,34 +150,30 @@ class ObjectController extends Controller
 			throw new HttpException(403, "You do not have access to create {$module->title->getPlural(true)}");
 		}
 		$this->response->view = 'create';
-
 		$this->response->task = 'dialog';
 		$this->response->taskOptions = array('title' => 'Create '.$module->title->getSingular(true) , 'width' => '800px');
 
-		$model = $module->getModel();
-		$this->params['form'] = $module->getForm($model);
-		if (!$this->params['form']) {
+		$models = false;
+		if (!empty($_POST)) {
+			list($error, $notice, $models, $niceModels) = $module->handleSaveAll();
+			if ($error) {
+				$this->response->error = $error;
+			} else {
+				$noticeExtra = '';
+				if (!empty($notice)) {
+					$noticeExtra = ' However, there were notices: '. $notice;
+				}
+				$this->response->success = '<em>'. $niceModels['primary']['model']->descriptor .'</em> was saved successfully.'.$noticeExtra;
+				$this->response->redirect = $niceModels['primary']['model']->getUrl('view');
+			}
+		}
+		if ($models === false) {
+			$models = $module->getModels();
+		}
+		if (!($this->params['form'] = $module->getForm($models))) {
 			throw new HttpException(403, "There is nothing to create for {$module->title->getPlural(true)}");
 		}
 		$this->params['form']->ajax = true;
-		if (!empty($_POST)) {
-			if ($this->params['form']->isValid) {
-				if ($module->saveModels($models)) {
-					$this->response->justStatus = true;
-					$this->response->success =  $module->title->getSingular(true). ' has been saved!';
-					if (!empty($_GET['parent_object_id'])) {
-						$this->response->refresh = '.ic-type-'. $module->shortName;
-					} else {
-						$this->response->redirect = array('view', 'id' => $models['primary']['model']->id);
-					}
-					ObjectFamiliarity::created($models['primary']['model']);
-				} else {
-					$this->response->error = 'Error saving '. $module->title->getSingular(false);
-				}
-			} else {
-				$this->response->error = 'Please address the errors and try again.' . print_r($models['primary']['model']->errors, true);
-			}
-		}
 	}
 
 	/**

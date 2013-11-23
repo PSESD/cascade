@@ -13,7 +13,7 @@ namespace app\modules\SectionContact\modules\TypeEmailAddress\models;
  *
  * @property Registry $registry
  */
-class ObjectEmailAddress extends \app\components\db\ActiveRecord
+class ObjectEmailAddress extends \app\components\types\ActiveRecord
 {
 	use \app\components\types\ActiveRecordTrait;
 
@@ -40,6 +40,7 @@ class ObjectEmailAddress extends \app\components\db\ActiveRecord
 	{
 		return [
 			[['email_address'], 'required'],
+			[['email_address'], 'email'],
 			[['no_mailings'], 'boolean'],
 		//	[['created', 'modified'], 'unsafe'],
 			[['id'], 'string', 'max' => 36],

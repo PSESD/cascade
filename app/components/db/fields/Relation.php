@@ -8,12 +8,14 @@
 
 namespace app\components\db\fields;
 
-use \app\components\web\form\fields\Relation as RelationFormField;
 
 class Relation extends Base {
+	public $formFieldClass = '\app\components\web\form\fields\Relation';
 	protected $_human = true;
+	protected $_moduleHandler;
 	public $relationship;
 	public $modelRole; // either parent or child
+	static $_moduleHandlers = [];
 
 	public function getCompanion() {
 		if ($this->modelRole === 'parent') {
@@ -23,19 +25,19 @@ class Relation extends Base {
 		}
 	}
 
+	public function getModuleHandler() {
+		if (is_null($this->_moduleHandler)) {
+			$stem = $this->field;
+			if (!isset(self::$_moduleHandlers[$stem])) { self::$_moduleHandlers[$stem] = []; }
+			$n = count(self::$_moduleHandlers[$stem]);
+			$this->_moduleHandler = $this->field .':'. $n;
+			self::$_moduleHandlers[$stem][] = $this->_moduleHandler;
+		}
+		return $this->_moduleHandler;
+	}
+
 	public function getCompanionModel() {
 		
-	}
-	/**
-	 * 
-	 */
-	public function setFormField($value) {
-		if (is_array($value)) {
-			$value = new RelationFormField($this, $value);
-		}
-
-		$this->_formField = $value;
-		return true;
 	}
 }
 

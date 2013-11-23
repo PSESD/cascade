@@ -32,8 +32,6 @@ namespace <?= $generator->getModelNamespace() ?>;
  */
 class <?= $className ?> extends <?= '\\' . ltrim($generator->baseClass, '\\') . "\n" ?>
 {
-	use \app\components\types\ActiveRecordTrait;
-
 	/**
 	 * @inheritdoc
 	 */

@@ -16,15 +16,15 @@ class Generator extends \infinite\base\Object {
 	protected $_items;
 	public $form;
 
+	public $models = [];
+
 	public $isValid = true;
 	public $class = '';
 	public $ajax = false;
 
-	/**
-	 *
-	 */
-	public function __construct() {
-		$this->_items = func_get_args();
+
+	public function setItems($items) {
+		$this->_items = $items;
 		if (isset($this->_items[0]) and is_array($this->_items[0])) {
 			$this->_items = $this->_items[0];
 		}
@@ -35,7 +35,6 @@ class Generator extends \infinite\base\Object {
 			}
 		}
 	}
-
 
 	/**
 	 *
@@ -51,7 +50,8 @@ class Generator extends \infinite\base\Object {
 		}
 		$result = array();
 		list($this->form, $formStartRow) = ActiveForm::begin([
-			'options' => ['class' => ''] //form-horizontal
+			'options' => ['class' => ''], //form-horizontal
+			'enableClientValidation' => false
 		], false);
 		$result[] = $formStartRow;
 		// $result[] = Html::beginForm('', 'post', array('class' => $this->class));

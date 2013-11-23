@@ -1,7 +1,11 @@
 <?php
 namespace app\components\db\fields;
 
+use Yii;
+use \infinite\base\exceptions\Exception;
+
 abstract class Base extends \infinite\base\Object {
+	public $formFieldClass;
 	public $field;
 	public $default;
 	protected $_human;
@@ -10,7 +14,20 @@ abstract class Base extends \infinite\base\Object {
 	protected $_model;
 	protected $_formField;
 
-	abstract public function setFormField($value);
+	public function setFormField($value) {
+		if (is_array($value)) {
+			if (is_null($this->formFieldClass)) {
+				throw new Exception("DB Field incorrectly set up. What is the form class?");
+			}
+			$config = $value;
+			$config['class'] = $this->formFieldClass;
+			$config['modelField'] = $this;
+			$value = Yii::createObject($config);
+		}
+
+		$this->_formField = $value;
+		return true;
+	}
 
 
 	public function init() {
@@ -86,9 +103,6 @@ abstract class Base extends \infinite\base\Object {
 	public function getModel() {
 		if (is_null($this->_model)) {
 			return false;
-		}
-		if (!is_object($this->_model)) {
-			$this->_model = new $this->_model;
 		}
 		return $this->_model;
 	}

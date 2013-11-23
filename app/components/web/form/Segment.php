@@ -17,35 +17,45 @@ use \infinite\helpers\Html;
 
 class Segment extends FormObject {
 	public $cellClass = '\app\components\web\form\fields\Cell';
-
 	protected $_name;
 	protected $_model;
 	protected $_settings;
 	protected $_grid;
 
+	public function init()
+	{
+		parent::init();
 
-	/**
-	 *
-	 *
-	 * @param unknown $model
-	 * @param unknown $name
-	 * @param unknown $settings (optional)
-	 */
-	function __construct($model, $name, $settings = array()) {
-		$this->_model = $model;
-		$this->_name = $name;
-		$this->isValid =  $this->_model->setFormValues($name);
-		if (!empty($settings['ignoreInvalid'])) {
+		$this->isValid =  $this->model->setFormValues($this->name);
+		if (!empty($this->settings['ignoreInvalid'])) {
 			$this->isValid = true;
-			$this->_model->clearErrors();
+			$this->model->clearErrors();
 		}
-		$this->_settings = $model->formSettings($name, $settings);
+
+		$this->autogenerate($this->settings);
+	}
+
+	public function setModel($model)
+	{
+		$this->_model = $model;
+	}
+
+	public function setName($name)
+	{
+		$this->_name = $name;
+	}
+
+	public function setSettings($settings)
+	{
+		if (is_null($this->model)) {
+			throw new Exception("You must set the model before you can set the settings.");
+		}
+		$this->_settings = $this->model->formSettings($this->name, $settings);
 		if (is_null($this->_settings) and !empty($settings)) {
 			$this->_settings = $settings;
 		}
-		$this->autogenerate($this->_settings);
 		if (empty($this->_settings['fields'])) {
-			$this->_settings['fields'] = array();
+			$this->_settings['fields'] = [];
 		}
 	}
 
@@ -69,6 +79,15 @@ class Segment extends FormObject {
 		return $this->_settings;
 	}
 
+	/**
+	 *
+	 *
+	 * @return unknown
+	 */
+	public function getName() {
+		return $this->_name;
+	}
+
 
 	/**
 	 *
@@ -83,15 +102,14 @@ class Segment extends FormObject {
 	 *
 	 * @return unknown
 	 */
-	public function generate() {
+	public function generate()
+	{
 		$result = [];
 		if (!empty($this->_settings['title'])) {
 			$result[] = Html::beginTag('fieldset');
 			$result[] = Html::tag('legend', $this->_settings['title']);
 		}
-
 		$result[] = $this->grid->generate();
-
 		if (!empty($this->_settings['title'])) {
 			$result[] = Html::endTag('fieldset');
 		}
@@ -118,14 +136,12 @@ class Segment extends FormObject {
 			$this->_settings['formField'] = array();
 		}
 
-		$modelClass = get_class($this->_model);
-		$fields = $modelClass::getFields($this->_model, $this->_settings['fieldSettings']);
+		$fields = $this->_model->getFields($this);
 		$fieldsTemplate = false;
 
 		if (!isset($this->_settings['fields'])) {
 			$fieldTemplate = [];
 			foreach ($fields as $fieldName => $field) {
-				$field->formField->owner = $this;
 				if (!$field->human) { continue; }
 				if (!($field instanceof ModelField)) { continue; }
 				$fieldsTemplate[] = [$fieldName];
@@ -137,8 +153,9 @@ class Segment extends FormObject {
 		if ($fieldsTemplate !== false) {
 			$this->_settings['fields'] = array();
 			if (!$this->_model->isNewRecord) {
-				$this->grid->prependContent($fields['id']->formField);
+				$this->grid->prepend($fields['id']->formField);
 			}
+			$this->grid->prepend($fields['_moduleHandler']->formField);
 			$cellClass = $this->cellClass;
 			foreach ($fieldsTemplate as $rowFields) {
 				$rowItems = [];
@@ -163,7 +180,6 @@ class Segment extends FormObject {
 					if ($fieldKey === false) {
 						$rowItems[] = false;
 					} else {
-						$fields[$fieldKey]->formField->owner = $this;
 						$rowItems[] = Yii::createObject(['class' => $cellClass, 'content' => $fields[$fieldKey]->formField->configure($fieldSettings)]);
 					}
 				}

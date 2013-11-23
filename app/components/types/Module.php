@@ -11,11 +11,11 @@ use Yii;
 
 use \app\models\Group;
 use \app\models\Relation;
-use \app\components\web\form\Generator as FormGenerator;
 
 use \infinite\base\exceptions\Exception;
 use \infinite\base\exceptions\HttpException;
 use \infinite\base\language\Noun;
+use \infinite\db\ActiveRecord;
 
 use \yii\base\Controller;
 
@@ -34,6 +34,9 @@ abstract class Module extends \app\components\base\CollectorModule {
 
 	public $widgetNamespace;
 	public $modelNamespace;
+
+	public $formGeneratorClass = '\app\components\web\form\Generator';
+	public $sectionClass = '\app\components\section\Section';
 
 	public function init() {
 		if (isset($this->modelNamespace)) {
@@ -173,17 +176,31 @@ abstract class Module extends \app\components\base\CollectorModule {
 	public function getSection($parent = null, $settings = array()) {
 		$name = $this->systemId;
 		if (!empty($parent) and $parent->systemId === $this->systemId) {
-			return Yii::$app->sections->get('related-'.$this->systemId, array('sectionTitle' => 'Related %%type.'. $this->systemId .'.title%%', 'icon' => $this->icon, 'systemId' => $settings['whoAmI'].'-'.$this->systemId, 'displayPriority' => -999));
+			$sectionId = $settings['whoAmI'].'-'.$this->systemId;
+			$section = Yii::$app->collectors['sections']->getOne($sectionId);
+			if (empty($section->object)) {
+				$sectionConfig = ['class' => $this->sectionClass, 'title' => 'Related %%type.'. $this->systemId .'.title%%', 'icon' => $this->icon, 'systemId' => $sectionId];
+				$section->displayPriority = -999;
+				$section->object = Yii::createObject($sectionConfig);
+			}
+			return $section;
 		}
 		$newSectionTitle = '%%type.'. $this->systemId .'.title%%';
 		if (!is_null($this->sectionName)) {
-			$section = Yii::$app->sections->get($this->sectionName);
-			if (!empty($section)) {
+			$sectionClass = $this->sectionClass;
+			$sectionId = $sectionClass::generateSectionId($this->sectionName);
+			if (Yii::$app->collectors['sections']->has($sectionId)) {
+				$section = Yii::$app->collectors['sections']->getOne($sectionId);
 				return $section;
 			}
 			$newSectionTitle = $this->sectionName;
 		}
-		return Yii::$app->sections->get($this->systemId, array('sectionTitle' => $newSectionTitle, 'icon' => $this->icon, 'systemId' => $this->systemId));
+		$section = Yii::$app->collectors['sections']->getOne($this->systemId);
+		if (empty($section->object)) {
+			$sectionConfig = ['class' => $this->sectionClass, 'title' => $newSectionTitle, 'icon' => $this->icon, 'systemId' => $this->systemId];
+			$section->object = Yii::createObject($sectionConfig);
+		}
+		return $section;
 	}
 
 
@@ -205,14 +222,22 @@ abstract class Module extends \app\components\base\CollectorModule {
 		$widgets = array();
 		$detailListClassName = self::classNamespace() .'\widgets\\'. 'DetailList';
 		$simpleListClassName = self::classNamespace() .'\widgets\\'. 'SimpleList';
+		$embeddedListClassName = self::classNamespace() .'\widgets\\'. 'EmbeddedList';
 		@class_exists($detailListClassName);
 		@class_exists($simpleListClassName);
+		@class_exists($embeddedListClassName);
+
+		$baseWidget = [];
+		if (get_class($this->module) !== 'infinite\web\Application') {
+			$baseWidget['section'] = $this->module->collectorItem;
+		}
 		if (!$this->isChildless) {
 			if (!class_exists($detailListClassName, false)) { $detailListClassName = false; }
 			if (!class_exists($simpleListClassName, false)) { $simpleListClassName = false; }
+			if (!class_exists($embeddedListClassName, false)) { $embeddedListClassName = false; }
 			// needs widget for children and summary page
 			if ($detailListClassName) {
-				$childrenWidget = array();
+				$childrenWidget = $baseWidget;
 				$id = 'Parent'. $this->systemId .'Browse';
 				$childrenWidget['widget'] = [
 					'class' => $detailListClassName,
@@ -226,7 +251,7 @@ abstract class Module extends \app\components\base\CollectorModule {
 				Yii::trace("Warning: There is no browse class for the child objects of {$this->systemId}");
 			}
 			if ($this->selfManaged AND $simpleListClassName) {
-				$summaryWidget = array();
+				$summaryWidget = $baseWidget;
 				$id = $this->systemId .'Summary';
 				$summaryWidget['widget'] = [
 					'class' => $simpleListClassName,
@@ -241,10 +266,25 @@ abstract class Module extends \app\components\base\CollectorModule {
 			}
 		} else {
 			if (!class_exists($detailListClassName, false)) { $detailListClassName = false; }
+			if (!class_exists($embeddedListClassName, false)) { $embeddedListClassName = false; }
 			// needs widget for parents
 		}
+		if ($embeddedListClassName) {
+			$childrenWidget = $baseWidget;
+			$id = 'Embedded'. $this->systemId .'Browse';
+			$childrenWidget['widget'] = [
+				'class' => $embeddedListClassName,
+				'icon' => $this->icon, 
+				'title' => '%%type.'. $this->systemId .'.title.upperPlural%%'
+			];
+			$childrenWidget['locations'] = array('parent_objects', 'child_objects');
+			$childrenWidget['displayPriority'] = $this->priority;
+			$widgets[$id] = $childrenWidget;
+		} else {
+			Yii::trace("Warning: There is no browse class for the child objects of {$this->systemId}");
+		}
 		if ($detailListClassName) {
-			$parentsWidget = array();
+			$parentsWidget = $baseWidget;
 			$id = 'Children'. $this->systemId .'Browse';
 			$parentsWidget['widget'] = [
 					'class' => $detailListClassName,
@@ -353,12 +393,21 @@ abstract class Module extends \app\components\base\CollectorModule {
 	 *
 	 * @return unknown
 	 */
-	public function getModel($primaryModel = null) {
-		if (is_null($primaryModel)) {
-			$primaryModel = new $this->primaryModel;
+	public function getModel($input = []) {
+		$primaryModel = new $this->primaryModel;
+		$formName = $primaryModel->formName();
+		if (!empty($input) && isset($input[$formName]['_moduleHandler'])) {
+			$moduleHandler = $input[$formName]['_moduleHandler'];
+			$primaryModel->_moduleHandler = $moduleHandler;
+			unset($input[$formName]['_moduleHandler']);
+			$primaryModel->load($input);
 		}
-		if (!$primaryModel) { return false; }
 		return $primaryModel;
+	}
+
+	public function getModels() {
+		$newModel = $this->getModel();
+		return [$newModel->tabularId => $newModel];
 	}
 
 
@@ -368,109 +417,162 @@ abstract class Module extends \app\components\base\CollectorModule {
 	 * @param unknown $models (optional)
 	 * @return unknown
 	 */
-	public function saveModels($models = null) {
-		if (is_null($models)) {
-			$models = $this->getModel();
-		}
-		foreach ($models as $key => $p) {
-			if ($key === 'primary') {
-				if (!$p['model']->save()) {
-					return false;
-				} else {
-					if (!empty($p['parents'])) {
-						$result = $this->recursiveSave($p['model'], $p['parents'], $p);
-						if ($result === false) {
-							return false;
-						}
-					}
-					if (!empty($p['children'])) {
-						$result = $this->recursiveSave($p['model'], $p['children'], $p);
-						if ($result === false) {
-							return false;
-						}
-					}
-					if (!empty($p['childModels'])) {
-						$result = $this->recursiveSave($p['model'], $p['childModels'], $p);
-						if ($result === false) {
-							return false;
-						}
-					}
-					return true;
-				}
-			} else {
-				// @todo is there ever going to be multiple at this level?
-			}
-		}
+	public function handleSave($model) {
+		return $this->internalSave($model);
 	}
 
+	protected function internalSave($model) {
+		return $model->save();
+	}
 
-	/**
-	 *
-	 *
-	 * @param unknown $parent
-	 * @param unknown $children
-	 * @param unknown $parentOptions
-	 * @param unknown $saveParent    (optional)
-	 * @return unknown
-	 */
-	public function recursiveSave($parent, $children, $parentOptions, $saveParent = false) {
-		foreach ($children as $key => $child) {
-			if ($child['model'] === false) {
-				continue;
-			}
-			if (!empty($child['parents'])) {
-				if (!$this->recursiveSave($child['model'], $child['parents'], $child)) {
-					return false;
+	public function handleSaveAll($input = null) {
+		if (is_null($input)) {
+			$input = $this->_handlePost();
+		}
+		$error = false;
+		$notice = [];
+		$models = false;
+		if ($input) {
+			$models = $this->_extractModels($input);
+			$isValid = true;
+			foreach ($models as $model) {
+				if (!$model->validate()) {
+					$isValid = false;
 				}
 			}
-			if (!empty($child['children'])) {
-				if (!$this->recursiveSave($child['model'], $child['children'], $child)) {
-					return false;
+			if ($isValid) {
+				// save primary
+				$primary = $input['primary'];
+				if (isset($primary['handler'])) {
+					$result = $primary['handler']->handleSave($primary['model']);
+				} else {
+					$result = $this->internalSave($primary['model']);
 				}
-			}
-			if (!empty($child['childModels'])) {
-				if (!$this->recursiveSave($child['model'], $child['childModels'], $child)) {
-					return false;
-				}
-			}
-			if (!empty($child['defaults'])) {
-				foreach ($child['defaults'] as $k => $v) {
-					$child['model']->{$k} = $v;
-				}
-			}
-			if (isset($child['parentKey'])) {
-				$child['model']->{$child['parentKey']} = $parent->id;
-			}
-			if (!empty($child['model']->deleteOnSave)) {
-				if (!$child['model']->isNewRecord) {
-					if (!$child['model']->delete()) {
-						return false;
+				if (!$result || empty($primary['model']->primaryKey)) {
+					$error = 'An error occurred while saving.';
+				} else {
+					// loop through parents
+					foreach ($input['parents'] as $parentKey => $parent) {
+						$relation = $parent['model']->getRelationModel($parentKey);
+						$relation->child_object_id = $parent['model']->primaryKey;
+						if (isset($parent['handler'])) {
+							$descriptor = $parent['handler']->title->singular;
+							$result = $parent['handler']->handleSave($parent['model']);
+						} else {
+							$descriptor = 'part of the record';
+							$result = $this->internalSave($parent['model']);
+						}
+						if (!$result) {
+							$noticeMessage = 'Unable to save '. $descriptor;
+							if (!in_array($noticeMessage, $notice)) {
+								$notice[] = $noticeMessage;
+							}
+						}
+					}
+
+					// loop through children
+					foreach ($input['children'] as $childKey => $child) {
+						$relation = $child['model']->getRelationModel($childKey);
+						$relation->parent_object_id = $primary['model']->primaryKey;
+
+						if (isset($child['handler'])) {
+							$descriptor = $child['handler']->title->singular;
+							$result = $child['handler']->handleSave($child['model']);
+						} else {
+							$descriptor = 'part of the record';
+							$result = $this->internalSave($child['model']);
+						}
+
+						if (!$result) {
+							$noticeMessage = 'Unable to save '. $descriptor;
+							if (!in_array($noticeMessage, $notice)) {
+								$notice[] = $noticeMessage;
+							}
+						}
 					}
 				}
-
-				if ($parent->hasAttribute($key)) {
-					$parent->{$key} = null;
-					$saveParent = true;
-				}
 			} else {
-				if (!empty($child['ignoreInvalid']) and !$child['model']->validate()) {
-					// nada
-				}elseif (!$child['model']->save()) {
-					return false;
+				$error = 'Please fix the entry errors.';
+			}
+		} else {
+			$error = 'Invalid input!';
+		}
+		if (empty($notice)) { 
+			$notice = false;
+		} else {
+			$notice = implode('; ', $notice);
+		}
+		return [$error, $notice, $models, $input];
+	}
+
+	protected function _extractModels($input) {
+		if ($input === false) { return false; }
+		$models = [];
+		if (isset($input['primary'])) {
+			$models[$input['primary']['model']->tabularId] = $input['primary']['model'];
+		}
+		if (!empty($input['children'])) {
+			foreach ($input['children'] as $child) {
+				$models[$child['model']->tabularId] = $child['model'];
+			}
+		}
+		if (!empty($input['parents'])) {
+			foreach ($input['parents'] as $parent) {
+				$models[$parent['model']->tabularId] = $parent['model'];
+			}
+		}
+		return $models;
+	}
+
+	protected function _handlePost() {
+		$results = ['primary' => null, 'children' => [], 'parents' => []];
+		if (empty($_POST)) { return false; }
+
+		foreach ($_POST as $modelTop => $tabs) {
+			if (!is_array($tabs)) { continue; }
+			foreach ($tabs as $tabId => $tab) {
+				if (!isset($tab['_moduleHandler'])) { continue; }
+				$m = [$modelTop => $tab];
+				if ($tab['_moduleHandler'] === ActiveRecord::FORM_PRIMARY_MODEL) {
+					if (isset($results['primary'])) {
+						return false;
+					}
+					$results['primary'] = ['handler' => $this, 'model' => $this->getModel($m)];
+					continue;
 				}
-				if ($parent->hasAttribute($key)) {
-					$parent->{$key} = $child['model']->id;
-					$saveParent = true;
+				$handlerParts = explode(':', $tab['_moduleHandler']);
+				if (count($handlerParts) >= 3) {
+					$resultsKey = null;
+					if ($handlerParts[0] === 'child') {
+						$rel = $this->collectorItem->getChild($handlerParts[1]);
+						if (!$rel || !($handler = $rel->child)) { continue; }
+						$resultsKey = 'children';
+					} elseif ($handlerParts[0] === 'parent') {
+						$handler = $this->collectorItem->getParent($handlerParts[1]);
+						$rel = $this->collectorItem->getParent($handlerParts[1]);
+						if (!$rel || !($handler = $rel->parent)) { continue; }
+						$resultsKey = 'parents';
+					}
+					if (!empty($resultsKey)) {
+						$model = $handler->getModel($m);
+						$dirty = $model->getDirtyAttributes();
+						if ($model->isNewRecord) {
+							$formName = $model->formName();
+							foreach ($m[$formName] as $k => $v) {
+								if (empty($v)) {
+									unset($dirty[$k]);
+								}
+							}
+						}
+						if (count($dirty) > 0) {
+							$results[$resultsKey][$tabId] = ['handler' => $handler, 'model' => $model];
+						}
+					}
 				}
 			}
 		}
-		if ($saveParent && !empty($parent->id)) {
-			if (!empty($parentOptions['ignoreInvalid']) and !$parent->validate()) {
-				return true;
-			}
-			return $parent->save();
-		}
-		return true;
+		if (is_null($results['primary'])) { return false; }
+		return $results; 
 	}
 
 
@@ -480,25 +582,20 @@ abstract class Module extends \app\components\base\CollectorModule {
 	 * @param unknown $primaryModel (optional)
 	 * @return unknown
 	 */
-	public function getForm($primaryModel = null, $settings = []) {
+	public function getForm($models = null, $settings = []) {
+		$primaryModel = ActiveRecord::getPrimaryModel($models);
+		if (!$primaryModel) { return false; }
 		$formSegments = [$this->getFormSegment($primaryModel, $settings)];
-		return new FormGenerator($formSegments);
+		$config = ['class' => $this->formGeneratorClass, 'items' => $formSegments, 'models' => $models];
+		return Yii::createObject($config);
 	}
 
 	public function getFormSegment($primaryModel = null, $settings = [])
 	{
-		if (is_array($primaryModel)) {
-			$models = $primaryModel;
-		} else {
-			if (is_null($primaryModel)) {
-				$primaryModel = new $this->primaryModel;
-			}
-			$models = $this->getModel($primaryModel);
-		}
 		if (empty($primaryModel)) {
 			return false;
 		}
-		return $primaryModel->form('primary', $settings);
+		return $primaryModel->form($settings);
 	}
 }
 

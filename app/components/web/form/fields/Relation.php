@@ -1,6 +1,8 @@
 <?php
 namespace app\components\web\form\fields;
 
+use \infinite\db\ActiveRecord;
+
 class Relation extends Base {
 	public $buildRelation = true;
 	/**
@@ -17,7 +19,17 @@ class Relation extends Base {
 			// we are matching with an existing document
 			return 'existing';
 		} else {
-			$formSegment = $companion->formSegment;
+			$moduleHandler = $this->modelField->moduleHandler;
+			$moduleHandlerKey = ActiveRecord::generateTabularId($moduleHandler);
+			$model = null;
+			if (isset($this->generator->models[$moduleHandlerKey])) {
+				$model = $this->generator->models[$moduleHandlerKey];
+			} else {
+				$model = $companion->getModel();
+				$model->_moduleHandler = $moduleHandler;
+			}
+
+			$formSegment = $companion->getFormSegment($model);
 			$formSegment->owner = $this;
 			return $formSegment->generate();
 		}
