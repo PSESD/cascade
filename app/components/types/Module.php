@@ -228,7 +228,7 @@ abstract class Module extends \app\components\base\CollectorModule {
 		@class_exists($embeddedListClassName);
 
 		$baseWidget = [];
-		if (get_class($this->module) !== 'infinite\web\Application') {
+		if (!($this->module instanceof \infinite\base\ApplicationInterface)) {
 			$baseWidget['section'] = $this->module->collectorItem;
 		}
 		if (!$this->isChildless) {

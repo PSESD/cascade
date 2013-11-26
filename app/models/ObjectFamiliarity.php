@@ -115,7 +115,7 @@ class ObjectFamiliarity extends \app\components\db\ActiveRecord
 		}
 		$session = Yii::$app->session->id;
 
-		$tableName = $objectModel::tableName();
+		$tableName = self::tableName();
 		$familiarityUp = self::CREATED_FAMILIARITY;
 		$query = "INSERT INTO `{$tableName}` SET `created`=1, `familiarity`={$familiarityUp}, `last_modified`=NOW(), `last_accessed`=NOW(), `first_accessed`=NOW(), `object_id`='{$objectId}', `model`='{$objectModel}', `user_id`='{$user}' ON DUPLICATE KEY UPDATE `modified`=`modified`+1, `familiarity`=`familiarity`+{$familiarityUp}, `session`='{$session}',  last_modified=NOW();";
 		$command = Yii::$app->db->createCommand($query);
@@ -144,7 +144,7 @@ class ObjectFamiliarity extends \app\components\db\ActiveRecord
 		}
 		$session = Yii::$app->session->id;
 
-		$tableName = $objectModel::tableName();
+		$tableName = self::tableName();
 		$familiarityUp = self::MODIFIED_FAMILIARITY;
 		$query = "INSERT INTO `{$tableName}` SET `modified`=1, `familiarity`={$familiarityUp}, `last_modified`=NOW(), `last_accessed`=NOW(), `first_accessed`=NOW(), `object_id`='{$objectId}', `model`='{$objectModel}', `user_id`='{$user}', `session`='{$session}' ON DUPLICATE KEY UPDATE `modified`=`modified`+1, `familiarity`=`familiarity`+{$familiarityUp}, `session`='{$session}',  last_modified=NOW(), last_accessed=NOW();";
 		$command = Yii::$app->db->createCommand($query);
@@ -173,7 +173,7 @@ class ObjectFamiliarity extends \app\components\db\ActiveRecord
 		}
 		$session = Yii::$app->session->id;
 
-		$tableName = $objectModel::tableName();
+		$tableName = self::tableName();
 		$familiarityUp = self::ACCESSED_FAMILIARITY;
 		$query = "INSERT INTO `{$tableName}` SET `accessed`=1, `familiarity`={$familiarityUp}, `last_accessed`=NOW(), `first_accessed`=NOW(), `object_id`='{$objectId}', `model`='{$objectModel}', `user_id`='{$user}', `session`='{$session}' ON DUPLICATE KEY UPDATE `accessed`=IF((`session` IS NULL OR `session` != '{$session}'), `accessed`+1, `accessed`), `familiarity`=IF((`session` IS NULL OR `session` != '{$session}'), `familiarity`+{$familiarityUp}, `familiarity`), `session`='{$session}', last_accessed=NOW();";
 		$command = Yii::$app->db->createCommand($query);

@@ -21,8 +21,9 @@ return array(
 	// application components
 	'components' => array(
 		'db' => include(INFINITE_APP_ENVIRONMENT_PATH . DIRECTORY_SEPARATOR . "database.php"),
-		'cache' => include(INFINITE_APP_ENVIRONMENT_PATH . DIRECTORY_SEPARATOR . 'cache.php'),
+		'redis' => include(INFINITE_APP_ENVIRONMENT_PATH . DIRECTORY_SEPARATOR . 'redis.php'),
 		'collectors' => include(INFINITE_APP_ENVIRONMENT_PATH . DIRECTORY_SEPARATOR . 'collectors.php'),
+		'cache' => ['class' => '\yii\redis\Cache'],
 		'request' => array(
 			'class' => '\infinite\web\request',
 			'enableCsrfValidation' => true,
@@ -42,13 +43,10 @@ return array(
 		),
 		'gk' => array('class' => '\infinite\security\Gatekeeper'),
 		'session' => array(
-			'class' => '\infinite\web\DbSession',
-			//'connectionID' => 'db',
-			//'autoCreateSessionTable' => false,
-			'sessionTable' => 'http_session',
+			'class' => '\yii\redis\Session',
+			'autoStart' => false,
 			'timeout' => '4000' // be sure to change yiic.php too
 		),
-		
 		'urlManager' => array(
 			'enablePrettyUrl' => true,
 			'showScriptName' => false,

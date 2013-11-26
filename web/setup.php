@@ -37,8 +37,10 @@ try {
 	$app = \app\setup\Setup::createSetupApplication($config);
 	$app->run();
 } catch (\Exception $e) {
+	$backtrace = $e->getTrace();
+	$backtrace = $backtrace[1];
 	$app->params['error'] = true;
-	$app->params['message'] = $e->getMessage();
+	$app->params['message'] = $e->getMessage() .' ('. $backtrace['file'].':'. $backtrace['line'].')';
 	$app->render('message');
 }
 

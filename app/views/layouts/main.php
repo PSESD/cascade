@@ -32,7 +32,7 @@ if (YII_ENV_DEV) {
 			'brandLabel' => Yii::$app->name,
 			'brandUrl' => Yii::$app->homeUrl,
 			'options' => [
-				'class' => 'navbar-inverse navbar-fixed-top',
+				'class' => 'i-navbar-top navbar-inverse navbar-fixed-top',
 			],
 		]);
 		echo Nav::widget([

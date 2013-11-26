@@ -131,11 +131,10 @@ class ObjectController extends Controller
 				break;
 			}
 		}
-		var_dump(array_keys($sections));
 		if (!empty($_GET['section'])) {
 			$this->params['active'] = $_GET['section'];
 		}
-		//ObjectFamiliarity::accessed($object);
+		ObjectFamiliarity::accessed($object);
 	}
 
 	/**

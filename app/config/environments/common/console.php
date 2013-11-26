@@ -24,8 +24,9 @@ return [
 	
 	// application components
 	'components' => [ 
-		'cache' => include(INFINITE_APP_ENVIRONMENT_PATH . DIRECTORY_SEPARATOR . 'cache.php'),
 		'db' => include(INFINITE_APP_ENVIRONMENT_PATH . DIRECTORY_SEPARATOR . "database.php"),
+		'redis' => include(INFINITE_APP_ENVIRONMENT_PATH . DIRECTORY_SEPARATOR . 'redis.php'),
+		'cache' => ['class' => '\yii\redis\Cache'],
 		'collectors' => include(INFINITE_APP_ENVIRONMENT_PATH . DIRECTORY_SEPARATOR . 'collectors.php'),
 		'gk' => array('class' => '\infinite\security\Gatekeeper'),
 		'log' => [

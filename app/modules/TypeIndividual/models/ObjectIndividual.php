@@ -31,6 +31,8 @@ namespace app\modules\TypeIndividual\models;
  */
 class ObjectIndividual extends \app\components\types\ActiveRecord
 {
+	public $descriptorField = ['first_name', 'middle_name', 'last_name'];
+	
 	/**
 	 * @inheritdoc
 	 */
