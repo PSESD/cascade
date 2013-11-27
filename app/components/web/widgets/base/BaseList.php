@@ -45,7 +45,7 @@ class BaseList extends Widget {
 		return $menu;
 	}
 
-	public function renderContent() {
+	public function generateContent() {
 		
 	}
 }

@@ -21,6 +21,7 @@ abstract class Widget extends \yii\bootstrap\Widget implements \infinite\base\Wi
 	use \infinite\base\ObjectTrait;
 	use \infinite\base\ComponentTrait;
 	use \infinite\web\grid\CellContentTrait;
+	use \infinite\web\RenderTrait;
 
 	public $owner;
 	public $instanceSettings;
@@ -30,7 +31,7 @@ abstract class Widget extends \yii\bootstrap\Widget implements \infinite\base\Wi
 
 	public $params = array();
 	public $recreateParams = array();
-	public $classes = array('ic-widget');
+	public $htmlOptions = ['class' => 'ic-widget '];
 
 	public $gridCellClass = '\infinite\web\grid\Cell';
 
@@ -39,7 +40,7 @@ abstract class Widget extends \yii\bootstrap\Widget implements \infinite\base\Wi
 	protected $_state;
 	protected $_gridCell;
 
-	abstract public function renderContent();
+	abstract public function generateContent();
 
 	public function getGridCellSettings() {
 		return [
@@ -63,15 +64,23 @@ abstract class Widget extends \yii\bootstrap\Widget implements \infinite\base\Wi
 		return [];
 	}
 
-	public function renderPanelTitle() {
+	public function render() {
+		echo $this->generate();
+	}
+
+	public function renderView($view, $params = []) {
+		return parent::render($view, $params);
+	}
+
+	public function generatePanelTitle() {
 		$parts = [];
 		if ($this->title) {
 			$menu = null;
-			$titleMenu = $this->renderTitleMenu();
+			$titleMenu = $this->generateTitleMenu();
 			if ($titleMenu) {
 				$menu = $titleMenu;
 			}
-			if ($this->icon) {
+			if (!empty($this->icon)) {
 				$icon = Html::tag('i', '', ['class' => $this->icon]) . Html::tag('span', '', ['class' => 'break']);
 			}
 			$parts[] = Html::tag('div', Html::tag('h2', $icon . $this->parseText($this->title)) . $menu, ['class' => 'panel-heading']);
@@ -82,10 +91,12 @@ abstract class Widget extends \yii\bootstrap\Widget implements \infinite\base\Wi
 		return implode("", $parts);
 	}
 
-	public function renderHeader() {
+	public function generateHeader() {
 		$parts = [];
-		$parts[] = Html::beginTag('div', ['class' => 'panel panel-default']);
-		$title = $this->renderPanelTitle();
+		Html::addCssClass($this->htmlOptions, 'panel');
+		Html::addCssClass($this->htmlOptions, 'panel-default');
+		$parts[] = Html::beginTag('div', $this->htmlOptions);
+		$title = $this->generatePanelTitle();
 		if ($title) {
 			$parts[] = $title;
 		}
@@ -93,7 +104,7 @@ abstract class Widget extends \yii\bootstrap\Widget implements \infinite\base\Wi
 		return implode("", $parts);
 	}
 
-	public function renderTitleMenu() {
+	public function generateTitleMenu() {
 		$menu = $this->getHeaderMenu();
 		if (empty($menu)) { return false; }
 		$this->backgroundifyMenu($menu);
@@ -117,7 +128,7 @@ abstract class Widget extends \yii\bootstrap\Widget implements \infinite\base\Wi
 		}
 	}
 
-	public function renderFooter() {
+	public function generateFooter() {
 		$parts = [];
 		$parts[] = Html::endTag('div'); // panel-body
 		$parts[] = Html::endTag('div'); // panel
@@ -130,7 +141,7 @@ abstract class Widget extends \yii\bootstrap\Widget implements \infinite\base\Wi
 
 	public function generate() {
 		Yii::beginProfile(get_called_class() .':'. __FUNCTION__);
-		$result = $this->renderHeader() . $this->renderContent() . $this->renderFooter();
+		$result = $this->generateHeader() . $this->generateContent() . $this->generateFooter();
 		Yii::endProfile(get_called_class() .':'. __FUNCTION__);
 		return $result;
 	}

@@ -10,7 +10,7 @@ namespace app\components\section;
 
 use Yii;
 
-class Section extends \infinite\base\Object {
+class Section extends \infinite\base\Object implements SectionInterface {
 	use SectionTrait;
 	protected $_systemId;
 	

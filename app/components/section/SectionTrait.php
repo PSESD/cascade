@@ -1,11 +1,20 @@
 <?php
 namespace app\components\section;
 
+use Yii;
+
+use \app\components\helpers\StringHelper;
+use \infinite\base\language\Noun;
+
 trait SectionTrait {
 	use \infinite\base\collector\CollectorTrait;
+	use \infinite\web\RenderTrait;
 
+	public $sectionWidgetClass = 'app\components\web\widgets\base\Section';
 	protected $_title;
-	public $icon = 'ic-icon-info';
+	protected $_widget;
+
+	public $icon = 'fa fa-info';
 
 	public function init() {
 		parent::init();
@@ -14,6 +23,16 @@ trait SectionTrait {
 
 	public static function generateSectionId($name) {
 		return Inflector::slug($name);
+	}
+
+	public function getWidget() {
+		if (is_null($this->_widget)) {
+			$this->_widget = Yii::createObject(['class' => $this->sectionWidgetClass, 'section' => $this]);
+		}
+		return $this->_widget;
+	}
+	public function generate() {
+		return $this->widget->generate();
 	}
 
 	public function setTitle($title) {

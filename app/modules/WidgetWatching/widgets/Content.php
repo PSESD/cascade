@@ -14,7 +14,7 @@ class Content extends \app\components\web\widgets\base\Widget
 		return $gridSettings;
 	}
 
-	public function renderContent() {
+	public function generateContent() {
 		return 'noo<br ><br><br><br>hey';
 	}
 }

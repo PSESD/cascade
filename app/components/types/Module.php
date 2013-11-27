@@ -179,13 +179,13 @@ abstract class Module extends \app\components\base\CollectorModule {
 			$sectionId = $settings['whoAmI'].'-'.$this->systemId;
 			$section = Yii::$app->collectors['sections']->getOne($sectionId);
 			if (empty($section->object)) {
-				$sectionConfig = ['class' => $this->sectionClass, 'title' => 'Related %%type.'. $this->systemId .'.title%%', 'icon' => $this->icon, 'systemId' => $sectionId];
+				$sectionConfig = ['class' => $this->sectionClass, 'title' => 'Related %%type.'. $this->systemId .'.title.upperPlural%%', 'icon' => $this->icon, 'systemId' => $sectionId];
 				$section->displayPriority = -999;
 				$section->object = Yii::createObject($sectionConfig);
 			}
 			return $section;
 		}
-		$newSectionTitle = '%%type.'. $this->systemId .'.title%%';
+		$newSectionTitle = '%%type.'. $this->systemId .'.title.upperPlural%%';
 		if (!is_null($this->sectionName)) {
 			$sectionClass = $this->sectionClass;
 			$sectionId = $sectionClass::generateSectionId($this->sectionName);
@@ -209,12 +209,15 @@ abstract class Module extends \app\components\base\CollectorModule {
 	 *
 	 * @return unknown
 	 */
-	
 	public function getTitle() {
 		if (!is_object($this->_title)) {
 			$this->_title = new Noun($this->_title);
 		}
 		return $this->_title;
+	}
+
+	public function setTitle($title) {
+		$this->_title = $title;
 	}
 
 

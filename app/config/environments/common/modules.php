@@ -13,6 +13,7 @@ return [
 	],
 	'TypeAccount' => [
 	    'class' => 'app\modules\TypeAccount\Module',
+	    'title' => 'Organizations'
 	],
 	'TypeIndividual' => [
 	    'class' => 'app\modules\TypeIndividual\Module',

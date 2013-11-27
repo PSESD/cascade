@@ -12,7 +12,8 @@ use Yii;
 
 use \infinite\helpers\Html;
 
-class Generator extends \infinite\base\Object {
+class Generator extends \infinite\base\Object implements \infinite\web\RenderInterface
+{
 	protected $_items;
 	public $form;
 

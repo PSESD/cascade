@@ -2,6 +2,7 @@
 namespace app\modules\SectionContact;
 
 class Module extends \app\components\section\Module {
+	protected $_title = 'Contact';
 	
 	public function getSubmodules() {
 		return [

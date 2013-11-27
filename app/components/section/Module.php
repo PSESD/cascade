@@ -17,7 +17,7 @@ use \infinite\helpers\ArrayHelper;
 use \infinite\helpers\Inflector;
 use \app\components\helpers\StringHelper;
 
-class Module extends \app\components\base\CollectorModule {
+class Module extends \app\components\base\CollectorModule implements SectionInterface {
 	use SectionTrait;
 	public $version = 1;
 	public $priority = 1000; //lower is better
