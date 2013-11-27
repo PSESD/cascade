@@ -20,14 +20,15 @@ class Section extends Widget {
 
 	public function generateHeader()
 	{
-		$this->htmlOptions['id'] = 'section-'.$this->section->systemId;
+		$parts = [];
+		$parts[] = Html::tag('div', '', ['id' => 'section-'.$this->section->systemId, 'class' => 'scroll-mark']);
 		if ($this->isSingle) {
-			$parts = [];
 			Html::addCssClass($this->htmlOptions, 'single-section');
 			$parts[] = Html::beginTag('div', $this->htmlOptions);
-			return implode("", $parts);
+		} else {
+			$parts[] = parent::generateHeader();
 		}
-		return parent::generateHeader();
+		return implode("", $parts);
 	}
 
 

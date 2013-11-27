@@ -1,7 +1,7 @@
 <?php
 namespace app\components\web\widgets\base;
 
-class EmbeddedList extends BaseList {
+class EmbeddedList extends EmbeddedWidget {
 	public function generateContent() {
 		
 	}

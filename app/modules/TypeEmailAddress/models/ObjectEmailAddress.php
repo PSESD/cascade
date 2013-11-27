@@ -1,20 +1,19 @@
 <?php
 
-namespace app\modules\SectionContact\modules\TypePhoneNumber\models;
+namespace app\modules\TypeEmailAddress\models;
 
 /**
- * This is the model class for table "object_phone_number".
+ * This is the model class for table "object_email_address".
  *
  * @property string $id
- * @property string $phone
- * @property string $extension
- * @property boolean $no_call
+ * @property string $email_address
+ * @property boolean $no_mailings
  * @property string $created
  * @property string $modified
  *
  * @property Registry $registry
  */
-class ObjectPhoneNumber extends \app\components\types\ActiveRecord
+class ObjectEmailAddress extends \app\components\types\ActiveRecord
 {
 	use \app\components\types\ActiveRecordTrait;
 
@@ -23,7 +22,7 @@ class ObjectPhoneNumber extends \app\components\types\ActiveRecord
 	 */
 	public static function tableName()
 	{
-		return 'object_phone_number';
+		return 'object_email_address';
 	}
 
 	/**
@@ -40,12 +39,12 @@ class ObjectPhoneNumber extends \app\components\types\ActiveRecord
 	public function rules()
 	{
 		return [
-			[['phone'], 'required'],
-			[['no_call'], 'boolean'],
+			[['email_address'], 'required'],
+			[['email_address'], 'email'],
+			[['no_mailings'], 'boolean'],
 		//	[['created', 'modified'], 'unsafe'],
 			[['id'], 'string', 'max' => 36],
-			[['phone'], 'string', 'max' => 100],
-			[['extension'], 'string', 'max' => 15]
+			[['email_address'], 'string', 'max' => 255]
 		];
 	}
 
@@ -56,9 +55,8 @@ class ObjectPhoneNumber extends \app\components\types\ActiveRecord
 	public function fieldSettings()
 	{
 		return [
-			'phone' => [],
-			'extension' => [],
-			'no_call' => []
+			'email_address' => [],
+			'no_mailings' => []
 		];
 	}
 
@@ -72,9 +70,9 @@ class ObjectPhoneNumber extends \app\components\types\ActiveRecord
 			$settings['title'] = false;
 		}
 		$settings['fields'] = array();
-		$settings['fields'][] = ['phone' => ['columns' => 8], 'extension' => ['columns' => 4]];
+		$settings['fields'][] = ['email_address'];
 		if (!$this->isNewRecord) {
-			$settings['fields'][] = ['no_call'];
+			$settings['fields'][] = ['no_mailings'];
 		}
 		return $settings;
 	}
@@ -86,9 +84,8 @@ class ObjectPhoneNumber extends \app\components\types\ActiveRecord
 	{
 		return [
 			'id' => 'ID',
-			'phone' => 'Phone',
-			'extension' => 'Extension',
-			'no_call' => 'No Call',
+			'email_address' => 'Email Address',
+			'no_mailings' => 'No Mailings',
 			'created' => 'Created',
 			'modified' => 'Modified',
 		];

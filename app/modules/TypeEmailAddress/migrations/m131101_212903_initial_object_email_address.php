@@ -1,5 +1,5 @@
 <?php
-namespace app\modules\SectionContact\modules\TypeEmailAddress\migrations;
+namespace app\modules\TypeEmailAddress\migrations;
 
 class m131101_212903_initial_object_email_address extends \infinite\db\Migration
 {

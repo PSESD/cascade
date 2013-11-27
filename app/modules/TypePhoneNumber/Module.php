@@ -1,18 +1,18 @@
 <?php
 
-namespace app\modules\SectionContact\modules\TypeEmailAddress;
+namespace app\modules\TypePhoneNumber;
 
 use Yii;
 
 class Module extends \app\components\types\Module
 {
-	protected $_title = 'Email Address';
-	public $icon = 'ic-icon-at';
+	protected $_title = 'Phone Number';
+	public $icon = 'ic-icon-iphone';
 	public $uniparental = true;
 	public $selfManaged = false;
 
-	public $widgetNamespace = 'app\modules\SectionContact\modules\TypeEmailAddress\widgets';
-	public $modelNamespace = 'app\modules\SectionContact\modules\TypeEmailAddress\models';
+	public $widgetNamespace = 'app\modules\TypePhoneNumber\widgets';
+	public $modelNamespace = 'app\modules\TypePhoneNumber\models';
 
 	/**
 	 * @inheritdoc
@@ -21,7 +21,7 @@ class Module extends \app\components\types\Module
 	{
 		parent::init();
 		
-		Yii::$app->registerMigrationAlias('@app/modules/SectionContact/modules/TypeEmailAddress/migrations');
+		Yii::$app->registerMigrationAlias('@app/modules/TypePhoneNumber/migrations');
 	}
 
 	/**
@@ -52,6 +52,7 @@ class Module extends \app\components\types\Module
 	public function parents()
 	{
 		return [
+			'Account' => [],
 			'Individual' => [],
 		];
 	}
@@ -62,7 +63,7 @@ class Module extends \app\components\types\Module
 	 */
 	public function children()
 	{
-		return [];
+		return [		];
 	}
 
 	

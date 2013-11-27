@@ -3,7 +3,7 @@ namespace app\components\web\widgets\base;
 
 use Yii;
 
-class BaseList extends Widget {
+class BaseList extends PanelWidget {
 	public function getSortBy() {
 		$sortBy = [];
 		$sortBy[] = [

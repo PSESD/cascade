@@ -18,8 +18,11 @@ return [
 	'TypeIndividual' => [
 	    'class' => 'app\modules\TypeIndividual\Module',
 	],
-	'SectionContact' => [
-		'class' => 'app\modules\SectionContact\Module',
+	'TypePhoneNumber' => [
+		'class' => 'app\modules\TypePhoneNumber\Module',
+    ],
+	'TypeEmailAddress' => [
+		'class' => 'app\modules\TypeEmailAddress\Module',
     ],
 ];
 ?>

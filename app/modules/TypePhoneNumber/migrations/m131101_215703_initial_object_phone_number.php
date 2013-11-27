@@ -1,5 +1,5 @@
 <?php
-namespace app\modules\SectionContact\modules\TypePhoneNumber\migrations;
+namespace app\modules\TypePhoneNumber\migrations;
 
 class m131101_215703_initial_object_phone_number extends \infinite\db\Migration
 {
