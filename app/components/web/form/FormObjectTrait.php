@@ -5,6 +5,10 @@ trait FormObjectTrait {
 	public $owner;
 	public $isValid = true;
 
+	public function render() {
+		echo $this->generate();
+	}
+	
 	public function getGenerator() {
 		if (is_null($this->owner)) { throw new \Exception("no owner! ". get_class($this)); return false; }
 		if ($this->owner instanceof Generator) {

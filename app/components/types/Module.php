@@ -234,6 +234,7 @@ abstract class Module extends \app\components\base\CollectorModule {
 		if (!($this->module instanceof \infinite\base\ApplicationInterface)) {
 			$baseWidget['section'] = $this->module->collectorItem;
 		}
+		
 		if (!$this->isChildless) {
 			if (!class_exists($detailListClassName, false)) { $detailListClassName = false; }
 			if (!class_exists($simpleListClassName, false)) { $simpleListClassName = false; }
@@ -253,7 +254,7 @@ abstract class Module extends \app\components\base\CollectorModule {
 			} else {
 				Yii::trace("Warning: There is no browse class for the child objects of {$this->systemId}");
 			}
-			if ($this->selfManaged AND $simpleListClassName) {
+			if ($this->selfManaged && $simpleListClassName) {
 				$summaryWidget = $baseWidget;
 				$id = $this->systemId .'Summary';
 				$summaryWidget['widget'] = [

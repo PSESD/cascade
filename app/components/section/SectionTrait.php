@@ -11,8 +11,11 @@ trait SectionTrait {
 	use \infinite\web\RenderTrait;
 
 	public $sectionWidgetClass = 'app\components\web\widgets\base\Section';
+	public $gridCellClass = '\infinite\web\grid\Cell';
+
 	protected $_title;
 	protected $_widget;
+	protected $_gridCell;
 
 	public $icon = 'fa fa-info';
 
@@ -31,6 +34,8 @@ trait SectionTrait {
 		}
 		return $this->_widget;
 	}
+
+
 	public function generate() {
 		return $this->widget->generate();
 	}

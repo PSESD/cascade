@@ -1,7 +1,10 @@
 <?php
+use Yii;
+
 use infinite\helpers\Html;
 use yii\bootstrap\Nav;
 use infinite\web\bootstrap\SubNavBar;
+
 
 $js = [];
 $js[] = "\$('body').scrollspy({ target: '#object-dashboard-navbar', 'offset': 100 });";
@@ -15,7 +18,7 @@ $navBar = SubNavBar::begin([
 ]);
 $sectionsMenu = [];
 foreach ($sections as $section) {
-	// var_dump($section->object);exit;
+	if (substr($section->systemId, 0, 1) === '_') { continue; }
 	$sectionsMenu[] = ['label' => $section->object->sectionTitle, 'url' => '#section-'.$section->systemId];
 }
 echo Html::beginTag('div', ['id' => 'object-dashboard-navbar']);
@@ -26,10 +29,29 @@ echo Nav::widget([
 echo Html::endTag('div');
 SubNavBar::end();
 
-foreach ($sections as $section) {
-	$section->object->render();
+$grid = Yii::createObject(['class' => 'infinite\web\grid\Grid']);
+$cells = [];
+
+if (isset($sections['_side'])) {
+	$cellInner = $sections['_side']->object->widget;
+	$cellInner->htmlOptions['data-spy'] = 'affix';
+	$cellInner->htmlOptions['data-offset-top'] = 5;
+	Html::addCssClass($cellInner->htmlOptions, 'ic-sidebar');
+
+	$cells[] = $sideCell = Yii::createObject(['class' => 'infinite\web\grid\Cell', 'content' => $cellInner->generate()]);
+	Yii::configure($sideCell, ['mediumDesktopColumns' => 4, 'largeDesktopSize' => false, 'tabletSize' => false]);
 }
 
+$mainCell = [];
+foreach ($sections as $section) {
+	if (substr($section->systemId, 0, 1) === '_') { continue; }
+	$mainCell[] = $section->object->generate();
+}
+$cells[] = $mainCell = Yii::createObject(['class' => 'infinite\web\grid\Cell', 'content' => implode('', $mainCell)]);
+Yii::configure($mainCell,['mediumDesktopColumns' => 8, 'largeDesktopSize' => false, 'tabletSize' => false]);
+
+$grid->cells = $cells;
+$grid->render();
 echo Html::endTag('div'); // .dashboard
 $this->registerJs(implode("\n", $js));
 ?>

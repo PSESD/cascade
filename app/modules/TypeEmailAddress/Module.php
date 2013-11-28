@@ -29,7 +29,9 @@ class Module extends \app\components\types\Module
 	 */
 	public function widgets()
 	{
-		return parent::widgets();
+		$widgets = parent::widgets();
+		$widgets['EmbeddedEmailAddressBrowse']['section'] = Yii::$app->collectors['sections']->getOne('_side');
+		return $widgets;
 	}
 
 	
