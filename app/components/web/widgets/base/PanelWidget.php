@@ -31,7 +31,7 @@ abstract class PanelWidget extends Widget {
 				$menu = $titleMenu;
 			}
 			if (!empty($this->icon)) {
-				$icon = Html::tag('i', '', ['class' => $this->icon]) . Html::tag('span', '', ['class' => 'break']);
+				$icon = Html::tag('i', '', ['class' => 'panel-icon '. $this->icon]) . Html::tag('span', '', ['class' => 'break']);
 			}
 			$parts[] = Html::tag('div', Html::tag('h2', $icon . $this->parseText($this->title)) . $menu, ['class' => 'panel-heading']);
 		}

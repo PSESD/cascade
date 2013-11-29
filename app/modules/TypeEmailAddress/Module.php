@@ -7,7 +7,7 @@ use Yii;
 class Module extends \app\components\types\Module
 {
 	protected $_title = 'Email Address';
-	public $icon = 'ic-icon-at';
+	public $icon = 'fa fa-envelope';
 	public $uniparental = true;
 	public $selfManaged = false;
 

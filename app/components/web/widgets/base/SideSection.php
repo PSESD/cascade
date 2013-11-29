@@ -16,8 +16,9 @@ class SideSection extends Section {
 	public function widgetCellSettings()
 	{
 		return [
-			'columns' => 12,
-			'tabletSize' => false
+			'mediumDesktopColumns' => 12,
+			'tabletColumns' => 6,
+			'baseSize' => 'tablet'
 		];
 	}
 
