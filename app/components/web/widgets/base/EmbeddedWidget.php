@@ -17,7 +17,9 @@ use \infinite\helpers\Html;
 use \yii\bootstrap\Nav;
 
 
-abstract class EmbeddedWidget extends PanelWidget {
+abstract class EmbeddedWidget extends PanelWidget implements ObjectWidgetInterface {
+	use ObjectWidgetTrait;
+
 	public $panelCssClass = 'embedded-panel';
 }
 
