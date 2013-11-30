@@ -25,7 +25,7 @@ return array(
 		'collectors' => include(INFINITE_APP_ENVIRONMENT_PATH . DIRECTORY_SEPARATOR . 'collectors.php'),
 		'cache' => ['class' => '\yii\redis\Cache'],
 		'request' => array(
-			'class' => '\infinite\web\request',
+			'class' => 'app\components\web\Request',
 			'enableCsrfValidation' => true,
 			'enableCookieValidation' => true,
 		),

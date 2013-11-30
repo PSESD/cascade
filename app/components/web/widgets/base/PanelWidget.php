@@ -41,11 +41,16 @@ abstract class PanelWidget extends Widget {
 		return implode("", $parts);
 	}
 
-	public function generateHeader() {
+	public function generateStart() {
 		$parts = [];
 		Html::addCssClass($this->htmlOptions, $this->panelCssClass);
 		Html::addCssClass($this->htmlOptions, $this->panelStateCssClass);
 		$parts[] = Html::beginTag('div', $this->htmlOptions);
+		return implode("", $parts);
+	}
+	
+	public function generateHeader() {
+		$parts = [];
 		$title = $this->generatePanelTitle();
 		if ($title) {
 			$parts[] = $title;
@@ -81,7 +86,6 @@ abstract class PanelWidget extends Widget {
 	public function generateFooter() {
 		$parts = [];
 		$parts[] = Html::endTag('div'); // panel-body
-		$parts[] = Html::endTag('div'); // panel
 		return implode("", $parts);
 	}
 }

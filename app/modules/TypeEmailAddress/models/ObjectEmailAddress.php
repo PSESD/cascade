@@ -16,6 +16,7 @@ namespace app\modules\TypeEmailAddress\models;
 class ObjectEmailAddress extends \app\components\types\ActiveRecord
 {
 	use \app\components\types\ActiveRecordTrait;
+	public $descriptorField = 'email_address';
 
 	/**
 	 * @inheritdoc

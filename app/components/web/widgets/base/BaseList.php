@@ -9,7 +9,7 @@ class BaseList extends PanelWidget implements ObjectWidgetInterface, ListWidgetI
 	use ObjectWidgetTrait;
 	use ListWidgetTrait;
 
-	public function renderItem($model, $key, $index){
-		return Html::tag('li', $model->descriptor);
+	public function renderItemContent($model, $key, $index){
+		return $model->descriptor;
 	}
 }

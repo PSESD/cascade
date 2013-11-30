@@ -119,7 +119,7 @@ class ObjectController extends Controller
 		if (!$object->can('read')) {
 			throw new HttpException(403, "Unable to access object.");
 		}
-		//Yii::$app->request->object = $object;
+		Yii::$app->request->object = $object;
 		$this->response->view = 'view';
 
 		$type = $this->params['type'] = $object->objectType;

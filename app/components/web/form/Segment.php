@@ -180,7 +180,11 @@ class Segment extends FormObject {
 					if ($fieldKey === false) {
 						$rowItems[] = false;
 					} else {
-						$rowItems[] = Yii::createObject(['class' => $cellClass, 'content' => $fields[$fieldKey]->formField->configure($fieldSettings)]);
+						$cellOptions = ['class' => $cellClass, 'content' => $fields[$fieldKey]->formField->configure($fieldSettings)];
+						if (isset($cellOptions['content']->columns)) {
+							$cellOptions['columns'] = $cellOptions['content']->columns;
+						}
+						$rowItems[] = Yii::createObject($cellOptions);
 					}
 				}
 				$this->grid->addRow($rowItems);

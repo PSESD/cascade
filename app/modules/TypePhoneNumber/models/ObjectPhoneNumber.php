@@ -18,6 +18,8 @@ class ObjectPhoneNumber extends \app\components\types\ActiveRecord
 {
 	use \app\components\types\ActiveRecordTrait;
 
+	public $descriptorField = ['phone', 'extensionFormatted'];
+
 	/**
 	 * @inheritdoc
 	 */
@@ -49,6 +51,11 @@ class ObjectPhoneNumber extends \app\components\types\ActiveRecord
 		];
 	}
 
+	public function getExtensionFormatted()
+	{
+		if (empty($this->extension)) { return null; }
+		return 'x'. $this->extension;
+	}
 
 	/**
 	 * @inheritdoc
@@ -72,7 +79,7 @@ class ObjectPhoneNumber extends \app\components\types\ActiveRecord
 			$settings['title'] = false;
 		}
 		$settings['fields'] = array();
-		$settings['fields'][] = ['phone' => ['columns' => 8], 'extension' => ['columns' => 4]];
+		$settings['fields'][] = ['phone' => [ 'columns' => 8], 'extension' => ['columns' => 4]];
 		if (!$this->isNewRecord) {
 			$settings['fields'][] = ['no_call'];
 		}

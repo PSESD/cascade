@@ -18,25 +18,24 @@ class Item extends \infinite\base\collector\Item {
 	public $displayPriority = 0;
 	public $locations = array();
 	protected $_section;
+	public $settings = [];
 
 
 	public function getObject() {
 		if (is_null($this->widget)) {
 			return null;
 		}
-		return Yii::createObject($this->widget);
-		// we don't want these recycled, right?
-		// if (!isset($this->_object) && !is_null($this->widget)) {
-		// 	$this->_object = Yii::createObject($this->widget);
-		// }
-		// return $this->_object;
+		$object = Yii::createObject($this->widget);
+		$object->settings = $this->settings;
+		return $object;
 	}
 
 	public function getSection($parent = null, $settings = array()) {
+		$settings = array_merge($this->settings, $settings);
 		if (is_null($this->_section)) {
 			$this->_section = $this->owner->getSection($parent, $settings);
 		}
-		if (is_callable($this->_section) OR (is_array($this->_section) AND !empty($this->_section[0]) AND is_object($this->_section[0]))) {
+		if (is_callable($this->_section) || (is_array($this->_section) && !empty($this->_section[0]) && is_object($this->_section[0]))) {
 			return $this->evaluateExpression($this->_section, array('parent' => $parent, 'settings' => $settings));
 		}
 		return $this->_section;

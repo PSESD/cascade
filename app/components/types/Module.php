@@ -224,7 +224,7 @@ abstract class Module extends \app\components\base\CollectorModule {
 	public function widgets() {
 		$widgets = array();
 		$detailListClassName = self::classNamespace() .'\widgets\\'. 'DetailList';
-		$simpleListClassName = self::classNamespace() .'\widgets\\'. 'SimpleList';
+		$simpleListClassName = self::classNamespace() .'\widgets\\'. 'SimpleLinkList';
 		$embeddedListClassName = self::classNamespace() .'\widgets\\'. 'EmbeddedList';
 		@class_exists($detailListClassName);
 		@class_exists($simpleListClassName);

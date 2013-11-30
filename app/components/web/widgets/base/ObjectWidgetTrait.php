@@ -3,8 +3,42 @@ namespace app\components\web\widgets\base;
 
 use Yii;
 
+use \infinite\base\exceptions\Exception;
+use \infinite\helpers\ArrayHelper;
+
 trait ObjectWidgetTrait
 {
+	protected $_dataProvider;
+
+	public function getDataProvider() {
+		if (is_null($this->_dataProvider)) {
+			$dataProvider = $this->dataProviderSettings;
+			if (!isset($dataProvider['class'])) {
+				$dataProvider['class'] = 'yii\data\ActiveDataProvider';
+			}
+			$method = ArrayHelper::getValue($this->settings, 'queryRole', 'all');
+			if (in_array($method, ['parents', 'children']) && empty(Yii::$app->request->object)) {
+				throw new Exception("Object widget requested when no object has been set!");
+			}
+			$queryModelClass = $this->owner->primaryModel;
+			switch ($method) {
+				case 'parents':
+					$dataProvider['query'] = Yii::$app->request->object->relativesQuery('parents', $queryModelClass);
+				break;
+				case 'children':
+					$dataProvider['query'] = Yii::$app->request->object->relativesQuery('children', $queryModelClass);
+				break;
+				default:
+					$dataProvider['query'] = $queryModelClass::find();
+				break;
+			}
+			//var_dump($dataProvider['query']);exit;
+			$dataProvider['pagination'] = $this->paginationSettings;
+			$this->_dataProvider = Yii::createObject($dataProvider);
+		}
+		return $this->_dataProvider;
+	}
+
 	public function getSortBy() {
 		$sortBy = [];
 		$sortBy[] = [
@@ -45,6 +79,18 @@ trait ObjectWidgetTrait
 			];
 		}
 		return $menu;
+	}
+
+	public function getPaginationSettings() {
+		return ['class' => 'yii\data\Pagination', 'pageSize' => 20];
+	}
+
+	public function getPagerSettings() {
+		return ['class' => 'yii\widgets\LinkPager'];
+	}
+
+	public function getDataProviderSettings() {
+		return ['class' => 'yii\data\ActiveDataProvider'];
 	}
 }
 ?>

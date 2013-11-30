@@ -15,21 +15,18 @@ class Collector extends \infinite\base\collector\Module {
 		return 'Widget';
 	}
 
-	public function build($widgetName, $recreateParams = array(), $baseParams = array(), $state = array()) {
+	public function build($widgetName) {
 		if (is_object($widgetName)) {
 			$widget = $widgetName;
 		} else {
 			$widget = $this->getOne($widgetName);
 		}
-		if (is_null($widget->object)) {
+		$widgetObject = $widget->object;
+		if (is_null($widgetObject)) {
 			return false;
 		}
 
-		$widgetObject = $widget->object;
 		$widgetObject->owner = $widget->owner;
-		$widgetObject->params = $baseParams;
-		$widgetObject->recreateParams = $recreateParams;
-		$widgetObject->state = $state;
 
 		$cell = $widgetObject->cell;
 

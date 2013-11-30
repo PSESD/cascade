@@ -8,13 +8,18 @@
 
 namespace app\components\web;
 
+use Yii;
+
+use \app\models\Registry;
+use \yii\web\Application;
+
 class Request extends \infinite\web\Request {
 	protected $_object;
 	protected $_parent;
 
 	public function init() {
 		parent::init();
-		Yii::$app->attachEventHandler('onBeginRequest', array($this, 'startRequest'));
+		Yii::$app->on(Application::EVENT_BEFORE_REQUEST, array($this, 'startRequest'));
 	}
 
 	public function startRequest() {

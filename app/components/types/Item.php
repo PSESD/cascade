@@ -58,30 +58,33 @@ class Item extends \infinite\base\collector\Item {
 		foreach ($this->_children as $rel) {
 			if (!$rel->active) { continue; }
 			$child = $rel->child;
-			$instanceSettings = array('relationship' => $rel, 'whoAmI' => 'parent');
+			$instanceSettings = array('relationship' => $rel, 'queryRole' => 'children');
 			$items = Yii::$app->collectors['widgets']->getLocation('parent_objects', $child);
 			foreach ($items as $item) {
-				$section = $item->getSection($this->object, $instanceSettings);
+				$widgetObject = $item->object;
+				$item->settings = $instanceSettings;
+				$section = $item->getSection($widgetObject, $instanceSettings);
 				if (empty($section)) { continue; }
 				if (!isset($this->_sections[$item->section->systemId])) {
 					$this->_sections[$section->systemId] = $section;
 				}
-				$this->_sections[$section->systemId]->object->register($this->object, $item);
+				$this->_sections[$section->systemId]->object->register($this, $item);
 			}
 		}
 
 		foreach ($this->_parents as $rel) {
 			if (!$rel->active) { continue; }
 			$parent = $rel->parent;
-			$instanceSettings = array('relationship' => $rel, 'whoAmI' => 'child');
+			$instanceSettings = array('relationship' => $rel, 'queryRole' => 'parents');
 			$items = Yii::$app->collectors['widgets']->getLocation('child_objects', $parent);
 			foreach ($items as $item) {
-				$section = $item->getSection($this->object, $instanceSettings);
+				$item->settings = $instanceSettings;
+				$section = $item->getSection($this->object);
 				if (empty($section)) { continue; }
 				if (!isset($this->_sections[$item->section->systemId])) {
 					$this->_sections[$section->systemId] = $section;
 				}
-				$this->_sections[$section->systemId]->object->register($this->object, $item);
+				$this->_sections[$section->systemId]->object->register($this, $item);
 			}
 		}
 		

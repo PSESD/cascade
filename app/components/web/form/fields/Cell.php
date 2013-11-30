@@ -8,12 +8,13 @@ use \yii\helpers\Json;
 
 class Cell extends \infinite\web\grid\Cell
 {
-	public $baseSize = 'tabletSize';
+	public $baseSize = 'tablet';
 
 	public $phoneSize = false;
 	public $tabletSize = 'auto';
 	public $mediumDesktopSize = false; // baseline
 	public $largeDesktopSize = false;
-	protected $_defaultColumns = 'auto';
+	
+	protected $_tabletColumns = 'auto';
 }
 ?>

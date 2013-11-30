@@ -2,7 +2,7 @@
 
 namespace app\modules\WidgetWatching\widgets;
 
-class Content extends \app\components\web\widgets\base\Widget
+class Content extends \app\components\web\widgets\base\PanelWidget
 {
 	public $title = 'Watching';
 	public $icon = 'fa-eye';

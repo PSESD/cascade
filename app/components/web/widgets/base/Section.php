@@ -5,7 +5,7 @@ use Yii;
 
 use \infinite\helpers\Html;
 
-class Section extends Widget {
+class Section extends PanelWidget {
 	public $gridClass = 'infinite\web\grid\Grid';
 	public $section;
 
@@ -17,29 +17,37 @@ class Section extends Widget {
 			$this->title = $this->section->sectionTitle;
 		}
 	}
-
-	public function generateHeader()
+	public function generateStart()
 	{
 		$parts = [];
 		$parts[] = Html::tag('div', '', ['id' => 'section-'.$this->section->systemId, 'class' => 'scroll-mark']);
+		
 		if ($this->isSingle) {
 			Html::addCssClass($this->htmlOptions, 'single-section');
 			$parts[] = Html::beginTag('div', $this->htmlOptions);
 		} else {
-			$parts[] = parent::generateHeader();
+			$parts[] = parent::generateStart();
 		}
-		return implode("", $parts);
+
+		return implode('', $parts);
 	}
 
+	public function generateHeader()
+	{
+		if (!$this->isSingle) {
+			return parent::generateHeader();
+		}
+		return null;
+	}
 
-	public function generateFooter()
+	public function generateEnd()
 	{
 		if ($this->isSingle) {
 			$parts = [];
 			$parts[] = Html::endTag('div');
 			return implode("", $parts);
 		}
-		return parent::generateFooter();
+		return parent::generateEnd();
 	}
 
 	public function generateContent()
