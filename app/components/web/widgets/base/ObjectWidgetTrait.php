@@ -72,10 +72,23 @@ trait ObjectWidgetTrait
 		}
 		
 		if (Yii::$app->gk->canGeneral('create', $this->owner->primaryModel)) {
+			$createUrl = ['object/create', 'type' => $this->owner->systemId];
+			$method = ArrayHelper::getValue($this->settings, 'queryRole', 'all');
+			if (in_array($method, ['parents', 'children']) && empty(Yii::$app->request->object)) {
+				throw new Exception("Object widget requested when no object has been set!");
+			}
+			switch ($method) {
+				case 'parents':
+					$createUrl['child_object_id'] = Yii::$app->request->object->primaryKey;
+				break;
+				case 'children':
+					$createUrl['parent_object_id'] = Yii::$app->request->object->primaryKey;
+				break;
+			}
 			$menu[] = [
 				'label' => '<i class="glyphicon glyphicon-plus"></i>',
 				'linkOptions' => ['title' => 'Create'],
-				'url' => ['object/create', 'type' => $this->owner->systemId]
+				'url' => $createUrl
 			];
 		}
 		return $menu;
