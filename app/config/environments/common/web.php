@@ -53,7 +53,11 @@ return array(
 			'rules' => [
 				// a standard rule mapping '/' to 'site/index' action
 				'' => 'object/index',
+				
 				'<action:(view)>/<id:\S+>' => 'object/<action>',
+				'<action:(create)>/<type:\S+>/<object_id:\S+>' => 'object/<action>',
+				'<action:(create)>/<type:\S+>' => 'object/<action>',
+
 				// a standard rule to handle 'post/update' and so on
 				'<controller:\w+>/<action:\w+>' => '<controller>/<action>',
 			],

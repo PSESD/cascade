@@ -23,7 +23,6 @@ class Generator extends \infinite\base\Object implements \infinite\web\RenderInt
 	public $class = '';
 	public $ajax = false;
 
-
 	public function setItems($items) {
 		$this->_items = $items;
 		if (isset($this->_items[0]) and is_array($this->_items[0])) {

@@ -17,11 +17,12 @@ use \infinite\helpers\Html;
 
 class Segment extends FormObject {
 	public $cellClass = '\app\components\web\form\fields\Cell';
+	public $subform;
+
 	protected $_name;
 	protected $_model;
 	protected $_settings;
 	protected $_grid;
-
 	public function init()
 	{
 		parent::init();
@@ -76,6 +77,9 @@ class Segment extends FormObject {
 	 * @return unknown
 	 */
 	public function getSettings() {
+		if (!is_null($this->_settings)) {
+			$this->settings = [];
+		}
 		return $this->_settings;
 	}
 
@@ -138,9 +142,10 @@ class Segment extends FormObject {
 
 		$fields = $this->_model->getFields($this);
 		$fieldsTemplate = false;
-
-		if (!isset($this->_settings['fields'])) {
-			$fieldTemplate = [];
+		if (!empty($this->subform)) {
+			$fieldsTemplate = [[$this->subform => ['buildRelation' => false]]];
+		} elseif (!isset($this->_settings['fields'])) {
+			$fieldsTemplate = [];
 			foreach ($fields as $fieldName => $field) {
 				if (!$field->human) { continue; }
 				if (!($field instanceof ModelField)) { continue; }
@@ -149,7 +154,6 @@ class Segment extends FormObject {
 		} else {
 			$fieldsTemplate = $this->_settings['fields'];
 		}
-
 		if ($fieldsTemplate !== false) {
 			$this->_settings['fields'] = array();
 			if (!$this->_model->isNewRecord) {

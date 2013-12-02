@@ -141,16 +141,41 @@ class ObjectController extends Controller
 	 *
 	 */
 	public function actionCreate() {
-		if (empty($_GET['type']) or !($type = Yii::$app->collectors['types']->getOne($_GET['type']))) {
-			throw new HttpException(404, "Unknown object type ". (empty($_GET['type']) ? '' : $_GET['type']));
+		if (!isset($_GET['type'])) { $_GET['type'] = ''; }
+		$typeParsed = $_GET['type'];
+		$subform = $object = null;
+
+		if (!empty($_GET['object_id']) && (!($object = $this->params['object'] = Registry::getObject($_GET['object_id'], true)) || !($typeItem = $this->params['typeItem'] = $object->objectTypeItem))) {
+			throw new HttpException(404, "Unknown object.");
+		} elseif(isset($object)) {
+			if (!$object->can('update')) {
+				throw new HttpException(403, "Unable to update object.");
+			}
+			$typeParsedParts = explode(':', $typeParsed);
+			if (count($typeParsedParts) >= 2 && in_array($typeParsedParts[0], ['parent', 'child'])) {
+				$relationshipObjectField = $typeParsedParts[0] . '_object_id';
+				$typeParsed = $typeParsedParts[1];
+			} else {
+				throw new HttpException(403, "Invalid request ");
+			}
+			$subform = implode(':', $typeParsedParts);
+		}
+
+		if (empty($typeParsed) || !($type = Yii::$app->collectors['types']->getOne($typeParsed)) || !isset($type->object)) {
+			throw new HttpException(404, "Unknown object type ". $typeParsed);
 		}
 		$module = $type->object;
 		if (!Yii::$app->gk->canGeneral('create', $module->primaryModel)) {
 			throw new HttpException(403, "You do not have access to create {$module->title->getPlural(true)}");
 		}
+
 		$this->response->view = 'create';
 		$this->response->task = 'dialog';
 		$this->response->taskOptions = array('title' => 'Create '.$module->title->getSingular(true) , 'width' => '800px');
+
+		if (isset($object)) {
+			$module = $object->objectType;
+		}
 
 		$models = false;
 		if (!empty($_POST)) {
@@ -167,9 +192,9 @@ class ObjectController extends Controller
 			}
 		}
 		if ($models === false) {
-			$models = $module->getModels();
+			$models = $module->getModels($object);
 		}
-		if (!($this->params['form'] = $module->getForm($models))) {
+		if (!($this->params['form'] = $module->getForm($models, ['subform' => $subform]))) {
 			throw new HttpException(403, "There is nothing to create for {$module->title->getPlural(true)}");
 		}
 		$this->params['form']->ajax = true;

@@ -11,6 +11,7 @@ use Yii;
 
 use \app\models\Group;
 use \app\models\Relation;
+use \app\models\Registry;
 
 use \infinite\base\exceptions\Exception;
 use \infinite\base\exceptions\HttpException;
@@ -397,8 +398,11 @@ abstract class Module extends \app\components\base\CollectorModule {
 	 *
 	 * @return unknown
 	 */
-	public function getModel($input = []) {
-		$primaryModel = new $this->primaryModel;
+	public function getModel($primaryModel = null, $input = []) {
+		if (is_null($primaryModel)) {
+			$primaryModel = new $this->primaryModel;
+		}
+		
 		$formName = $primaryModel->formName();
 		if (!empty($input) && isset($input[$formName]['_moduleHandler'])) {
 			$moduleHandler = $input[$formName]['_moduleHandler'];
@@ -409,9 +413,9 @@ abstract class Module extends \app\components\base\CollectorModule {
 		return $primaryModel;
 	}
 
-	public function getModels() {
-		$newModel = $this->getModel();
-		return [$newModel->tabularId => $newModel];
+	public function getModels($primaryModel = null) {
+		$model = $this->getModel($primaryModel);
+		return [$model->tabularId => $model];
 	}
 
 
@@ -537,11 +541,21 @@ abstract class Module extends \app\components\base\CollectorModule {
 			foreach ($tabs as $tabId => $tab) {
 				if (!isset($tab['_moduleHandler'])) { continue; }
 				$m = [$modelTop => $tab];
+				$object = null;
+				if (isset($tab['id'])) {
+					$object = $this->params['object'] = Registry::getObject($tab['id']);
+					if (!$object) {
+						throw new HttpException(404, "Unknown object.");
+					}
+					if (!$object->can('update')) {
+						throw new HttpException(403, "Unable to update object.");
+					}
+				}
 				if ($tab['_moduleHandler'] === ActiveRecord::FORM_PRIMARY_MODEL) {
 					if (isset($results['primary'])) {
 						return false;
 					}
-					$results['primary'] = ['handler' => $this, 'model' => $this->getModel($m)];
+					$results['primary'] = ['handler' => $this, 'model' => $this->getModel($object, $m)];
 					continue;
 				}
 				$handlerParts = explode(':', $tab['_moduleHandler']);
@@ -558,7 +572,7 @@ abstract class Module extends \app\components\base\CollectorModule {
 						$resultsKey = 'parents';
 					}
 					if (!empty($resultsKey)) {
-						$model = $handler->getModel($m);
+						$model = $handler->getModel($object, $m);
 						$dirty = $model->getDirtyAttributes();
 						if ($model->isNewRecord) {
 							$formName = $model->formName();

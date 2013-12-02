@@ -6,6 +6,8 @@ use Yii;
 use \infinite\base\exceptions\Exception;
 use \infinite\helpers\ArrayHelper;
 
+use \app\components\types\Relationship;
+
 trait ObjectWidgetTrait
 {
 	protected $_dataProvider;
@@ -70,21 +72,22 @@ trait ObjectWidgetTrait
 			}
 			$menu[] = $item;
 		}
-		
+		$typePrefix = null;
 		if (Yii::$app->gk->canGeneral('create', $this->owner->primaryModel)) {
-			$createUrl = ['object/create', 'type' => $this->owner->systemId];
+			$createUrl = ['object/create'];
 			$method = ArrayHelper::getValue($this->settings, 'queryRole', 'all');
-			if (in_array($method, ['parents', 'children']) && empty(Yii::$app->request->object)) {
-				throw new Exception("Object widget requested when no object has been set!");
+			if (in_array($method, ['parents', 'children'])) {
+				if (empty(Yii::$app->request->object) || empty($this->settings['relationship'])) {
+					throw new Exception("Object widget requested when no object has been set!");
+				}
+				$createUrl['object_id'] = Yii::$app->request->object->primaryKey;
+				if ($method === 'parents') {
+					$typePrefix = 'parent:';
+				} else {
+					$typePrefix = 'child:';
+				}
 			}
-			switch ($method) {
-				case 'parents':
-					$createUrl['child_object_id'] = Yii::$app->request->object->primaryKey;
-				break;
-				case 'children':
-					$createUrl['parent_object_id'] = Yii::$app->request->object->primaryKey;
-				break;
-			}
+			$createUrl['type'] = $typePrefix . $this->owner->systemId;
 			$menu[] = [
 				'label' => '<i class="glyphicon glyphicon-plus"></i>',
 				'linkOptions' => ['title' => 'Create'],

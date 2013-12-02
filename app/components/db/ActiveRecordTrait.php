@@ -62,12 +62,13 @@ trait ActiveRecordTrait {
 	 * @param unknown $settings (optional)
 	 * @return unknown
 	 */
-	public function form($settings = array()) {
+	public function form($settings = []) {
 		Yii::beginProfile(__CLASS__ .':'. __FUNCTION__);
-		$settings = ['class' => $this->formSegmentClass];
+		$settings['class'] = $this->formSegmentClass;
 		$settings['model'] = $this;
-		// $settings['moduleHandler'] = $moduleHandler;
-		$settings['settings'] = $settings;
+		if (!isset($settings['settings'])) {
+			$settings['settings'] = [];
+		}
 		$form = Yii::createObject($settings);
 		// $form = new FormSegment($this, $name, $settings);
 		Yii::endProfile(__CLASS__ .':'. __FUNCTION__);
@@ -190,7 +191,7 @@ trait ActiveRecordTrait {
 
 	public function formSettings($name, $settings = [])
 	{
-		return null;
+		return $settings;
 	}
 
 	/**

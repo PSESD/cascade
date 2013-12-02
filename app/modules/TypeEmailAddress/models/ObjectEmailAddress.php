@@ -67,6 +67,7 @@ class ObjectEmailAddress extends \app\components\types\ActiveRecord
 	 */
 	public function formSettings($name, $settings = [])
 	{
+		$settings = parent::formSettings($name, $settings);
 		if (!array_key_exists('title', $settings)) {
 			$settings['title'] = false;
 		}
