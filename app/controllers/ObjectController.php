@@ -144,6 +144,13 @@ class ObjectController extends Controller
 		if (!isset($_GET['type'])) { $_GET['type'] = ''; }
 		$typeParsed = $_GET['type'];
 		$subform = $object = null;
+		$action = 'create';
+		$saveSettings = [];
+
+		$linkExisting = !empty($_GET['link']);
+		if ($linkExisting) {
+			$action = 'link';
+		}
 
 		if (!empty($_GET['object_id']) && (!($object = $this->params['object'] = Registry::getObject($_GET['object_id'], true)) || !($typeItem = $this->params['typeItem'] = $object->objectTypeItem))) {
 			throw new HttpException(404, "Unknown object.");
@@ -159,6 +166,7 @@ class ObjectController extends Controller
 				throw new HttpException(403, "Invalid request ");
 			}
 			$subform = implode(':', $typeParsedParts);
+			$saveSettings['allowEmpty'] = true;
 		}
 
 		if (empty($typeParsed) || !($type = Yii::$app->collectors['types']->getOne($typeParsed)) || !isset($type->object)) {
@@ -171,7 +179,7 @@ class ObjectController extends Controller
 
 		$this->response->view = 'create';
 		$this->response->task = 'dialog';
-		$this->response->taskOptions = array('title' => 'Create '.$module->title->getSingular(true) , 'width' => '800px');
+		$this->response->taskOptions = array('title' => ucfirst($action) . ' '.$module->title->getSingular(true) , 'width' => '800px');
 
 		if (isset($object)) {
 			$module = $object->objectType;
@@ -179,7 +187,7 @@ class ObjectController extends Controller
 
 		$models = false;
 		if (!empty($_POST)) {
-			list($error, $notice, $models, $niceModels) = $module->handleSaveAll();
+			list($error, $notice, $models, $niceModels) = $module->handleSaveAll(null, $saveSettings);
 			if ($error) {
 				$this->response->error = $error;
 			} else {
@@ -188,14 +196,22 @@ class ObjectController extends Controller
 					$noticeExtra = ' However, there were notices: '. $notice;
 				}
 				$this->response->success = '<em>'. $niceModels['primary']['model']->descriptor .'</em> was saved successfully.'.$noticeExtra;
-				$this->response->redirect = $niceModels['primary']['model']->getUrl('view');
+				if (isset($subform)) {
+					$primaryModel = $type->object->primaryModel;
+					$this->response->trigger = [
+						['refresh', '.model-'. $primaryModel::baseClassName()]
+					];
+					$this->response->task = 'status';
+				} else {
+					$this->response->redirect = $niceModels['primary']['model']->getUrl('view');
+				}
 			}
 		}
 		if ($models === false) {
 			$models = $module->getModels($object);
 		}
-		if (!($this->params['form'] = $module->getForm($models, ['subform' => $subform]))) {
-			throw new HttpException(403, "There is nothing to create for {$module->title->getPlural(true)}");
+		if (!($this->params['form'] = $module->getForm($models, ['subform' => $subform, 'linkExisting' => $linkExisting]))) {
+			throw new HttpException(403, "There is nothing to {$action} for {$module->title->getPlural(true)}");
 		}
 		$this->params['form']->ajax = true;
 	}
@@ -224,78 +240,6 @@ class ObjectController extends Controller
 
 		$response->handle();
 	}
-
-	/**
-	 *
-	 */
-	public function actionLink() {
-		throw new Exception("Not yet implemented");
-		$models = array();
-		$settings = array();
-		$relationship = null;
-		if (empty($_GET['type']) or !($module = Yii::$app->types->get($_GET['type']))) {
-			throw new HttpException(404, "Unknown object type ". (empty($_GET['type']) ? '' : $_GET['type']));
-		}
-
-		if (!empty($_GET['parent_object_id'])) {
-			$object = Registry::getObject($_GET['parent_object_id']);
-			$relationshipType = 'children';
-			$relationKey = 'parent_object_id';
-		}
-		if (!empty($_GET['child_object_id'])) {
-			$object = Registry::getObject($_GET['child_object_id']);
-			$relationshipType = 'parents';
-			$relationKey = 'child_object_id';
-		}
-		if (empty($object) or !($type = $object->getTypeModule())) {
-			throw new HttpException(404, "Unknown object type");
-		}
-
-		if (!empty($_GET['id'])) {
-			$relationship = Relation::model()->findByPk($_GET['id']);
-			$settings = array('disableDelete' => array($_GET['id']));
-			if ($relationship) {
-				$models['primary'] = array('model' => $relationship);
-			} else {
-				throw new HttpException(404, "Unknown relationship");
-			}
-			$response = new Response('link', array('dialog' => true, 'dialogSettings' => array('title' => 'Update '.$module->title->getSingular(true) .' Relationship' , 'width' => '800px')));
-		} else {
-			$settings = array('limitModules' => array($_GET['type']), 'addFormLabel' => 'Search for Existing '.$module->title->getSingular(true), 'ignoreSuggestions' => array($relationshipType => array($object->id)));
-			$response = new Response('link', array('dialog' => true, 'dialogSettings' => array('title' => 'Link Existing '.$module->title->getSingular(true) , 'width' => '800px')));
-		}
-		//$models = array('primary' => array('model' => 'Relation'));
-		if (!empty($_POST['Relation'])) {
-			foreach ($_POST['Relation'] as $k => $v) {
-				if (!isset($models[$k])) {
-					$models[$k] = array('model' => new Relation);
-				}
-				$models[$k]['model']->active = 1;
-				$models[$k]['model']->attributes = $v;
-				$models[$k]['model']->$relationKey = $object->primaryKey;
-				if (!$models[$k]['model']->save()) {
-					$response->error = 'Error saving relationship';
-				}
-			}
-			if (!$response->error) {
-				$response->justStatus = true;
-				if (count($models) === 1) {
-					$response->success =  'Relationship has been saved!';
-				} else {
-					$response->success =  'Relationships have been saved!';
-				}
-				$response->refresh = '.ic-type-'. $module->shortName;
-				ObjectFamiliarity::modified($object);
-			}
-		}
-		$settings['ignoreSuggestions'] = array('objects' => array($object->id));
-
-		$relationSegment = new RelationSegment($object, $relationshipType, $models, $settings);
-		$this->params['form'] = new Generator($relationSegment);
-		$this->params['form']->ajax = true;
-		$response->handle();
-	}
-
 
 	/**
 	 *

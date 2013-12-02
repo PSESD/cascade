@@ -5,22 +5,17 @@ use Yii;
 
 use \infinite\base\exceptions\Exception;
 
-abstract class CollectorModule extends \infinite\base\Module {
-	protected $_collectorItem;
+abstract class CollectorModule extends \infinite\base\Module implements \infinite\base\collector\CollectedObjectInterface {
+	use \infinite\base\collector\CollectedObjectTrait;
 
 	abstract public function getCollectorName();
-
-
-	public function getCollectorItem() {
-		return $this->_collectorItem;
-	}
 
 	/**
 	 * @inheritdoc
 	 */
 	public function __construct($id, $parent, $config=null) {
 		if (!isset(Yii::$app->collectors[$this->collectorName])) { throw new Exception('Cannot find the collector '. $this->collectorName .'!'); }
-		if (!($this->_collectorItem = Yii::$app->collectors[$this->collectorName]->register(null, $this))) { throw new Exception('Could not register '. $this->shortName .' in '. $this->collectorName .'!'); }
+		if (!(Yii::$app->collectors[$this->collectorName]->register(null, $this))) { throw new Exception('Could not register '. $this->shortName .' in '. $this->collectorName .'!'); }
 		$this->loadSubmodules();
 		
 		Yii::$app->collectors->onAfterInit(array($this, 'onAfterInit'));

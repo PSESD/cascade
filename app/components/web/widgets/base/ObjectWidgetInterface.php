@@ -7,6 +7,5 @@ interface ObjectWidgetInterface
 {
 	public function getSortBy();
 	public function getHeaderMenu();
-	
 }
 ?>

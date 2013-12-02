@@ -18,6 +18,7 @@ use \infinite\helpers\Html;
 class Segment extends FormObject {
 	public $cellClass = '\app\components\web\form\fields\Cell';
 	public $subform;
+	public $linkExisting = true;
 
 	protected $_name;
 	protected $_model;
@@ -143,7 +144,7 @@ class Segment extends FormObject {
 		$fields = $this->_model->getFields($this);
 		$fieldsTemplate = false;
 		if (!empty($this->subform)) {
-			$fieldsTemplate = [[$this->subform => ['buildRelation' => false]]];
+			$fieldsTemplate = [[$this->subform => ['linkExisting' => $this->linkExisting]]];
 		} elseif (!isset($this->_settings['fields'])) {
 			$fieldsTemplate = [];
 			foreach ($fields as $fieldName => $field) {

@@ -10,10 +10,8 @@ use yii\widgets\Breadcrumbs;
  */
 app\components\web\assetBundles\AppAsset::register($this);
 
-$bodyAttributes = [];
 if (YII_ENV_DEV) {
-	if (!isset($bodyAttributes['class'])) { $bodyAttributes['class'] = ''; }
-	$bodyAttributes['class'] .= ' development';
+	Html::addCssClass($this->bodyHtmlOptions, 'development');
 }
 ?>
 <?php $this->beginPage(); ?>
@@ -25,7 +23,7 @@ if (YII_ENV_DEV) {
 	<title><?=Html::encode($this->title); ?></title>
 	<?php $this->head(); ?>
 </head>
-<?= Html::beginTag('body', $bodyAttributes); ?>
+<?= Html::beginTag('body', $this->bodyHtmlOptions); ?>
 <?php $this->beginBody(); ?>
 	<?php
 		NavBar::begin([

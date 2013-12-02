@@ -15,7 +15,7 @@ class Collector extends \infinite\base\collector\Module {
 		return 'Widget';
 	}
 
-	public function build($widgetName) {
+	public function build($widgetName, $instanceSettings = []) {
 		if (is_object($widgetName)) {
 			$widget = $widgetName;
 		} else {
@@ -27,7 +27,7 @@ class Collector extends \infinite\base\collector\Module {
 		}
 
 		$widgetObject->owner = $widget->owner;
-
+		Yii::configure($widgetObject, $instanceSettings);
 		$cell = $widgetObject->cell;
 
 		$this->lastBuildId = $widgetObject->getWidgetId();

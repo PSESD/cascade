@@ -42,11 +42,9 @@ abstract class PanelWidget extends Widget {
 	}
 
 	public function generateStart() {
-		$parts = [];
 		Html::addCssClass($this->htmlOptions, $this->panelCssClass);
 		Html::addCssClass($this->htmlOptions, $this->panelStateCssClass);
-		$parts[] = Html::beginTag('div', $this->htmlOptions);
-		return implode("", $parts);
+		return parent::generateStart();
 	}
 	
 	public function generateHeader() {

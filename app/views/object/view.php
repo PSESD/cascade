@@ -5,7 +5,14 @@ use infinite\helpers\Html;
 use yii\bootstrap\Nav;
 use infinite\web\bootstrap\SubNavBar;
 
-
+$baseInstructions = [];
+$baseInstructions['objectId'] = $object->primaryKey;
+$refreshable = [
+	'baseInstructions' => $baseInstructions,
+	'url' => Html::url('app/refresh'),
+	'data' => [Yii::$app->request->csrfVar => Yii::$app->request->csrfToken]
+];
+$this->bodyHtmlOptions['data-refreshable'] = json_encode($refreshable);
 $js = [];
 $js[] = "\$('body').scrollspy({ target: '#object-dashboard-navbar', 'offset': 100 });";
 echo Html::beginTag('div', ['class' => 'dashboard']);

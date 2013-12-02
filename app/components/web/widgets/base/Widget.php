@@ -17,7 +17,8 @@ use \infinite\helpers\Html;
 use \yii\bootstrap\Nav;
 
 
-abstract class Widget extends \yii\bootstrap\Widget implements \infinite\base\WidgetInterface {
+abstract class Widget extends \yii\bootstrap\Widget implements \infinite\base\WidgetInterface, \infinite\base\collector\CollectedObjectInterface {
+	use \infinite\base\collector\CollectedObjectTrait;
 	use \infinite\base\ObjectTrait;
 	use \infinite\base\ComponentTrait;
 	use \infinite\web\grid\CellContentTrait;
@@ -84,6 +85,9 @@ abstract class Widget extends \yii\bootstrap\Widget implements \infinite\base\Wi
 
 	public function generateStart() {
 		$parts = [];
+		foreach ($this->widgetClasses as $class) {
+			Html::addCssClass($this->htmlOptions, $class);
+		}
 		$parts[] = Html::beginTag('div', $this->htmlOptions);
 		return implode("", $parts);
 	}
@@ -117,6 +121,9 @@ abstract class Widget extends \yii\bootstrap\Widget implements \infinite\base\Wi
 		return [];
 	}
 
+	public function getWidgetClasses() {
+		return [];
+	}
 	/**
 	 *
 	 *

@@ -4,7 +4,7 @@ namespace app\components\web\form\fields;
 use \infinite\db\ActiveRecord;
 
 class Relation extends Base {
-	public $buildRelation = true;
+	public $linkExisting = true;
 	/**
 	 *
 	 *
@@ -15,7 +15,7 @@ class Relation extends Base {
 	public function generate() {
 		$companion = $this->modelField->companion;
 		//\var_dump($companion);exit;
-		if ($this->buildRelation) {
+		if ($this->linkExisting) {
 			// we are matching with an existing document
 			return 'existing';
 		} else {

@@ -433,9 +433,9 @@ abstract class Module extends \app\components\base\CollectorModule {
 		return $model->save();
 	}
 
-	public function handleSaveAll($input = null) {
+	public function handleSaveAll($input = null, $settings = []) {
 		if (is_null($input)) {
-			$input = $this->_handlePost();
+			$input = $this->_handlePost($settings);
 		}
 		$error = false;
 		$notice = [];
@@ -532,7 +532,7 @@ abstract class Module extends \app\components\base\CollectorModule {
 		return $models;
 	}
 
-	protected function _handlePost() {
+	protected function _handlePost($settings = []) {
 		$results = ['primary' => null, 'children' => [], 'parents' => []];
 		if (empty($_POST)) { return false; }
 
@@ -582,7 +582,7 @@ abstract class Module extends \app\components\base\CollectorModule {
 								}
 							}
 						}
-						if (count($dirty) > 0) {
+						if (!empty($settings['allowEmpty']) || count($dirty) > 0) {
 							$results[$resultsKey][$tabId] = ['handler' => $handler, 'model' => $model];
 						}
 					}

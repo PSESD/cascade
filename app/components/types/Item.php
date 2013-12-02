@@ -3,6 +3,7 @@ namespace app\components\types;
 
 use Yii;
 use \infinite\helpers\ArrayHelper;
+use \infinite\base\collector\CollectedObjectInterface;
 
 class Item extends \infinite\base\collector\Item {
 	protected $_children = [];
@@ -17,7 +18,7 @@ class Item extends \infinite\base\collector\Item {
 		$this->distributeRelationships();
 	}
 
-	public function setObject($object) {
+	public function setObject(CollectedObjectInterface $object) {
 		parent::setObject($object);
 		$this->distributeRelationships();
 		return true;
@@ -92,6 +93,17 @@ class Item extends \infinite\base\collector\Item {
 		return $this->_sections;
 	}
 
+	public function getWidgets()
+	{
+		$sections = $this->sections;
+		$widgets = [];
+		foreach ($this->sections as $section) {
+			foreach ($section->object->getAll() as $key => $widget) {
+				$widgets[$key] = $widget;
+			}
+		}
+		return $widgets;
+	}
 	/**
 	 *
 	 *

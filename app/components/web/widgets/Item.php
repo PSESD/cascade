@@ -11,7 +11,9 @@ namespace app\components\web\widgets;
 
 use Yii;
 
-class Item extends \infinite\base\collector\Item {
+class Item extends \infinite\base\collector\Item implements \infinite\base\collector\CollectedObjectInterface {
+	use \infinite\base\collector\CollectedObjectTrait;
+
 	public $name;
 	public $widget;
 	public $tab;
@@ -27,6 +29,7 @@ class Item extends \infinite\base\collector\Item {
 		}
 		$object = Yii::createObject($this->widget);
 		$object->settings = $this->settings;
+		$object->collectorItem = $this;
 		return $object;
 	}
 

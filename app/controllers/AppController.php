@@ -7,8 +7,10 @@ use yii\web\AccessControl;
 use yii\web\VerbFilter;
 
 use infinite\web\Controller;
+use infinite\base\exceptions\HttpException;
 
 use app\models\LoginForm;
+use app\models\Registry;
 
 class AppController extends Controller
 {
@@ -29,12 +31,21 @@ class AppController extends Controller
 						'allow' => true,
 						'roles' => ['@'],
 					],
+					[
+						'actions' => ['refresh'],
+						'allow' => true,
+						'roles' => ['@'],
+					],
+					[
+						'allow' => false,
+						'roles' => ['?'],
+					],
 				],
 			],
 			'verbs' => [
 				'class' => VerbFilter::className(),
 				'actions' => [
-				//	'logout' => ['post'],
+					'refresh' => ['post'],
 				],
 			],
 		];
@@ -70,5 +81,45 @@ class AppController extends Controller
 	{
 		Yii::$app->user->logout();
 		return $this->goHome();
+	}
+
+	public function actionRefresh()
+	{
+		$refreshed = false;
+		$this->response->baseInstructions['content'] = &$refreshed;
+		$this->response->forceInstructions = true;
+		$this->response->task = 'status';
+		if (empty($_POST['instructions']) || empty($_POST['instructions']['type']) || empty($_POST['instructions']['systemId'])) { return; }
+		$instructions = $_POST['instructions'];
+		
+		if (isset($instructions['objectId'])) {
+			$object = Yii::$app->request->object = Registry::getObject($instructions['objectId']);
+			if (!$object) {
+				throw new HttpException(404, 'Unknown object');
+			}
+			$type = $object->objectType;
+		}
+		$settings = (isset($instructions['settings'])) ? $instructions['settings'] : [];
+		switch ($instructions['type']) {
+			case 'widget':
+				$widget = false;
+				if (isset($object)) {
+					$widgets = $object->objectTypeItem->widgets;
+					if (isset($widgets[$instructions['systemId']])) {
+						$widget = $widgets[$instructions['systemId']]->object;
+					}
+				} else {
+					$widget = Yii::$app->collectors['widgets']->getOne($instructions['systemId']);
+				}
+				if (!$widget) {
+					$this->response->error = 'Unknown widget!';
+					return;
+				}
+				$widgetObject = $widget->object;
+
+				$widgetObject->owner = $widget->owner;
+				$refreshed = $widgetObject->generate();
+			break;
+		}
 	}
 }
