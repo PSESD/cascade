@@ -9,16 +9,17 @@ namespace app\components\types;
 
 use Yii;
 
-use \app\models\Group;
-use \app\models\Relation;
-use \app\models\Registry;
+use app\models\Group;
+use app\models\Relation;
+use app\models\Registry;
+use app\models\ObjectFamiliarity;
 
-use \infinite\base\exceptions\Exception;
-use \infinite\base\exceptions\HttpException;
-use \infinite\base\language\Noun;
-use \infinite\db\ActiveRecord;
+use infinite\base\exceptions\Exception;
+use infinite\base\exceptions\HttpException;
+use infinite\base\language\Noun;
+use infinite\db\ActiveRecord;
 
-use \yii\base\Controller;
+use yii\base\Controller;
 
 abstract class Module extends \app\components\base\CollectorModule {
 	protected $_title;
@@ -426,7 +427,11 @@ abstract class Module extends \app\components\base\CollectorModule {
 	 * @return unknown
 	 */
 	public function handleSave($model) {
-		return $this->internalSave($model);
+		if ($this->internalSave($model)) {
+			ObjectFamiliarity::created($model);
+			return true;
+		}
+		return false;
 	}
 
 	protected function internalSave($model) {

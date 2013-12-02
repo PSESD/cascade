@@ -21,13 +21,6 @@ trait ObjectWidgetTrait
 		$i = [];
 		$i['type'] = 'widget';
 		$i['systemId'] = $this->collectorItem->systemId;
-		// if (isset($this->settings['relationship'])) {
-		// 	$i['relationship'] = [];
-		// 	$i['relationship']['parent'] = $this->settings['relationship']->parent->systemId;
-		// 	$i['relationship']['child'] = $this->settings['relationship']->child->systemId;
-		// 	$i['relationship']['objectRole'] = ($this->settings['queryRole'] === 'children') ? 'parent' : 'child';
-
-		// }
 		$i['recreateParams'] = $this->recreateParams;
 		return $i;
 	}
@@ -62,7 +55,12 @@ trait ObjectWidgetTrait
 					$dataProvider['query'] = $queryModelClass::find();
 				break;
 			}
-			//var_dump($dataProvider['query']);exit;
+			
+			$currentSortBy = $this->currentSortBy;
+			$currentSortByDirection = $this->currentSortByDirection;
+
+			
+
 			$dataProvider['pagination'] = $this->paginationSettings;
 			$this->_dataProvider = Yii::createObject($dataProvider);
 		}
@@ -71,35 +69,79 @@ trait ObjectWidgetTrait
 
 	public function getSortBy() {
 		$sortBy = [];
-		$sortBy[] = [
-			'label' => 'Name'
-		];
-		$sortBy[] = [
+		$dummyModel = $this->owner->dummyModel;
+		$descriptorField = $dummyModel->descriptorField;
+		if (is_array($descriptorField)) {
+			$descriptorLabel = $dummyModel->getAttributeLabel('descriptor');
+			$descriptorField = implode(',', array_reverse($descriptorField));
+		} else {
+			$descriptorLabel = $dummyModel->getAttributeLabel($descriptorField);
+		}
+		$sortBy['familiarity'] = [
 			'label' => 'Familiarity'
 		];
+		$sortBy[$descriptorField] = [
+			'label' => $descriptorLabel
+		];
 		return $sortBy;
+	}
+
+	public function getCurrentSortBy()
+	{
+		return $this->getState('sortBy', 'familiarity');
+	}
+
+	public function getCurrentSortByDirection()
+	{
+		return $this->getState('sortByDirection', ($this->currentSortBy === 'familiarity') ? 'desc' : 'asc');
 	}
 
 	public function getHeaderMenu()
 	{
 		$menu = [];
 		$sortBy = $this->sortBy;
+		$currentSortBy = $this->currentSortBy;
+		$currentSortByDirection = $this->currentSortByDirection;
+		$oppositeSortByDirection = ($currentSortByDirection === 'asc') ? 'desc' : 'asc';
+
 		if (!empty($sortBy)) {
 			$item = [
-				'label' => '<i class="glyphicon glyphicon-sort"></i>',
+				'label' => '<i class="fa fa-sort"></i>',
 				'linkOptions' => ['title' => 'Sort by'],
 				'url' => '#',
 				'items' => []
 			];
-			foreach ($sortBy as $sortItem) {
+
+			foreach ($sortBy as $sortKey => $sortItem) {
+				$newSortByDirection = 'asc';
+				$isActive = $sortKey === $currentSortBy;
+				$extra = '';
+				if ($isActive) {
+					$extra = '<i class="pull-right fa fa-sort-'.$oppositeSortByDirection.'"></i>';
+					$newSortByDirection = $oppositeSortByDirection;
+				}
+
+				$stateChange = [
+					$this->stateKeyName('sortBy') => $sortKey, 
+					$this->stateKeyName('sortByDirection') => $newSortByDirection
+				];
+
 				$item['items'][] = [
-					'label' => $sortItem['label'],
-					'linkOptions' => ['title' => 'Sort by '. $sortItem['label']],
+					'label' => $sortItem['label'] . $extra,
+					'linkOptions' => [
+						'title' => 'Sort by '. $sortItem['label'], 
+						'data-state-change' => json_encode($stateChange)
+					],
+					'options' => [
+						'class' => $isActive ? 'active' : ''
+					],
 					'url' => '#',
+					'active' => $isActive
 				];
 			}
 			$menu[] = $item;
 		}
+
 		$baseCreate = ['object/create'];
 		$typePrefix = null;
 		$method = ArrayHelper::getValue($this->settings, 'queryRole', 'all');

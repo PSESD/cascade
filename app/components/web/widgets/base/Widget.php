@@ -83,6 +83,18 @@ abstract class Widget extends \yii\bootstrap\Widget implements \infinite\base\Wi
 		echo $this->generate();
 	}
 
+	public function stateKeyName($key) {
+		return 'widget.'.$this->systemId . '.'. $key;
+	}
+
+	public function getState($key, $default = null) {
+		return Yii::$app->state->get($this->stateKeyName($key), $default);
+	}
+
+	public function setState($key, $value) {
+		return Yii::$app->state->set($this->stateKeyName($key), $value);
+	}
+
 	public function generateStart() {
 		$parts = [];
 		foreach ($this->widgetClasses as $class) {
@@ -166,6 +178,9 @@ abstract class Widget extends \yii\bootstrap\Widget implements \infinite\base\Wi
 	 * @return unknown
 	 */
 	public function getSystemId() {
+		if (isset($this->collectorItem)) {
+			return $this->collectorItem->systemId;
+		}
 		return self::baseClassName();
 	}
 }

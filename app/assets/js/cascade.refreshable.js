@@ -1,6 +1,13 @@
-$(document).on('refresh.cascade-api', '.refreshable', function(e) {
+
+$(document).on('refresh.cascade-api', '.refreshable', function(e, data) {
 	var settings = {};
 	var instructions = {};
+	if (settings.data === undefined) {
+		settings.data = {};
+	}
+    if (typeof data === 'object') {
+    	settings.data = jQuery.extend(true, settings.data, data);
+    }
 	if (typeof $('body').data('refreshable') === 'object' ) {
 		settings = jQuery.extend(true, settings, $('body').data('refreshable'));
 	}
@@ -12,9 +19,6 @@ $(document).on('refresh.cascade-api', '.refreshable', function(e) {
 		instructions = jQuery.extend(true, instructions, $(this).data('instructions'));
 	}
 	
-	if (settings.data === undefined) {
-		settings.data = {};
-	}
 	settings.dataType = 'json';
 	settings.type = 'POST';
 	settings.context = $(this);
@@ -22,9 +26,17 @@ $(document).on('refresh.cascade-api', '.refreshable', function(e) {
 		if (r.content) {
 			$(this).replaceWith(r.content);
 		} else {
-			console.log("failed to refresh");
+			$.debug("failed to refresh");
 		}
 	};
 	settings.data.instructions = instructions;
 	var request = jQuery.ajax(settings);
+});
+
+
+$(document).on('click.cascade-api', '.refreshable a[data-state-change]', function(e) {
+	e.preventDefault();
+	var $refreshableParent = $(this).parents('.refreshable').first();
+	$refreshableParent.trigger('refresh', [{state: $(this).data('state-change')}]);
+	return false;
 });

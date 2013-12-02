@@ -44,9 +44,11 @@ return array(
 		'gk' => array('class' => '\infinite\security\Gatekeeper'),
 		'session' => array(
 			'class' => '\yii\redis\Session',
-			'autoStart' => false,
 			'timeout' => '4000' // be sure to change yiic.php too
 		),
+		'state' => [
+			'class' => 'infinite\web\State'
+		],
 		'urlManager' => array(
 			'enablePrettyUrl' => true,
 			'showScriptName' => false,

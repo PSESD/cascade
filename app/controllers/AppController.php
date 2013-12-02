@@ -92,6 +92,12 @@ class AppController extends Controller
 		if (empty($_POST['instructions']) || empty($_POST['instructions']['type']) || empty($_POST['instructions']['systemId'])) { return; }
 		$instructions = $_POST['instructions'];
 		
+		if (!empty($_POST['state'])) {
+			foreach ($_POST['state'] as $key => $value) {
+				Yii::$app->state->set($key, $value);
+			}
+		}
+
 		if (isset($instructions['objectId'])) {
 			$object = Yii::$app->request->object = Registry::getObject($instructions['objectId']);
 			if (!$object) {
@@ -99,6 +105,7 @@ class AppController extends Controller
 			}
 			$type = $object->objectType;
 		}
+
 		$settings = (isset($instructions['settings'])) ? $instructions['settings'] : [];
 		switch ($instructions['type']) {
 			case 'widget':

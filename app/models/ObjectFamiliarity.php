@@ -103,7 +103,7 @@ class ObjectFamiliarity extends \app\components\db\ActiveRecord
 	 */
 	public static function created($object, $user = null) {
 		$objectId = $object->id;
-		$objectModel = get_class($object);
+		$objectModel = addslashes($object->modelAlias);
 		if (is_null($user) and isset(Yii::$app->user)) {
 			$user = Yii::$app->user->id;
 		}
@@ -132,7 +132,7 @@ class ObjectFamiliarity extends \app\components\db\ActiveRecord
 	 */
 	public static function modified($object, $user = null) {
 		$objectId = $object->id;
-		$objectModel = get_class($object);
+		$objectModel = addslashes($object->modelAlias);
 		if (is_null($user) and isset(Yii::$app->user)) {
 			$user = Yii::$app->user->id;
 		}
@@ -161,7 +161,7 @@ class ObjectFamiliarity extends \app\components\db\ActiveRecord
 	 */
 	public static function accessed($object, $user = null) {
 		$objectId = $object->id;
-		$objectModel = get_class($object);
+		$objectModel = addslashes($object->modelAlias);
 		if (is_null($user) and isset(Yii::$app->user)) {
 			$user = Yii::$app->user->id;
 		}
