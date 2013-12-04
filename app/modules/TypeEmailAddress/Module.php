@@ -9,7 +9,7 @@ class Module extends \app\components\types\Module
 	protected $_title = 'Email Address';
 	public $icon = 'fa fa-envelope';
 	public $uniparental = true;
-	public $selfManaged = false;
+	public $hasDashboard = false;
 
 	public $widgetNamespace = 'app\modules\TypeEmailAddress\widgets';
 	public $modelNamespace = 'app\modules\TypeEmailAddress\models';

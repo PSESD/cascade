@@ -22,7 +22,7 @@ class Module extends \app\components\types\Module
 	public $title = '<?= $generator->title; ?>';
 	public $icon = '<?= $generator->icon; ?>';
 	public $uniparental = <?php echo empty($generator->uniparental) ? 'false' : 'true'; ?>;
-	public $selfManaged = <?php echo empty($generator->selfManaged) ? 'false' : 'true'; ?>;
+	public $hasDashboard = <?php echo empty($generator->hasDashboard) ? 'false' : 'true'; ?>;
 
 	public $widgetNamespace = '<?=$generator->getWidgetNamespace(); ?>';
 	public $modelNamespace = '<?=$generator->getModelNamespace(); ?>';

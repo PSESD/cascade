@@ -34,7 +34,7 @@ class Generator extends \yii\gii\Generator
 	
 	public $title;
 	public $uniparental = 0;
-	public $selfManaged = 1;
+	public $hasDashboard = 1;
 	public $priority = 1;
 	public $icon;
 
@@ -120,7 +120,7 @@ class Generator extends \yii\gii\Generator
 			//['ns', 'validateNamespace'],
 			['tableName', 'validateTableName'],
 			['migrationTimestamp', 'integer'],
-			['parents, children, uniparental, selfManaged', 'safe'],
+			['parents, children, uniparental, hasDashboard', 'safe'],
 			//['baseClass', 'validateClass', 'params' => ['extends' => ActiveRecord::className()]],
 			//['generateRelations, generateLabelsFromComments', 'boolean'],
 
@@ -140,7 +140,7 @@ class Generator extends \yii\gii\Generator
 			'moduleClass' => 'Module Class',
 
 			'uniparental' => 'Allow only one parent',
-			'selfManaged' => 'Self-managed',
+			'hasDashboard' => 'Self-managed',
 
 			/* Model */
 
@@ -166,7 +166,7 @@ class Generator extends \yii\gii\Generator
 
 			'title' => 'Single noun for this object type',
 			'uniparental' => 'Objects of this type can only have one parent.',
-			'selfManaged' => 'Objects of this type are managed from their own dashboard.',
+			'hasDashboard' => 'Objects of this type are managed from their own dashboard.',
 
 			/* Model */
 
@@ -263,7 +263,7 @@ EOD;
 			$modulePath . '/widgets/Browse.php',
 			$this->render("browse_widget.php")
 		);
-		if (!empty($this->selfManaged)) {
+		if (!empty($this->hasDashboard)) {
 			$files[] = new CodeFile(
 				$modulePath . '/widgets/Summary.php',
 				$this->render("summary_widget.php")

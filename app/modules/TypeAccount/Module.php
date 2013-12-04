@@ -9,7 +9,7 @@ class Module extends \app\components\types\Module
 	protected $_title = 'Account';
 	public $icon = 'fa fa-building-o';
 	public $uniparental = false;
-	public $selfManaged = true;
+	public $hasDashboard = true;
 
 	public $widgetNamespace = 'app\modules\TypeAccount\widgets';
 	public $modelNamespace = 'app\modules\TypeAccount\models';
@@ -30,19 +30,6 @@ class Module extends \app\components\types\Module
 	public function widgets()
 	{
 		return parent::widgets();
-	}
-
-	
-	/**
-	 * @inheritdoc
-	 */
-	public function parentSettings()
-	{
-		$settings = parent::parentSettings();
-		$settings['title'] = false;
-		$settings['showDescriptor'] = true;
-		$settings['allow'] = 2;
-		return $settings;
 	}
 
 	

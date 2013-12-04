@@ -48,7 +48,7 @@ END;
 
 
 	echo $form->field($generator, 'uniparental')->checkbox();
-	echo $form->field($generator, 'selfManaged')->checkbox();
+	echo $form->field($generator, 'hasDashboard')->checkbox();
 
 //	echo $form->field($generator, 'modelClass');
 //	echo $form->field($generator, 'ns');

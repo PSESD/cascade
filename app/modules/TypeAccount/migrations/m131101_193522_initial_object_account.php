@@ -11,8 +11,8 @@ class m131101_193522_initial_object_account extends \infinite\db\Migration
 		
 		$this->createTable('object_account', [
 			'id' => 'char(36) CHARACTER SET ascii COLLATE ascii_bin NOT NULL PRIMARY KEY',
-			'name' => 'string NOT NULL',
-			'alt_name' => 'string DEFAULT NULL',
+			'name' => 'string(255) NOT NULL',
+			'alt_name' => 'string(255) DEFAULT NULL',
 			'created' => 'datetime DEFAULT NULL',
 			'created_user_id' => 'char(36) CHARACTER SET ascii COLLATE ascii_bin DEFAULT NULL',
 			'modified' => 'datetime DEFAULT NULL',
@@ -24,10 +24,10 @@ class m131101_193522_initial_object_account extends \infinite\db\Migration
 		$this->createIndex('accountCreatedUser', 'object_account', 'created_user_id', false);
 		$this->createIndex('accountModifiedUser', 'object_account', 'modified_user_id', false);
 		$this->createIndex('accountDeletedUser', 'object_account', 'deleted_user_id', false);
-		$this->addForeignKey('accountRegistry', 'object_account', 'id', 'registry', 'id', 'CASCADE', 'CASCADE');
 		$this->addForeignKey('accountCreatedUser', 'object_account', 'created_user_id', 'user', 'id', 'SET NULL', 'SET NULL');
 		$this->addForeignKey('accountDeletedUser', 'object_account', 'deleted_user_id', 'user', 'id', 'SET NULL', 'SET NULL');
 		$this->addForeignKey('accountModfiedUser', 'object_account', 'modified_user_id', 'user', 'id', 'SET NULL', 'SET NULL');
+		$this->addForeignKey('accountRegistry', 'object_account', 'id', 'registry', 'id', 'CASCADE', 'CASCADE');
 
 		$this->db->createCommand()->checkIntegrity(true)->execute();
 

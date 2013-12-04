@@ -30,7 +30,7 @@ abstract class Module extends \app\components\base\CollectorModule {
 	public $priority = 1000; //lower is better
 
 	public $uniparental = false;
-	public $selfManaged = true;
+	public $hasDashboard = true;
 
 	public $sectionName;
 
@@ -256,7 +256,7 @@ abstract class Module extends \app\components\base\CollectorModule {
 			} else {
 				Yii::trace("Warning: There is no browse class for the child objects of {$this->systemId}");
 			}
-			if ($this->selfManaged && $simpleListClassName) {
+			if ($this->hasDashboard && $simpleListClassName) {
 				$summaryWidget = $baseWidget;
 				$id = $this->systemId .'Summary';
 				$summaryWidget['widget'] = [

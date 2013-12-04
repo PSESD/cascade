@@ -9,7 +9,7 @@ class Module extends \app\components\types\Module
 	protected $_title = 'Phone Number';
 	public $icon = 'fa fa-phone';
 	public $uniparental = true;
-	public $selfManaged = false;
+	public $hasDashboard = false;
 
 	public $widgetNamespace = 'app\modules\TypePhoneNumber\widgets';
 	public $modelNamespace = 'app\modules\TypePhoneNumber\models';

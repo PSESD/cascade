@@ -2,6 +2,9 @@
 
 namespace app\modules\TypeAccount\models;
 
+use app\models\User;
+use app\models\Registry;
+
 /**
  * This is the model class for table "object_account".
  *
@@ -15,14 +18,14 @@ namespace app\modules\TypeAccount\models;
  * @property string $deleted
  * @property string $deleted_user_id
  *
- * @property Registry $registry
  * @property User $createdUser
  * @property User $deletedUser
  * @property User $modifiedUser
+ * @property Registry $registry
  */
 class ObjectAccount extends \app\components\types\ActiveRecord
 {
-	use \app\components\types\ActiveRecordTrait;
+	public $descriptorField = 'name';
 
 	/**
 	 * @inheritdoc
@@ -47,7 +50,6 @@ class ObjectAccount extends \app\components\types\ActiveRecord
 	{
 		return [
 			[['name'], 'required'],
-			//[['created', 'modified', 'deleted'], 'unsafe'],
 			[['id', 'created_user_id', 'modified_user_id', 'deleted_user_id'], 'string', 'max' => 36],
 			[['name', 'alt_name'], 'string', 'max' => 255]
 		];
@@ -103,17 +105,9 @@ class ObjectAccount extends \app\components\types\ActiveRecord
 	/**
 	 * @return \yii\db\ActiveRelation
 	 */
-	public function getRegistry()
-	{
-		return $this->hasOne('Registry', ['id' => 'id']);
-	}
-
-	/**
-	 * @return \yii\db\ActiveRelation
-	 */
 	public function getCreatedUser()
 	{
-		return $this->hasOne('User', ['id' => 'created_user_id']);
+		return $this->hasOne(User::className(), ['id' => 'created_user_id']);
 	}
 
 	/**
@@ -121,7 +115,7 @@ class ObjectAccount extends \app\components\types\ActiveRecord
 	 */
 	public function getDeletedUser()
 	{
-		return $this->hasOne('User', ['id' => 'deleted_user_id']);
+		return $this->hasOne(User::className(), ['id' => 'deleted_user_id']);
 	}
 
 	/**
@@ -129,6 +123,14 @@ class ObjectAccount extends \app\components\types\ActiveRecord
 	 */
 	public function getModifiedUser()
 	{
-		return $this->hasOne('User', ['id' => 'modified_user_id']);
+		return $this->hasOne(User::className(), ['id' => 'modified_user_id']);
+	}
+
+	/**
+	 * @return \yii\db\ActiveRelation
+	 */
+	public function getRegistry()
+	{
+		return $this->hasOne(Registry::className(), ['id' => 'id']);
 	}
 }

@@ -60,7 +60,6 @@ class ObjectIndividual extends \app\components\types\ActiveRecord
 		return [
 			[['first_name'], 'required'],
 			[['birthday'], 'safe'],
-			[['created', 'modified', 'deleted'], 'unsafe'],
 			[['id', 'user_id', 'created_user_id', 'modified_user_id', 'deleted_user_id'], 'string', 'max' => 36],
 			[['prefix', 'suffix', 'first_name', 'middle_name', 'last_name', 'title', 'department'], 'string', 'max' => 255]
 		];

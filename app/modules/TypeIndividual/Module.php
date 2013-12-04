@@ -9,7 +9,7 @@ class Module extends \app\components\types\Module
 	protected $_title = 'Individual';
 	public $icon = 'fa fa-user';
 	public $uniparental = false;
-	public $selfManaged = true;
+	public $hasDashboard = true;
 
 	public $widgetNamespace = 'app\modules\TypeIndividual\widgets';
 	public $modelNamespace = 'app\modules\TypeIndividual\models';
@@ -30,19 +30,6 @@ class Module extends \app\components\types\Module
 	public function widgets()
 	{
 		return parent::widgets();
-	}
-
-	
-	/**
-	 * @inheritdoc
-	 */
-	public function parentSettings()
-	{
-		$settings = parent::parentSettings();
-		$settings['title'] = false;
-		$settings['showDescriptor'] = true;
-		$settings['allow'] = 2;
-		return $settings;
 	}
 
 	
