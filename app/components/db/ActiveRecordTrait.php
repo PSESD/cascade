@@ -191,8 +191,8 @@ trait ActiveRecordTrait {
 
 	public function formSettings($name, $settings = [])
 	{
-		if (empty($settings)) {
-			return null;
+		if (!is_array($settings)) {
+			$settings = [];
 		}
 		return $settings;
 	}

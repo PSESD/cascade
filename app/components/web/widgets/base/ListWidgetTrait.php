@@ -9,7 +9,35 @@ use \infinite\helpers\ArrayHelper;
 trait ListWidgetTrait
 {
 	public $emptyMessage = 'No items exist.';
+	public $renderContentTemplate;
+	public $defaultContentRow = [
+		'class' => 'list-group-item-text',
+		'tag' => 'div'
+	];
 
+
+	public function renderItemContent($model, $key, $index){
+		if (!isset($this->renderContentTemplate)) {
+			$this->renderContentTemplate = [
+				'descriptor' => ['class' => 'list-group-item-heading', 'tag' => 'h5']
+			];
+		}
+		$parts = [];
+		foreach ($this->renderContentTemplate as $fieldName => $settings) {
+			if (is_numeric($fieldName)) {
+				$fieldName = $settings;
+				$settings = [];
+			}
+			$settings = array_merge($this->defaultContentRow, $settings);
+			$tag = $settings['tag'];
+			unset($settings['tag']);
+			if (!empty($model->{$fieldName})) {
+				$parts[] = Html::tag($tag, $model->{$fieldName}, $settings);
+			}
+		}
+
+		return implode("", $parts);
+	}
 
 	public function getListOptions()
 	{

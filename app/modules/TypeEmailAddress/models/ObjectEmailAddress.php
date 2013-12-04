@@ -2,6 +2,7 @@
 namespace app\modules\TypeEmailAddress\models;
 
 use app\models\Registry;
+use infinite\helpers\Html;
 
 /**
  * This is the model class for table "object_email_address".
@@ -98,5 +99,9 @@ class ObjectEmailAddress extends \app\components\types\ActiveRecord
 	public function getRegistry()
 	{
 		return $this->hasOne(Registry::className(), ['id' => 'id']);
+	}
+
+	public function getMailLink() {
+		return Html::mailto($this->email_address, $this->email_address);
 	}
 }

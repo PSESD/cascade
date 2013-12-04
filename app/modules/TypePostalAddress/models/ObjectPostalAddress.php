@@ -129,4 +129,25 @@ class ObjectPostalAddress extends \app\components\types\ActiveRecord
 	{
 		return $this->hasOne(Registry::className(), ['id' => 'id']);
 	}
+
+
+	public function getUniqueCountry() {
+		if ($this->country !==Yii::$app->params['defaultCountry']) {
+			$countries = Locations::countryList();
+			return $countries[$this->country];
+		}
+		return null;
+	}
+
+
+	public function getCsz() {
+		$str = $this->city;
+		if (!empty($this->subnational_division)) {
+			$str .= ", ". $this->subnational_division;
+		}
+		if (!empty($this->postal_code)) {
+			$str .= " ". $this->postal_code;
+		}
+		return $str;
+	}
 }
