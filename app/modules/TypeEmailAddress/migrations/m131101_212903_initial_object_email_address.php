@@ -11,7 +11,7 @@ class m131101_212903_initial_object_email_address extends \infinite\db\Migration
 		
 		$this->createTable('object_email_address', [
 			'id' => 'char(36) CHARACTER SET ascii COLLATE ascii_bin NOT NULL PRIMARY KEY',
-			'email_address' => 'string NOT NULL',
+			'email_address' => 'string(255) NOT NULL',
 			'no_mailings' => 'boolean NOT NULL DEFAULT 0',
 			'created' => 'datetime DEFAULT NULL',
 			'modified' => 'datetime DEFAULT NULL'

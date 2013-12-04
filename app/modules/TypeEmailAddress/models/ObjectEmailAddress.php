@@ -2,6 +2,8 @@
 
 namespace app\modules\TypeEmailAddress\models;
 
+use app\models\Registry;
+
 /**
  * This is the model class for table "object_email_address".
  *
@@ -15,7 +17,6 @@ namespace app\modules\TypeEmailAddress\models;
  */
 class ObjectEmailAddress extends \app\components\types\ActiveRecord
 {
-	use \app\components\types\ActiveRecordTrait;
 	public $descriptorField = 'email_address';
 
 	/**
@@ -43,7 +44,6 @@ class ObjectEmailAddress extends \app\components\types\ActiveRecord
 			[['email_address'], 'required'],
 			[['email_address'], 'email'],
 			[['no_mailings'], 'boolean'],
-		//	[['created', 'modified'], 'unsafe'],
 			[['id'], 'string', 'max' => 36],
 			[['email_address'], 'string', 'max' => 255]
 		];
@@ -98,6 +98,6 @@ class ObjectEmailAddress extends \app\components\types\ActiveRecord
 	 */
 	public function getRegistry()
 	{
-		return $this->hasOne('Registry', ['id' => 'id']);
+		return $this->hasOne(Registry::className(), ['id' => 'id']);
 	}
 }

@@ -42,7 +42,18 @@ class Module extends \app\components\types\Module
 	 */
 	public function widgets()
 	{
-		return parent::widgets();
+	<?php
+	if (!empty($generator->section)) {
+		echo "\t\$widgets = parent::widgets();\n";
+		foreach ($generator->widgets as $widget) {
+			echo "\t\t\$widgets['{$widget}']['section'] = Yii::\$app->collectors['sections']->getOne('{$generator->section}');\n";
+		}
+		echo "\t\treturn \$widgets;";
+	} else {
+		echo "\t\treturn parent::widgets();";
+	}
+	?>
+
 	}
 
 	

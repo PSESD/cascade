@@ -37,6 +37,8 @@ END;
 	echo $form->field($generator, 'tableName');
 	echo $form->field($generator, 'descriptorField');
 	echo $form->field($generator, 'title');
+	echo $form->field($generator, 'section')->dropDownList($generator->possibleSections());
+
 
 	echo '<div class="ic-icon-preview"></div>';
 	echo $form->field($generator, 'icon')->dropDownList($generator->possibleIcons(), ['style' => "font-family: 'FontAwesome'; font-size: 2em; height: auto; -webkit-appearance: none;"]);

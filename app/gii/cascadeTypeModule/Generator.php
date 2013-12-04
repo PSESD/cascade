@@ -41,6 +41,8 @@ class Generator extends \yii\gii\Generator
 	public $priority = 1;
 	public $icon;
 
+	public $widgets = [];
+
 
 	public $migrationTimestamp;
 
@@ -51,7 +53,7 @@ class Generator extends \yii\gii\Generator
 	public $descriptorField;
 	public $children = '';
 	public $parents = '';
-	public $independent = true;
+	public $section;
 
 	public function __construct() {
 		if (is_null($this->migrationTimestamp)) {
@@ -78,6 +80,10 @@ class Generator extends \yii\gii\Generator
 
 	public function getModuleID() {
 		return $this->moduleName;
+	}
+
+	public function getModuleSystemID() {
+		return preg_replace('/^Type/', '', $this->moduleName);
 	}
 
 	// model
@@ -124,7 +130,7 @@ class Generator extends \yii\gii\Generator
 			//['ns', 'validateNamespace'],
 			[['tableName'], 'validateTableName'],
 			[['migrationTimestamp'], 'integer'],
-			[['descriptorField', 'parents', 'children', 'uniparental', 'hasDashboard'], 'safe'],
+			[['section', 'descriptorField', 'parents', 'children', 'uniparental', 'hasDashboard'], 'safe'],
 			//['baseClass', 'validateClass', 'params' => ['extends' => ActiveRecord::className()]],
 			//['generateRelations, generateLabelsFromComments', 'boolean'],
 
@@ -169,6 +175,7 @@ class Generator extends \yii\gii\Generator
 			'moduleClass' => 'This is the fully qualified class name of the module, e.g., <code>app\modules\admin\Module</code>.',
 
 			'title' => 'Single noun for this object type',
+			'section' => 'Which section does this widget fall into?',
 			'uniparental' => 'Objects of this type can only have one parent.',
 			'hasDashboard' => 'Objects of this type are managed from their own dashboard.',
 
@@ -259,21 +266,47 @@ EOD;
 	{
 		$files = [];
 		$modulePath = $this->getModulePath();
-		$files[] = new CodeFile(
-			$modulePath . '/Module.php',
-			$this->render("module.php")
-		);
-		$files[] = new CodeFile(
-			$modulePath . '/widgets/DetailList.php',
-			$this->render("detail_list_widget.php")
-		);
+		$widgets = [];
+		$systemId = ucfirst($this->getModuleSystemID());
+		if (!empty($this->section) && substr($this->section, 0, 1) === '_') {
+			if ($this->section === '_side') {
+				$files[] = new CodeFile(
+					$modulePath . '/widgets/EmbeddedList.php',
+					$this->render("side_list_widget.php")
+				);
+			} else {
+				$files[] = new CodeFile(
+					$modulePath . '/widgets/EmbeddedList.php',
+					$this->render("embedded_list_widget.php")
+				);
+			}
+			$widgets[] = "Embedded{$systemId}Browse";
+		} else {
+			if (!empty($this->children)) {
+				$widgets[] = "Children{$systemId}Browse";
+			}
+			if (!empty($this->parents)) {
+				$widgets[] = "Parents{$systemId}Browse";
+			}
+			$files[] = new CodeFile(
+				$modulePath . '/widgets/DetailList.php',
+				$this->render("detail_list_widget.php")
+			);
+		}
 		if (!empty($this->hasDashboard)) {
 			$files[] = new CodeFile(
 				$modulePath . '/widgets/SimpleLinkList.php',
 				$this->render("simple_link_list_widget.php")
 			);
+			$widgets[] = "{$systemId}Summary";
 		}
 
+		$this->widgets = $widgets;
+
+		$files[] = new CodeFile(
+			$modulePath . '/Module.php',
+			$this->render("module.php")
+		);
 		$relations = $this->generateRelations();
 		$db = $this->getDbConnection();
 		foreach ($this->getTableNames() as $tableName) {
@@ -340,6 +373,13 @@ EOD;
 		return $field;
 	}
 
+	public function possibleSections() {
+		$s = ['' => '(self)'];
+		foreach (Yii::$app->collectors['sections']->getAll() as $section) {
+			$s[$section->systemId] = $section->object->sectionTitle;
+		}
+		return $s;
+	}
 	public function possibleIcons() {
 		$path = Yii::getAlias("@vendor/fortawesome/font-awesome/src/icons.yml");
 		$data = \Spyc::YAMLLoad($path);
