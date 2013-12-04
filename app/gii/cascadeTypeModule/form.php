@@ -5,16 +5,24 @@
  * @var yii\gii\generators\module\Generator $generator
  */
 
-\infinite\web\IconAsset::register($this);
+\infinite\web\assetBundles\FontAwesomeAsset::register($this);
+\infinite\web\assetBundles\UnderscoreAsset::register($this);
 
 use \infinite\helpers\Html;
 $js = <<< END
-$("#generator-icon").bind('change keyup', function(event) {
-	$('.ic-icon-preview').replaceWith($('<div />').css({'float': 'right', 'margin': '5px'}).addClass('ic-icon-32 ic-icon-black ic-icon ic-icon-preview '+ $(this).val()));
-	event.stopPropagation();
-}).trigger('keyup');
+
+$("#generator-icon option").each(function() {
+	$(this).html($(this).text());
+	console.log($(this).text());
+});
 END;
 	Html::registerJsBlock($js);
+$css = <<< END
+#generator-icon option {
+	font-family: 'FontAwesome';
+}
+END;
+	$this->registerCss($css);
 	echo \yii\helpers\Html::activeHiddenInput($generator, 'migrationTimestamp');
 ?>
 <div class="module-form">
@@ -27,10 +35,11 @@ END;
 
 	echo $form->field($generator, 'baseNamespace');
 	echo $form->field($generator, 'tableName');
+	echo $form->field($generator, 'descriptorField');
 	echo $form->field($generator, 'title');
 
 	echo '<div class="ic-icon-preview"></div>';
-	echo $form->field($generator, 'icon')->dropDownList($generator->possibleIcons());
+	echo $form->field($generator, 'icon')->dropDownList($generator->possibleIcons(), ['style' => "font-family: 'FontAwesome'; font-size: 2em; height: auto; -webkit-appearance: none;"]);
 
 	
 

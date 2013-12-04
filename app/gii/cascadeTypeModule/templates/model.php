@@ -17,6 +17,9 @@ echo "<?php\n";
 
 namespace <?= $generator->getModelNamespace() ?>;
 
+<?= $uses ?>
+
+
 /**
  * This is the model class for table "<?= $tableName ?>".
  *
@@ -32,6 +35,8 @@ namespace <?= $generator->getModelNamespace() ?>;
  */
 class <?= $className ?> extends <?= '\\' . ltrim($generator->baseClass, '\\') . "\n" ?>
 {
+<?= $descriptorField ?>
+
 	/**
 	 * @inheritdoc
 	 */

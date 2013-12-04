@@ -19,7 +19,7 @@ use Yii;
 
 class Module extends \app\components\types\Module
 {
-	public $title = '<?= $generator->title; ?>';
+	protected $_title = '<?= $generator->title; ?>';
 	public $icon = '<?= $generator->icon; ?>';
 	public $uniparental = <?php echo empty($generator->uniparental) ? 'false' : 'true'; ?>;
 	public $selfManaged = <?php echo empty($generator->selfManaged) ? 'false' : 'true'; ?>;

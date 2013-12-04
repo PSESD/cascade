@@ -2,6 +2,9 @@
 
 namespace app\modules\TypeIndividual\models;
 
+use app\models\User;
+use app\models\Registry;
+
 /**
  * This is the model class for table "object_individual".
  *
@@ -32,7 +35,7 @@ namespace app\modules\TypeIndividual\models;
 class ObjectIndividual extends \app\components\types\ActiveRecord
 {
 	public $descriptorField = ['first_name', 'middle_name', 'last_name'];
-	
+
 	/**
 	 * @inheritdoc
 	 */
@@ -57,7 +60,7 @@ class ObjectIndividual extends \app\components\types\ActiveRecord
 		return [
 			[['first_name'], 'required'],
 			[['birthday'], 'safe'],
-			//[['created', 'modified', 'deleted'], 'unsafe'],
+			[['created', 'modified', 'deleted'], 'unsafe'],
 			[['id', 'user_id', 'created_user_id', 'modified_user_id', 'deleted_user_id'], 'string', 'max' => 36],
 			[['prefix', 'suffix', 'first_name', 'middle_name', 'last_name', 'title', 'department'], 'string', 'max' => 255]
 		];
@@ -80,7 +83,6 @@ class ObjectIndividual extends \app\components\types\ActiveRecord
 			'birthday' => ['formField' => ['type' => 'date']]
 		];
 	}
-
 
 
 	/**
@@ -133,7 +135,7 @@ class ObjectIndividual extends \app\components\types\ActiveRecord
 	 */
 	public function getCreatedUser()
 	{
-		return $this->hasOne('User', ['id' => 'created_user_id']);
+		return $this->hasOne(User::className(), ['id' => 'created_user_id']);
 	}
 
 	/**
@@ -141,7 +143,7 @@ class ObjectIndividual extends \app\components\types\ActiveRecord
 	 */
 	public function getDeletedUser()
 	{
-		return $this->hasOne('User', ['id' => 'deleted_user_id']);
+		return $this->hasOne(User::className(), ['id' => 'deleted_user_id']);
 	}
 
 	/**
@@ -149,7 +151,7 @@ class ObjectIndividual extends \app\components\types\ActiveRecord
 	 */
 	public function getModifiedUser()
 	{
-		return $this->hasOne('User', ['id' => 'modified_user_id']);
+		return $this->hasOne(User::className(), ['id' => 'modified_user_id']);
 	}
 
 	/**
@@ -157,7 +159,7 @@ class ObjectIndividual extends \app\components\types\ActiveRecord
 	 */
 	public function getRegistry()
 	{
-		return $this->hasOne('Registry', ['id' => 'id']);
+		return $this->hasOne(Registry::className(), ['id' => 'id']);
 	}
 
 	/**
@@ -165,7 +167,7 @@ class ObjectIndividual extends \app\components\types\ActiveRecord
 	 */
 	public function getUser()
 	{
-		return $this->hasOne('User', ['id' => 'user_id']);
+		return $this->hasOne(User::className(), ['id' => 'user_id']);
 	}
 
 	/**
@@ -173,6 +175,6 @@ class ObjectIndividual extends \app\components\types\ActiveRecord
 	 */
 	public function getUsers()
 	{
-		return $this->hasMany('User', ['object_individual_id' => 'id']);
+		return $this->hasMany(User::className(), ['object_individual_id' => 'id']);
 	}
 }

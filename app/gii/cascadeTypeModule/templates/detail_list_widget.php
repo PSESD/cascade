@@ -10,7 +10,6 @@ echo "<?php\n";
 
 namespace <?=$generator->getWidgetNamespace(); ?>;
 
-class Browse extends \app\components\web\widgets\core\Browse
+class DetailList extends \app\components\web\widgets\base\DetailList
 {
-	public $gridCellSize = 'full';
 }

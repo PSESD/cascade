@@ -57,8 +57,8 @@ class RelationTaxonomy extends \app\components\db\ActiveRecord
 	/**
 	 * @return \yii\db\ActiveRelation
 	 */
-	public function getRelation()
-	{
-		return $this->hasOne(Relation::className(), ['id' => 'relation_id']);
-	}
+	// public function getRelation()
+	// {
+	// 	return $this->hasOne(Relation::className(), ['id' => 'relation_id']);
+	// }
 }

@@ -11,6 +11,9 @@ use Yii;
 use yii\gii\CodeFile;
 use yii\helpers\Html;
 use yii\helpers\StringHelper;
+use yii\helpers\ArrayHelper;
+use yii\helpers\FileHelper;
+
 
 use yii\db\ActiveRecord;
 use yii\db\Connection;
@@ -45,6 +48,7 @@ class Generator extends \yii\gii\Generator
 	public $generateLabelsFromComments = false;
 
 	public $tableName;
+	public $descriptorField;
 	public $children = '';
 	public $parents = '';
 	public $independent = true;
@@ -112,15 +116,15 @@ class Generator extends \yii\gii\Generator
 
 			/* Model */
 			//['modelClass', 'filter', 'filter' => 'trim'],
-			['tableName, icon, title', 'required'],
+			[['tableName', 'icon', 'title'], 'required'],
 			//['db, modelClass', 'match', 'pattern' => '/^\w+$/', 'message' => 'Only word characters are allowed.'],
 			// ['ns, baseClass', 'match', 'pattern' => '/^[\w\\\\]+$/', 'message' => 'Only word characters and backslashes are allowed.'],
-			['tableName', 'match', 'pattern' => '/^(\w+\.)?([\w\*]+)$/', 'message' => 'Only word characters, and optionally an asterisk and/or a dot are allowed.'],
+			[['tableName'], 'match', 'pattern' => '/^(\w+\.)?([\w\*]+)$/', 'message' => 'Only word characters, and optionally an asterisk and/or a dot are allowed.'],
 			//['db', 'validateDb'],
 			//['ns', 'validateNamespace'],
-			['tableName', 'validateTableName'],
-			['migrationTimestamp', 'integer'],
-			['parents, children, uniparental, selfManaged', 'safe'],
+			[['tableName'], 'validateTableName'],
+			[['migrationTimestamp'], 'integer'],
+			[['descriptorField', 'parents', 'children', 'uniparental', 'selfManaged'], 'safe'],
 			//['baseClass', 'validateClass', 'params' => ['extends' => ActiveRecord::className()]],
 			//['generateRelations, generateLabelsFromComments', 'boolean'],
 
@@ -224,7 +228,7 @@ EOD;
 	 */
 	public function requiredTemplates()
 	{
-		return ['module.php', 'summary_widget.php', 'browse_widget.php', 'summary_view.php', 'model.php', 'migration.php'];
+		return ['module.php', 'detail_list_widget.php', 'simple_link_list_widget.php',  'model.php', 'migration.php'];
 	}
 
 	/**
@@ -260,17 +264,13 @@ EOD;
 			$this->render("module.php")
 		);
 		$files[] = new CodeFile(
-			$modulePath . '/widgets/Browse.php',
-			$this->render("browse_widget.php")
+			$modulePath . '/widgets/DetailList.php',
+			$this->render("detail_list_widget.php")
 		);
 		if (!empty($this->selfManaged)) {
 			$files[] = new CodeFile(
-				$modulePath . '/widgets/Summary.php',
-				$this->render("summary_widget.php")
-			);
-			$files[] = new CodeFile(
-				$modulePath . '/views/widgets/summary/index.php',
-				$this->render("summary_view.php")
+				$modulePath . '/widgets/SimpleLinkList.php',
+				$this->render("simple_link_list_widget.php")
 			);
 		}
 
@@ -284,9 +284,11 @@ EOD;
 				'tableName' => $tableName,
 				'className' => $className,
 				'tableSchema' => $tableSchema,
+				'descriptorField' => $this->generateDescriptorField($tableSchema),
 				'labels' => $this->generateLabels($tableSchema),
 				'rules' => $this->generateRules($tableSchema),
 				'relations' => $myRelations,
+				'uses' => $this->generateRelationUses($myRelations),
 				'migrationClassName' => $this->migrationClassName,
 				'migrationsNamespace' => $this->migrationsNamespace,
 				'createTableSyntax' => $this->generateCreateTableColumns($tableSchema),
@@ -298,7 +300,7 @@ EOD;
 				$this->render('model.php', $params)
 			);
 			$files[] = $migration = new CodeFile(
-				Yii::getAlias('@' . str_replace('\\', '/', $this->migrationsNamespace)) . '/' . $this->migrationClassName . '.php',
+				$this->getMigrationPath(),
 				$this->render('migration.php', $params)
 			);
 		}
@@ -318,21 +320,37 @@ EOD;
 		}
 	}
 
-
+	public function generateDescriptorField($table) {
+		$field = '';
+		if (!empty($this->descriptorField)) {
+			if (strpos($this->descriptorField, ',') === false) {
+				$field = "\tpublic \$descriptorField = '{$this->descriptorField}';\n";
+			} else {
+				$parts = explode(',', str_replace(' ', '', $this->descriptorField));
+				$field = "\tpublic \$descriptorField = ['".implode("', '", $parts)."'];\n";
+			}
+		} else {
+			$check = ['name', 'title'];
+			foreach ($check as $column) {
+				if (isset($table->columns[$column])) {
+					$field = "\tpublic \$descriptorField = '$column';\n";
+				}
+			}
+		}
+		return $field;
+	}
 
 	public function possibleIcons() {
-		$icons = array();
-		$folderPath = Yii::getAlias("@infinite/assets/img/icons/original_icons");
-		$folder = opendir($folderPath);
-		if (!$folder) { return array(); }
-		while (false !== ($file = readdir($folder))) {
-			$path = $folderPath . DIRECTORY_SEPARATOR . $file;
-			if (substr($file, 0, 1) === '.' OR is_dir($path)) { continue; }
-			$file = preg_replace('/(\_[0-9x]+)/', '', $file);
-			$file = preg_replace('/\.(.*)/', '', $file);
-			$className = $file;
-			$icons['ic-icon-'.$className] = $file;
+		$path = Yii::getAlias("@vendor/fortawesome/font-awesome/src/icons.yml");
+		$data = \Spyc::YAMLLoad($path);
+		$icons = [];
+		ArrayHelper::multisort($data['icons'], 'name');
+		foreach ($data['icons'] as $icon) {
+			$group = $icon['categories'][0];
+			if (!isset($icons[$group])) { $icons[$group] = []; }
+			$icons[$group]['fa fa-'.$icon['id']] = $icon['name'] ."&#09;". '&#x'.$icon['unicode'] . ';';
 		}
+		ksort($icons);
 		return $icons;
 	}
 
@@ -369,6 +387,13 @@ EOD;
 		return $this->moduleNamespace . '\migrations';
 	}
 
+	public function getMigrationPath() {
+		return Yii::getAlias('@' . str_replace('\\', '/', $this->migrationsNamespace)) . '/' . $this->migrationClassName . '.php';
+	}
+
+	public function getMigrationDirectory() {
+		return Yii::getAlias('@' . str_replace('\\', '/', $this->migrationsNamespace));
+	}
 	/**
 	 * @return string the model namespace of the module.
 	 */
@@ -382,7 +407,12 @@ EOD;
 	 */
 	public function getMigrationClassName()
 	{
-		return  'm' . gmdate('ymd_His', $this->migrationTimestamp) . '_initial_'.$this->tableName;
+		$postfix = '_initial_'.$this->tableName;
+		$searchExisting = FileHelper::findFiles($this->migrationDirectory, ['only' => [$postfix.'.php']]);
+		if (!empty($searchExisting)) {
+			return strstr(basename($searchExisting[0]), '.php', true);
+		}
+		return  'm' . gmdate('ymd_His', $this->migrationTimestamp) . $postfix;
 	}
 
 
@@ -670,13 +700,23 @@ EOD;
 
 		$rules = [];
 		foreach ($types as $type => $columns) {
-			$rules[] = "['" . implode(', ', $columns) . "', '$type']";
+			$rules[] = "[['" . implode("', '", $columns) . "'], '$type']";
 		}
 		foreach ($lengths as $length => $columns) {
-			$rules[] = "['" . implode(', ', $columns) . "', 'string', 'max' => $length]";
+			$rules[] = "[['" . implode("', '", $columns) . "'], 'string', 'max' => $length]";
 		}
 
 		return $rules;
+	}
+
+	public function generateRelationUses($relations) {
+		$uses = [];
+		foreach ($relations as $relation) {
+			if (isset($this->modelMap[$relation[1]])) {
+				$uses[] = 'use '. $this->modelMap[$relation[1]] .';';
+			}
+		}
+		return implode("\n", array_unique($uses));
 	}
 
 	/**
@@ -709,12 +749,11 @@ EOD;
 				// Add relation for this table
 				$link = $this->generateRelationLink(array_flip($refs));
 				$relationName = $this->generateRelationName($relations, $className, $table, $fks[0], false);
-				if ($relationName === 'Id') {
+				if ($relationName === 'Id0') {
 					$relationName = 'Registry';
 				}
-
 				$relations[$className][$relationName] = [
-					"return \$this->hasOne('$refClassName', $link);",
+					"return \$this->hasOne($refClassName::className(), $link);",
 					$refClassName,
 					false,
 				];
@@ -730,7 +769,7 @@ EOD;
 				$link = $this->generateRelationLink($refs);
 				$relationName = $this->generateRelationName($relations, $refClassName, $refTable, $className, $hasMany);
 				$relations[$refClassName][$relationName] = [
-					"return \$this->" . ($hasMany ? 'hasMany' : 'hasOne') . "('$className', $link);",
+					"return \$this->" . ($hasMany ? 'hasMany' : 'hasOne') . "($className::className(), $link);",
 					$className,
 					$hasMany,
 				];
@@ -748,7 +787,7 @@ EOD;
 			$viaLink = $this->generateRelationLink([$table->primaryKey[0] => $fks[$table->primaryKey[0]][1]]);
 			$relationName = $this->generateRelationName($relations, $className0, $db->getTableSchema($table0), $table->primaryKey[1], true);
 			$relations[$className0][$relationName] = [
-				"return \$this->hasMany('$className1', $link)->viaTable('{$table->name}', $viaLink);",
+				"return \$this->hasMany($className1::className(), $link)->viaTable('{$table->name}', $viaLink);",
 				$className0,
 				true,
 			];
@@ -757,7 +796,7 @@ EOD;
 			$viaLink = $this->generateRelationLink([$table->primaryKey[1] => $fks[$table->primaryKey[1]][1]]);
 			$relationName = $this->generateRelationName($relations, $className1, $db->getTableSchema($table1), $table->primaryKey[0], true);
 			$relations[$className1][$relationName] = [
-				"return \$this->hasMany('$className0', $link)->viaTable('{$table->name}', $viaLink);",
+				"return \$this->hasMany($className0::className(), $link)->viaTable('{$table->name}', $viaLink);",
 				$className1,
 				true,
 			];
@@ -828,14 +867,14 @@ EOD;
 			$key = Inflector::pluralize($key);
 		}
 		$name = $rawName = Inflector::id2camel($key, '_');
-
 		$i = 0;
-		while (isset($table->columns[$name])) {
+		while (isset($table->columns[lcfirst($name)])) {
 			$name = $rawName . ($i++);
 		}
-		while (isset($relations[$className][$name])) {
+		while (isset($relations[$className][lcfirst($name)])) {
 			$name = $rawName . ($i++);
 		}
+
 		return $name;
 	}
 
@@ -977,6 +1016,28 @@ EOD;
 		return $this->_classNames[$tableName] = Inflector::id2camel($className, '_');
 	}
 
+	public function getSearchModels() {
+		return ['@app/models' => 'app\models'];
+	}
+
+	public function getModelMap() {
+		$m = [];
+		$search = [];
+		foreach ($this->searchModels as $path => $namespace) {
+			$files = FileHelper::findFiles(Yii::getAlias($path), ['only' => ['.php']]);
+			foreach ($files as $file) {
+				$baseName = strstr(basename($file), '.php', true);
+				$className = $namespace .'\\'. $baseName;
+				if (class_exists($className)) {
+					$reflector = new \ReflectionClass($className);
+					if ($reflector->isSubclassOf('yii\base\Model')) {
+						$m[$baseName] = $className;
+					}
+				}
+			}
+		}
+		return $m;
+	}
 	/**
 	 * @return Connection the DB connection as specified by [[db]].
 	 */

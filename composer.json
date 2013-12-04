@@ -22,7 +22,8 @@
 		"phpunit/phpunit": "3.7.*",
 		"yiisoft/yii2-debug": "*",
 		"yiisoft/yii2-gii": "*",
-		"yiisoft/yii2-jui": "*"
+		"yiisoft/yii2-jui": "*",
+		"mustangostang/spyc": "*"
 	},
     "autoload": {
 		"psr-0": { "app\\": "" }
