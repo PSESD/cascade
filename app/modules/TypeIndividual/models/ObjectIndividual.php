@@ -1,5 +1,4 @@
 <?php
-
 namespace app\modules\TypeIndividual\models;
 
 use app\models\User;

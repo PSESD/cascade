@@ -1,6 +1,7 @@
 <?php
-
 namespace app\modules\TypePhoneNumber\models;
+
+use app\models\Registry;
 
 /**
  * This is the model class for table "object_phone_number".
@@ -16,9 +17,7 @@ namespace app\modules\TypePhoneNumber\models;
  */
 class ObjectPhoneNumber extends \app\components\types\ActiveRecord
 {
-	use \app\components\types\ActiveRecordTrait;
-
-	public $descriptorField = ['phone', 'extensionFormatted'];
+	public $descriptorField = ['phone', 'formattedExtension'];
 
 	/**
 	 * @inheritdoc
@@ -44,18 +43,12 @@ class ObjectPhoneNumber extends \app\components\types\ActiveRecord
 		return [
 			[['phone'], 'required'],
 			[['no_call'], 'boolean'],
-		//	[['created', 'modified'], 'unsafe'],
 			[['id'], 'string', 'max' => 36],
 			[['phone'], 'string', 'max' => 100],
 			[['extension'], 'string', 'max' => 15]
 		];
 	}
 
-	public function getExtensionFormatted()
-	{
-		if (empty($this->extension)) { return null; }
-		return 'x'. $this->extension;
-	}
 
 	/**
 	 * @inheritdoc
@@ -101,11 +94,17 @@ class ObjectPhoneNumber extends \app\components\types\ActiveRecord
 		];
 	}
 
+	public function getFormattedExtension()
+	{
+		if (empty($this->extension)) { return null; }
+		return 'x'. $this->extension;
+	}
+
 	/**
 	 * @return \yii\db\ActiveRelation
 	 */
 	public function getRegistry()
 	{
-		return $this->hasOne('Registry', ['id' => 'id']);
+		return $this->hasOne(Registry::className(), ['id' => 'id']);
 	}
 }

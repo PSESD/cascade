@@ -1,5 +1,4 @@
 <?php
-
 namespace app\modules\TypeEmailAddress\models;
 
 use app\models\Registry;

@@ -38,19 +38,6 @@ class Module extends \app\components\types\Module
 	/**
 	 * @inheritdoc
 	 */
-	public function parentSettings()
-	{
-		$settings = parent::parentSettings();
-		$settings['title'] = false;
-		$settings['showDescriptor'] = true;
-		$settings['allow'] = 2;
-		return $settings;
-	}
-
-	
-	/**
-	 * @inheritdoc
-	 */
 	public function parents()
 	{
 		return [
@@ -65,7 +52,7 @@ class Module extends \app\components\types\Module
 	 */
 	public function children()
 	{
-		return [		];
+		return [];
 	}
 
 	
