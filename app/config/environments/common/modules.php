@@ -18,11 +18,17 @@ return [
 	'TypeIndividual' => [
 	    'class' => 'app\modules\TypeIndividual\Module',
 	],
+	'TypePostalAddress' => [
+	    'class' => 'app\modules\TypePostalAddress\Module',
+	],
 	'TypePhoneNumber' => [
 		'class' => 'app\modules\TypePhoneNumber\Module',
     ],
 	'TypeEmailAddress' => [
 		'class' => 'app\modules\TypeEmailAddress\Module',
+    ],
+    'TypeWebAddress' => [
+        'class' => 'app\modules\TypeWebAddress\Module',
     ],
 ];
 ?>

@@ -33,7 +33,7 @@ abstract class Base extends \infinite\base\Object {
 	public function init() {
 		parent::init();
 
-		if (!is_null($this->default) and $model->isDefaultValue($this->field)) {
+		if (!is_null($this->default) && !$this->model->isAttributeChanged($this->field)) {
 			$this->model->{$this->field} = $this->default;
 		}
 	}

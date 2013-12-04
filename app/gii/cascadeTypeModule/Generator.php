@@ -448,9 +448,11 @@ EOD;
 	public function getMigrationClassName()
 	{
 		$postfix = '_initial_'.$this->tableName;
-		$searchExisting = FileHelper::findFiles($this->migrationDirectory, ['only' => [$postfix.'.php']]);
-		if (!empty($searchExisting)) {
-			return strstr(basename($searchExisting[0]), '.php', true);
+		if (is_dir($this->migrationDirectory)) {
+			$searchExisting = FileHelper::findFiles($this->migrationDirectory, ['only' => [$postfix.'.php']]);
+			if (!empty($searchExisting)) {
+				return strstr(basename($searchExisting[0]), '.php', true);
+			}
 		}
 		return  'm' . gmdate('ymd_His', $this->migrationTimestamp) . $postfix;
 	}

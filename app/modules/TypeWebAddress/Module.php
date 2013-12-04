@@ -1,18 +1,18 @@
 <?php
 
-namespace app\modules\TypeEmailAddress;
+namespace app\modules\TypeWebAddress;
 
 use Yii;
 
 class Module extends \app\components\types\Module
 {
-	protected $_title = 'Email Address';
-	public $icon = 'fa fa-envelope-o';
+	protected $_title = 'Web Address';
+	public $icon = 'fa fa-external-link';
 	public $uniparental = true;
 	public $hasDashboard = false;
 
-	public $widgetNamespace = 'app\modules\TypeEmailAddress\widgets';
-	public $modelNamespace = 'app\modules\TypeEmailAddress\models';
+	public $widgetNamespace = 'app\modules\TypeWebAddress\widgets';
+	public $modelNamespace = 'app\modules\TypeWebAddress\models';
 
 	/**
 	 * @inheritdoc
@@ -21,7 +21,7 @@ class Module extends \app\components\types\Module
 	{
 		parent::init();
 		
-		Yii::$app->registerMigrationAlias('@app/modules/TypeEmailAddress/migrations');
+		Yii::$app->registerMigrationAlias('@app/modules/TypeWebAddress/migrations');
 	}
 
 	/**
@@ -30,7 +30,7 @@ class Module extends \app\components\types\Module
 	public function widgets()
 	{
 		$widgets = parent::widgets();
-		$widgets['EmbeddedEmailAddressBrowse']['section'] = Yii::$app->collectors['sections']->getOne('_side');
+		$widgets['EmbeddedWebAddressBrowse']['section'] = Yii::$app->collectors['sections']->getOne('_side');
 		return $widgets;
 	}
 
@@ -41,6 +41,7 @@ class Module extends \app\components\types\Module
 	public function parents()
 	{
 		return [
+			'Account' => [],
 			'Individual' => [],
 		];
 	}

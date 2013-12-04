@@ -140,7 +140,9 @@ class Segment extends FormObject {
 		if (!isset($this->_settings['formField'])) {
 			$this->_settings['formField'] = array();
 		}
-
+		if (is_array($this->_settings['fields']) && empty($this->_settings['fields'])) {
+			$this->_settings['fields'] = null;
+		}
 		$fields = $this->_model->getFields($this);
 		$fieldsTemplate = false;
 		if (!empty($this->subform)) {
