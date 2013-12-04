@@ -19,6 +19,7 @@ abstract class Base extends \infinite\base\Object implements \infinite\web\grid\
 
 	public $modelField;
 	public $options;
+	public $smartOptions = [];
 	public $htmlOptions = [];
 	public $default;
 	public $label;
@@ -42,7 +43,18 @@ abstract class Base extends \infinite\base\Object implements \infinite\web\grid\
 		return "{$this->model->tabularPrefix}{$this->field}";
 	}
 
+	public function neightborFieldId($field)
+	{
+		$modelFields = $this->model->fields;
+		if (!isset($modelFields[$field])) {
+			return false;
+		}
+		return $modelFields[$field]->formField->fieldId;
+	}
 
+	public function getFieldId() {
+		return Html::getInputId($this->model, $this->getModelField());
+	}
 
 	/**
 	 *

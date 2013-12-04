@@ -1,6 +1,8 @@
 <?php
 namespace app\modules\TypePostalAddress\models;
 
+use Yii;
+
 use app\models\Registry;
 use infinite\helpers\Locations;
 
@@ -13,7 +15,7 @@ use infinite\helpers\Locations;
  * @property string $address1
  * @property string $address2
  * @property string $city
- * @property string $state
+ * @property string $subnational_division
  * @property string $postal_code
  * @property string $country
  * @property boolean $no_mailings
@@ -52,7 +54,7 @@ class ObjectPostalAddress extends \app\components\types\ActiveRecord
 			[['no_mailings'], 'boolean'],
 			[['id'], 'string', 'max' => 36],
 			[['name', 'address1', 'address2', 'city', 'country'], 'string', 'max' => 255],
-			[['state'], 'string', 'max' => 100],
+			[['subnational_division'], 'string', 'max' => 100],
 			[['postal_code'], 'string', 'max' => 20]
 		];
 	}
@@ -69,10 +71,13 @@ class ObjectPostalAddress extends \app\components\types\ActiveRecord
 			'address1' => [],
 			'address2' => [],
 			'city' => [],
-			'state' => [],
+			'subnational_division' => [
+				'default' => Yii::$app->params['defaultSubnationalDivision'],
+				'formField' => array('type' => 'smartDropDownList', 'smartOptions' => ['watchField' => 'country', 'fallbackType' => ['tag' => 'input', 'type' => 'text'], 'options' => Locations::allSubnationalDivisions(), 'blank' => true], 'options' => []),
+			],
 			'postal_code' => [],
 			'country' => [
-				'default' => 'US',
+				'default' => Yii::$app->params['defaultCountry'],
 				'formField' => array('type' => 'dropDownList', 'options' => Locations::countryList()),
 			],
 			'no_mailings' => []
@@ -91,7 +96,7 @@ class ObjectPostalAddress extends \app\components\types\ActiveRecord
 		$settings['fields'] = array();
 		$settings['fields'][] = ['name'];
 		$settings['fields'][] = ['address1', 'address2'];
-		$settings['fields'][] = ['city', 'state', 'postal_code'];
+		$settings['fields'][] = ['city', 'subnational_division', 'postal_code'];
 		$settings['fields'][] = ['country', false, false];
 		return $settings;
 	}
@@ -108,7 +113,7 @@ class ObjectPostalAddress extends \app\components\types\ActiveRecord
 			'address1' => 'Address (Line 1)',
 			'address2' => 'Address (Line 2)',
 			'city' => 'City',
-			'state' => 'State/Province/Region',
+			'subnational_division' => 'State/Province/Region',
 			'postal_code' => 'Postal Code',
 			'country' => 'Country',
 			'no_mailings' => 'No Mailings',

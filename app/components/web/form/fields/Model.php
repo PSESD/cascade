@@ -1,8 +1,9 @@
 <?php
 namespace app\components\web\form\fields;
 
-use \infinite\base\exceptions\Exception;
-use \infinite\helpers\Html;
+use infinite\base\exceptions\Exception;
+use infinite\helpers\Html;
+use yii\widgets\ActiveField;
 
 class Model extends Base {
 	/**
@@ -32,10 +33,22 @@ class Model extends Base {
 			$fieldConfig['template'] = "{label}\n".$fieldConfig['template'];
 		}
 		$item = $form->field($model, $field, $fieldConfig);
-		if (!isset($this->htmlOptions['class'])) {
-			$this->htmlOptions['class'] = '';
+		$item->inputOptions =& $this->htmlOptions;
+
+		Html::addCssClass($this->htmlOptions, 'form-control');
+		if (substr($this->type, 0, 5) === 'smart') {
+			$this->type = lcfirst(substr($this->type, 5));
+			if (isset($this->smartOptions['watchField'])) {
+				$watchFieldId = $this->neightborFieldId($this->smartOptions['watchField']);
+				if (!$watchFieldId) {
+					unset($this->smartOptions['watchField']);
+				} else {
+					$this->smartOptions['watchField'] = '#' . $watchFieldId;
+				}
+			}
+			$this->htmlOptions['data-smart'] = json_encode($this->smartOptions);
 		}
-		$this->htmlOptions['class'] .= ' form-control';
+
 		switch ($this->type) {
 		case 'checkBox':
 			$item->checkbox();
@@ -50,6 +63,7 @@ class Model extends Base {
 			$item->radioList($this->options);
 			break;
 		case 'dropDownList':
+		case 'smartDropDownList':
 			$item->dropDownList($this->options);
 			break;
 		case 'listBox':
@@ -66,21 +80,18 @@ class Model extends Base {
 			$item->password();
 			break;
 		case 'date':
-			$this->htmlOptions['class'] .= ' date';
+			Html::addCssClass($this->htmlOptions, 'date');
 			break;
 		case 'textarea':
 			$item->textarea();
 			break;
 		case 'rich':
-			$this->htmlOptions['class'] .= ' rich';
+			Html::addCssClass($this->htmlOptions, 'rich');
 			$editorSettings = array(
 				);
 			$this->htmlOptions['data-editor'] = Json::encode($editorSettings);
 			$item = Html::activeTextArea($model, $field, $this->htmlOptions);
 			break;
-		}
-		if ($item instanceof ActiveField) {
-			$item->inputOptions = $this->htmlOptions;
 		}
 		if (!empty($item)) {
 			return $pre.$item.$post;

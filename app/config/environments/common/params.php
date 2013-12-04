@@ -10,9 +10,10 @@ return array(
 	'siteName' => 'Cascade',
 	'sessionExpiration' => 3600,
 	'defaultCountry' => 'US',
+	'defaultSubnationalDivision' => null,
 	'migrationAliases' => ['@app/migrations'],
 	// site look
-	'logoLogin' => "/themes/ic/img/cascade-logo-450.png" ,
+	'logoLogin' => "/themes/ic/img/cascade-logo-450.png",
 	'logoSmall' => "/themes/ic/img/cascade-logo-75.png"
 );
 ?>

@@ -16,7 +16,7 @@ class m131204_003752_initial_object_postal_address extends \infinite\db\Migratio
 			'address1' => 'string(255) DEFAULT NULL',
 			'address2' => 'string(255) DEFAULT NULL',
 			'city' => 'string(255) DEFAULT NULL',
-			'state' => 'string(100) DEFAULT NULL',
+			'subnational_division' => 'string(100) DEFAULT NULL',
 			'postal_code' => 'string(20) DEFAULT NULL',
 			'country' => 'string(255) DEFAULT NULL',
 			'no_mailings' => 'boolean NOT NULL DEFAULT 0',

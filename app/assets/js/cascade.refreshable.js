@@ -1,4 +1,3 @@
-
 $(document).on('refresh.cascade-api', '.refreshable', function(e, data) {
 	var settings = {};
 	var instructions = {};
