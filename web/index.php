@@ -29,10 +29,14 @@ $config = require_once($configPath);
 try {
 	$application = new infinite\web\Application($config);
 	if (!$application->collectors->areReady()) {
+		Yii::endProfile("Initializing");
 		header("Location: /setup.php");
 		exit;
 	}
+	Yii::trace("End loading");
+	Yii::beginProfile("Run action");
 	$application->run();
+	Yii::endProfile("Run action");
 } catch (\PDOException $e) {
 	header("Location: /error.php?code=db");
 	exit;
