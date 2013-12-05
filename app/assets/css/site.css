@@ -3,6 +3,10 @@ body {
     padding-top: 70px;
 }
 
+footer {
+    height: 500px;
+    display: block;
+}
 
 .dashboard {
     padding-top: 35px;

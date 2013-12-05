@@ -41,8 +41,25 @@ $cells = [];
 
 if (isset($sections['_side'])) {
 	$cellInner = $sections['_side']->object->widget;
-	$cellInner->htmlOptions['data-spy'] = 'affix';
-	$cellInner->htmlOptions['data-offset-top'] = 5;
+	$cellInner->htmlOptions['id'] = $cellInner->id;
+	$js[] = '
+	var $sideBar = $("#'. $cellInner->id .'");
+	$sideBar.affix({
+		\'top\': function () {
+			var offsetTop = $sideBar.offset().top;
+			var sideBarMargin = parseInt($sideBar.children(0).css(\'margin-top\'), 10);
+			var navOuterHeight = $(\'.navbar-header\').height() + $(\'#object-dashboard-navbar\').height();
+			return (this.top = offsetTop - navOuterHeight - sideBarMargin);
+		},
+		\'bottom\': function() {
+			return (this.bottom = $(\'.footer\').outerHeight(true));
+		}
+	});';
+	//$cellInner->htmlOptions['data-spy'] = 'affix';
+	//$cellInner->htmlOptions['data-offset-top'] = 5;
+	// $cellInner->htmlOptions['data-offset-bottom'] = 50;
+	// $cellInner->htmlOptions['data-parent-height-watch'] = true;
+	// $cellInner->htmlOptions['data-parent-height-watch-ancestor'] = '.row';
 	Html::addCssClass($cellInner->htmlOptions, 'ic-sidebar');
 
 	$cells[] = $sideCell = Yii::createObject(['class' => 'infinite\web\grid\Cell', 'content' => $cellInner->generate()]);

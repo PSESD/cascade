@@ -99,6 +99,54 @@ trait ObjectWidgetTrait
 	public function getHeaderMenu()
 	{
 		$menu = [];
+
+		$baseCreate = ['object/create'];
+		$typePrefix = null;
+		$method = ArrayHelper::getValue($this->settings, 'queryRole', 'all');
+		$create = true;
+		$link = false;
+
+		if (($create || $link) && in_array($method, ['parents', 'children'])) {
+			if (empty(Yii::$app->request->object) || empty($this->settings['relationship'])) {
+				throw new Exception("Object widget requested when no object has been set!");
+			}
+			$create = $link = Yii::$app->gk->canGeneral('update', Yii::$app->request->object);
+			$baseCreate['object_id'] = Yii::$app->request->object->primaryKey;
+			if ($method === 'parents') {
+				$typePrefix = 'parent:';
+			} else {
+				$typePrefix = 'child:';
+			}
+			if ($link) {
+				$link = false;
+				$objectModule = $this->owner;
+				if ($objectModule && !$objectModule->uniparental) {
+					$link = true;
+				}
+			}
+		}
+		$baseCreate['type'] = $typePrefix . $this->owner->systemId;
+
+		if ($create && Yii::$app->gk->canGeneral('create', $this->owner->primaryModel)) {
+			$createUrl = $baseCreate;
+			$menu[] = [
+				'label' => '<i class="fa fa-plus"></i>',
+				'linkOptions' => ['title' => 'Create'],
+				'url' => $createUrl
+			];
+		}
+		if ($link) {
+			$createUrl = $baseCreate;
+			$createUrl['link'] = 1;
+			$menu[] = [
+				'label' => '<i class="fa fa-link"></i>',
+				'linkOptions' => ['title' => 'Link'],
+				'url' => $createUrl
+			];
+		}
+
+		//sorting 
+
 		$sortBy = $this->sortBy;
 		$currentSortBy = $this->currentSortBy;
 		$currentSortByDirection = $this->currentSortByDirection;
@@ -109,7 +157,8 @@ trait ObjectWidgetTrait
 				'label' => '<i class="fa fa-sort"></i>',
 				'linkOptions' => ['title' => 'Sort by'],
 				'url' => '#',
-				'items' => []
+				'items' => [],
+				'options' => ['class' => 'dropleft']
 			];
 
 			foreach ($sortBy as $sortKey => $sortItem) {
@@ -142,43 +191,6 @@ trait ObjectWidgetTrait
 			$menu[] = $item;
 		}
 
-		$baseCreate = ['object/create'];
-		$typePrefix = null;
-		$method = ArrayHelper::getValue($this->settings, 'queryRole', 'all');
-		$create = true;
-		$link = false;
-
-		if (($create || $link) && in_array($method, ['parents', 'children'])) {
-			if (empty(Yii::$app->request->object) || empty($this->settings['relationship'])) {
-				throw new Exception("Object widget requested when no object has been set!");
-			}
-			$create = $link = Yii::$app->gk->canGeneral('update', Yii::$app->request->object);
-			$baseCreate['object_id'] = Yii::$app->request->object->primaryKey;
-			if ($method === 'parents') {
-				$typePrefix = 'parent:';
-			} else {
-				$typePrefix = 'child:';
-			}
-		}
-		$baseCreate['type'] = $typePrefix . $this->owner->systemId;
-
-		if ($create && Yii::$app->gk->canGeneral('create', $this->owner->primaryModel)) {
-			$createUrl = $baseCreate;
-			$menu[] = [
-				'label' => '<i class="fa fa-plus"></i>',
-				'linkOptions' => ['title' => 'Create'],
-				'url' => $createUrl
-			];
-		}
-		if ($link && Yii::$app->gk->canGeneral('create', $this->owner->primaryModel)) {
-			$createUrl = $baseCreate;
-			$createUrl['link'] = 1;
-			$menu[] = [
-				'label' => '<i class="fa fa-link"></i>',
-				'linkOptions' => ['title' => 'Link'],
-				'url' => $createUrl
-			];
-		}
 		return $menu;
 	}
 
