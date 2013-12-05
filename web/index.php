@@ -27,13 +27,15 @@ Yii::setAlias('@cascade', INFINITE_APP_APP_PATH);
 $configPath =  INFINITE_APP_ENVIRONMENT_PATH . DIRECTORY_SEPARATOR .  'web.php';
 $config = require_once($configPath);
 try {
+	$start = microtime(true);
 	$application = new infinite\web\Application($config);
 	if (!$application->collectors->areReady()) {
 		Yii::endProfile("Initializing");
 		header("Location: /setup.php");
 		exit;
 	}
-	Yii::trace("End loading");
+	$duration = round((microtime(true) - $start) * 1000, 3);
+	Yii::trace("End loading ({$duration}ms)");
 	Yii::beginProfile("Run action");
 	$application->run();
 	Yii::endProfile("Run action");
