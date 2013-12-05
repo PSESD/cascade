@@ -26,6 +26,6 @@
 		"mustangostang/spyc": "*"
 	},
     "autoload": {
-		"psr-0": { "app\\": "" }
+		"psr-0": { "cascade\\": "/src" }
     }
 }

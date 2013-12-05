@@ -31,7 +31,8 @@ Yii::setAlias('@app', INFINITE_APP_APP_PATH);
 
 $config = array(
 	'basePath' => INFINITE_APP_INSTALL_PATH,
-	'name' => 'Application Template'
+	'name' => 'Application Template',
+	'applicationNamespace' => 'cascade'
 );
 try {
 	$app = \app\setup\Setup::createSetupApplication($config);
