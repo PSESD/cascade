@@ -12,6 +12,8 @@ defined('INFINITE_APP_APP_PATH') OR define('INFINITE_APP_APP_PATH', INFINITE_APP
 defined('INFINITE_APP_SETUP_PATH') OR define('INFINITE_APP_SETUP_PATH', INFINITE_APP_APP_PATH . DIRECTORY_SEPARATOR . 'setup');
 defined('INFINITE_APP_VENDOR_PATH') OR define('INFINITE_APP_VENDOR_PATH', INFINITE_APP_INSTALL_PATH . DIRECTORY_SEPARATOR . 'vendor');
 
+defined('INFINITE_SETUP') OR define('INFINITE_SETUP', true);
+
 register_shutdown_function(function() {
 	if (!error_get_last()) { return; }
 	echo 'Boo! <pre>';
