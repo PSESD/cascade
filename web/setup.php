@@ -27,7 +27,8 @@ require_once(INFINITE_APP_VENDOR_PATH . DIRECTORY_SEPARATOR . 'yiisoft/yii2/yii/
 Yii::setAlias('@cascade', INFINITE_APP_APP_PATH);
 
 $config = array(
-	'basePath' => INFINITE_APP_APP_PATH,
+	'basePath' => INFINITE_APP_INSTALL_PATH,
+	'applicationPath' => INFINITE_APP_APP_PATH,
 	'name' => 'Application Template',
 	'applicationNamespace' => 'cascade'
 );
@@ -37,6 +38,15 @@ try {
 } catch (\Exception $e) {
 	$backtrace = $e->getTrace();
 	$backtrace = $backtrace[1];
+
+	echo $e->getMessage();
+	echo '<pre>';
+	foreach ($e->getTrace() as $backtrace) {
+		if (!isset($backtrace['file'])) { continue; }
+		echo $backtrace['file'].':'. $backtrace['line'] ."\n";
+	}
+	echo '</pre>';
+	exit;
 	$app->params['error'] = true;
 	$app->params['message'] = $e->getMessage() .' ('. $backtrace['file'].':'. $backtrace['line'].')';
 	$app->render('message');
