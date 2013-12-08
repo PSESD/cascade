@@ -16,6 +16,10 @@
 	   {
 	     "type": "vcs",
 	     "url": "https://github.com/InfiniteCascade/yii2-infinite-core.git"
+	   },
+	   {
+	   		"type": "vcs",
+	   		"url": "https://github.com/MisatoTremor/bootstrap-select.git"
 	   }
 	],
 	"require-dev": {
