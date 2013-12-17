@@ -10,12 +10,36 @@
 		"php": ">=5.4.0",
 		"yiisoft/yii2": "dev-master",
 		"yiisoft/yii2-composer": "dev-master",
-		"InfiniteCascade/yii2-infinite-core": "*"
+		"InfiniteCascade/yii2-infinite-core": "*",
+		"InfiniteCascade/cascade-lib": "*",
+		"InfiniteCascade/cascade-web": "*",
+		"InfiniteCascade/cascade-cli": "*",
+		"InfiniteCascade/cascade-config": "*"
 	},
 	"repositories": [
 	   {
-	     "type": "vcs",
-	     "url": "https://github.com/InfiniteCascade/yii2-infinite-core.git"
+		    "type": "vcs",
+		    "url": "https://github.com/InfiniteCascade/yii2-infinite-core.git"
+	   },
+	   {
+		    "type": "vcs",
+		    "url": "https://github.com/InfiniteCascade/infinite-composer.git"
+	   },
+	   {
+		    "type": "vcs",
+		    "url": "https://github.com/InfiniteCascade/cascade-cli.git"
+	   },
+	   {
+		    "type": "vcs",
+		    "url": "https://github.com/InfiniteCascade/cascade-web.git"
+	   },
+	   {
+		    "type": "vcs",
+		    "url": "https://github.com/InfiniteCascade/cascade-lib.git"
+	   },
+	   {
+		    "type": "vcs",
+		    "url": "https://github.com/InfiniteCascade/cascade-config.git"
 	   },
 	   {
 	   		"type": "vcs",
@@ -28,8 +52,5 @@
 		"yiisoft/yii2-gii": "*",
 		"yiisoft/yii2-jui": "*",
 		"mustangostang/spyc": "*"
-	},
-    "autoload": {
-		"psr-0": { "cascade\\": "src" }
-    }
+	}
 }
