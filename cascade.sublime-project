@@ -3,7 +3,7 @@
 	[
 		{
 			"follow_symlinks": true,
-			"path": "."
+			"path": "vendor/infiniteCascade/cascade-lib"
 		},
 		{
 			"follow_symlinks": true,
@@ -11,19 +11,19 @@
 		},
 		{
 			"follow_symlinks": true,
-			"path": "/Users/jacob/Projects/infinite-core"
+			"path": "vendor/infiniteCascade/cascade-web"
+		},
+		{
+			"follow_symlinks": true,
+			"path": "vendor/infiniteCascade/cascade-config"
+		},
+		{
+			"follow_symlinks": true,
+			"path": "vendor/infiniteCascade/cascade-cli"
 		},
 		{
 			"follow_symlinks": true,
 			"path": "vendor/yiisoft/yii2"
-		},
-		{
-			"follow_symlinks": true,
-			"path": "/Users/jacob/Projects/cascade1"
-		},
-		{
-			"follow_symlinks": true,
-			"path": "/Users/jacob/Vagrants"
 		}
 	]
 }

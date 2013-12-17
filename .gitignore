@@ -1,7 +1,6 @@
 composer.lock
 *.sublime-workspace
 /components/
-/web/assets/
 /runtime/
 /config/
 /web/
