@@ -14,7 +14,8 @@
 		"InfiniteCascade/cascade-lib": "*",
 		"InfiniteCascade/cascade-web": "*",
 		"InfiniteCascade/cascade-cli": "*",
-		"InfiniteCascade/cascade-config": "*"
+		"InfiniteCascade/cascade-config": "*",
+		"InfiniteCascade/cascade-core-types": "*"
 	},
 	"repositories": [
 	   {
@@ -42,8 +43,12 @@
 		    "url": "https://github.com/InfiniteCascade/cascade-config.git"
 	   },
 	   {
-	   		"type": "vcs",
-	   		"url": "https://github.com/MisatoTremor/bootstrap-select.git"
+		    "type": "vcs",
+		    "url": "https://github.com/InfiniteCascade/cascade-core-types.git"
+	   },
+	   {
+			"type": "vcs",
+			"url": "https://github.com/MisatoTremor/bootstrap-select.git"
 	   }
 	],
 	"require-dev": {
