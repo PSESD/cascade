@@ -32,6 +32,10 @@
 		{
 			"follow_symlinks": true,
 			"path": "."
+		},
+		{
+			"follow_symlinks": true,
+			"path": "vendor/infiniteCascade/cascade-core-types/cascade/modules/core"
 		}
 	]
 }
