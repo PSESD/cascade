@@ -10,7 +10,7 @@
 		"php": ">=5.4.0",
 		"yiisoft/yii2": "dev-master",
 		"yiisoft/yii2-composer": "dev-master",
-		"canis/yii2-canis-core": "*",
+		"canis/yii2-canis-lib": "*",
 		"canis/cascade-lib": "*",
 		"canis/cascade-web": "*",
 		"canis/cascade-cli": "*",
@@ -20,7 +20,7 @@
 	"repositories": [
 	   {
 		    "type": "vcs",
-		    "url": "https://github.com/canis/yii2-canis-core.git"
+		    "url": "https://github.com/canis/yii2-canis-lib.git"
 	   },
 	   {
 		    "type": "vcs",
