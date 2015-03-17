@@ -1,8 +1,8 @@
 {
-	"name": "InfiniteCascade/cascade",
+	"name": "canis/cascade",
 	"description": "CRM",
 	"keywords": ["yii", "crm"],
-	"homepage": "http://www.infinitecascade.com",
+	"homepage": "http://www.caniscascade.com",
 	"type": "project",
 	"license": "GPL -2.0",
 	"minimum-stability": "dev",
@@ -10,41 +10,41 @@
 		"php": ">=5.4.0",
 		"yiisoft/yii2": "dev-master",
 		"yiisoft/yii2-composer": "dev-master",
-		"InfiniteCascade/yii2-infinite-core": "*",
-		"InfiniteCascade/cascade-lib": "*",
-		"InfiniteCascade/cascade-web": "*",
-		"InfiniteCascade/cascade-cli": "*",
-		"InfiniteCascade/cascade-config": "*",
-		"InfiniteCascade/cascade-core-types": "*"
+		"canis/yii2-canis-core": "*",
+		"canis/cascade-lib": "*",
+		"canis/cascade-web": "*",
+		"canis/cascade-cli": "*",
+		"canis/cascade-config": "*",
+		"canis/cascade-core-types": "*"
 	},
 	"repositories": [
 	   {
 		    "type": "vcs",
-		    "url": "https://github.com/InfiniteCascade/yii2-infinite-core.git"
+		    "url": "https://github.com/canis/yii2-canis-core.git"
 	   },
 	   {
 		    "type": "vcs",
-		    "url": "https://github.com/InfiniteCascade/infinite-composer.git"
+		    "url": "https://github.com/canis/canis-composer.git"
 	   },
 	   {
 		    "type": "vcs",
-		    "url": "https://github.com/InfiniteCascade/cascade-cli.git"
+		    "url": "https://github.com/canis/cascade-cli.git"
 	   },
 	   {
 		    "type": "vcs",
-		    "url": "https://github.com/InfiniteCascade/cascade-web.git"
+		    "url": "https://github.com/canis/cascade-web.git"
 	   },
 	   {
 		    "type": "vcs",
-		    "url": "https://github.com/InfiniteCascade/cascade-lib.git"
+		    "url": "https://github.com/canis/cascade-lib.git"
 	   },
 	   {
 		    "type": "vcs",
-		    "url": "https://github.com/InfiniteCascade/cascade-config.git"
+		    "url": "https://github.com/canis/cascade-config.git"
 	   },
 	   {
 		    "type": "vcs",
-		    "url": "https://github.com/InfiniteCascade/cascade-core-types.git"
+		    "url": "https://github.com/canis/cascade-core-types.git"
 	   },
 	   {
 			"type": "vcs",
