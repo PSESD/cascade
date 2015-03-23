@@ -1,0 +1,13 @@
+web:
+  image: jacobom/lemp:latest
+  volumes:
+    - ./:/var/www
+  ports:
+    - "80"
+  expose:
+    - "80"
+  environment:
+    VIRTUAL_HOST: ~^cascade\..*
+    NGINX_ERROR_LOG_LEVEL: "notice"
+    DB_NAME: "cascade"
+    GITHUB_API_TOKEN: ""

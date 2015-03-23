@@ -9,8 +9,6 @@
 	"require": {
 		"php": ">=5.4.0",
 		"canis/cascade-lib": "*",
-		"canis/cascade-web": "*",
-		"canis/cascade-cli": "*",
 		"canis/cascade-core-types": "*"
 	},
 	"extra": {
