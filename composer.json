@@ -2,60 +2,30 @@
 	"name": "canis/cascade",
 	"description": "CRM",
 	"keywords": ["yii", "crm"],
-	"homepage": "http://www.canis.io",
+	"homepage": "http://canis.io",
 	"type": "project",
-	"license": "GPL -2.0",
+	"license": "MIT",
 	"minimum-stability": "dev",
 	"require": {
 		"php": ">=5.4.0",
-		"yiisoft/yii2": "dev-master",
-		"yiisoft/yii2-composer": "dev-master",
-		"canis/yii2-canis-lib": "*",
 		"canis/cascade-lib": "*",
 		"canis/cascade-web": "*",
 		"canis/cascade-cli": "*",
-		"canis/cascade-config": "*",
 		"canis/cascade-core-types": "*"
 	},
-	"repositories": [
-	   {
-		    "type": "vcs",
-		    "url": "https://github.com/canis/yii2-canis-lib.git"
-	   },
-	   {
-		    "type": "vcs",
-		    "url": "https://github.com/canis/canis-composer.git"
-	   },
-	   {
-		    "type": "vcs",
-		    "url": "https://github.com/canis/cascade-cli.git"
-	   },
-	   {
-		    "type": "vcs",
-		    "url": "https://github.com/canis/cascade-web.git"
-	   },
-	   {
-		    "type": "vcs",
-		    "url": "https://github.com/canis/cascade-lib.git"
-	   },
-	   {
-		    "type": "vcs",
-		    "url": "https://github.com/canis/cascade-config.git"
-	   },
-	   {
-		    "type": "vcs",
-		    "url": "https://github.com/canis/cascade-core-types.git"
-	   },
-	   {
-			"type": "vcs",
-			"url": "https://github.com/MisatoTremor/bootstrap-select.git"
-	   }
-	],
+	"extra": {
+		"asset-installer-paths": {
+			"npm-asset-library": "vendor/npm",
+			"bower-asset-library": "vendor/bower"
+		}
+	},
 	"require-dev": {
 		"phpunit/phpunit": "3.7.*",
 		"yiisoft/yii2-debug": "*",
 		"yiisoft/yii2-gii": "*",
 		"yiisoft/yii2-jui": "*",
-		"mustangostang/spyc": "*"
+		"mustangostang/spyc": "*",
+		"fabpot/php-cs-fixer": "@stable",
+		"canis/yii2-doc-helper": "*"
 	}
 }
