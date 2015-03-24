@@ -1,5 +1,6 @@
 composer.lock
 *.sublime-workspace
 /vendor/
+/components/
 /docker-compose.yml
 .DS_Store
