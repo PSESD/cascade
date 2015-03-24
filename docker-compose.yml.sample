@@ -1,13 +1,28 @@
 web:
-  image: jacobom/lemp:latest
+  image: jacobom/lemp:web
   volumes:
     - ./:/var/www
+  links:
+    - db
+    - cache
   ports:
     - "80"
   expose:
     - "80"
   environment:
     VIRTUAL_HOST: ~^cascade\..*
-    NGINX_ERROR_LOG_LEVEL: "notice"
-    DB_NAME: "cascade"
     GITHUB_API_TOKEN: ""
+db:
+  image: jacobom/lemp:mysql
+  ports:
+    - "3360"
+  expose:
+    - "3360"
+  environment:
+    DB_NAME: "cascade"
+cache:
+  image: jacobom/lemp:redis
+  ports:
+    - "6379"
+  expose:
+    - "6379"
