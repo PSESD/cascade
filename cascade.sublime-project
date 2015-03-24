@@ -3,23 +3,23 @@
 	[
 		{
 			"follow_symlinks": true,
-			"path": "vendor/infiniteCascade/cascade-lib"
+			"path": "."
 		},
 		{
 			"follow_symlinks": true,
-			"path": "vendor/infiniteCascade/yii2-infinite-core"
+			"path": "vendor/canis/cascade-lib"
 		},
 		{
 			"follow_symlinks": true,
-			"path": "vendor/infiniteCascade/cascade-web"
+			"path": "vendor/canis/yii2-canis-lib"
 		},
 		{
 			"follow_symlinks": true,
-			"path": "vendor/infiniteCascade/cascade-config"
+			"path": "vendor/canis/yii2-deferred-action"
 		},
 		{
 			"follow_symlinks": true,
-			"path": "vendor/infiniteCascade/cascade-cli"
+			"path": "vendor/canis/yii2-notification-engine"
 		},
 		{
 			"follow_symlinks": true,
@@ -31,11 +31,11 @@
 		},
 		{
 			"follow_symlinks": true,
-			"path": "."
+			"path": "vendor/canis/cascade-core-types"
 		},
 		{
 			"follow_symlinks": true,
-			"path": "vendor/infiniteCascade/cascade-core-types/cascade/modules/core"
+			"path": "vendor/canis/yii2-doc-helper"
 		}
 	]
 }
