@@ -4,7 +4,7 @@
 	"keywords": ["yii", "crm"],
 	"homepage": "http://canis.io",
 	"type": "project",
-	"license": "MIT",
+	"license": "BSD-3-Clause",
 	"minimum-stability": "dev",
 	"require": {
 		"php": ">=5.4.0",
