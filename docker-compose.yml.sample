@@ -1,4 +1,5 @@
 web:
+  restart: always
   image: jacobom/lemp:web
   volumes:
     - ./:/var/www
@@ -13,6 +14,7 @@ web:
     VIRTUAL_HOST: ~^cascade\..*
     GITHUB_API_TOKEN: ""
 db:
+  restart: always
   image: jacobom/lemp:mysql
   ports:
     - "3360"
@@ -21,6 +23,7 @@ db:
   environment:
     DB_NAME: "cascade"
 cache:
+  restart: always
   image: jacobom/lemp:redis
   ports:
     - "6379"
