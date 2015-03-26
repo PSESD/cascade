@@ -2,40 +2,34 @@
 	"folders":
 	[
 		{
-			"follow_symlinks": true,
 			"path": "."
 		},
 		{
-			"follow_symlinks": true,
 			"path": "vendor/canis/cascade-lib"
 		},
 		{
-			"follow_symlinks": true,
 			"path": "vendor/canis/yii2-canis-lib"
 		},
 		{
-			"follow_symlinks": true,
 			"path": "vendor/canis/yii2-deferred-action"
 		},
 		{
-			"follow_symlinks": true,
 			"path": "vendor/canis/yii2-notification-engine"
 		},
 		{
-			"follow_symlinks": true,
 			"path": "vendor/yiisoft/yii2"
 		},
 		{
-			"follow_symlinks": true,
-			"path": "vendor/infiniteCascade/composer"
-		},
-		{
-			"follow_symlinks": true,
 			"path": "vendor/canis/cascade-core-types"
 		},
 		{
-			"follow_symlinks": true,
 			"path": "vendor/canis/yii2-doc-helper"
+		},
+		{
+			"path": "/Users/jmorrison/Projects/yii2-composer"
+		},
+		{
+			"path": "vendor/psesd/cascade-modules"
 		}
 	]
 }

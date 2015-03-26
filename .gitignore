@@ -4,3 +4,4 @@ composer.lock
 /components/
 /docker-compose.yml
 .DS_Store
+/storage/

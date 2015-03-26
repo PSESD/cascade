@@ -1,5 +1,5 @@
 {
-	"name": "canis/cascade",
+	"name": "psesd/cascade",
 	"description": "CRM",
 	"keywords": ["yii", "crm"],
 	"homepage": "http://canis.io",
@@ -9,7 +9,8 @@
 	"require": {
 		"php": ">=5.4.0",
 		"canis/cascade-lib": "*",
-		"canis/cascade-core-types": "*"
+		"canis/cascade-core-types": "*",
+		"psesd/cascade-modules": "*"
 	},
 	"extra": {
 		"asset-installer-paths": {
@@ -17,6 +18,12 @@
 			"bower-asset-library": "vendor/bower"
 		}
 	},
+	"repositories": [
+	   {
+		    "type": "vcs",
+		    "url": "https://github.com/PSESD/psesd-cascade.git"
+	   }
+	],
 	"require-dev": {
 		"phpunit/phpunit": "3.7.*",
 		"yiisoft/yii2-debug": "*",
